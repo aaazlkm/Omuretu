@@ -7,7 +7,7 @@ import java.io.LineNumberReader
 import java.io.Reader
 
 /**
- * TODO 日本語入力できない
+ * FIXME 日本語入力できない
  */
 class Lexer(
         reader: Reader
@@ -63,8 +63,7 @@ class Lexer(
         } ?: run {
             while (i >= this.tokenQueue.size) {
                 if (existsReadableText) {
-                    val newTokens = readTokensInNextLine()
-                    this.tokenQueue.addAll(newTokens)
+                    queueTokensInNextLine()
                 } else {
                     break
                 }
@@ -74,22 +73,23 @@ class Lexer(
         }
     }
 
-    private fun readTokensInNextLine(): List<Token> {
+    private fun queueTokensInNextLine() {
         // 終了している場合抜け出す
-        if (!existsReadableText) return listOf()
+        if (!existsReadableText) return
 
         val tokens = mutableListOf<Token>()
 
         val lineNumber = lineNumberReader.lineNumber
         val line = lineNumberReader.readLine() ?: run {
             lineNumberReader.close()
-            return listOf(Token.EOF)
+            this.tokenQueue.addAll(listOf(Token.EOF))
+            return
         }
 
         tokens.addAll(convertLineToTokens(lineNumber, line))
         tokens.add(IdToken(lineNumber, IdToken.EOL))
 
-        return tokens
+        this.tokenQueue.addAll(tokens)
     }
 
     private fun convertLineToTokens(lineNumber: Int, line: String): List<Token> {
