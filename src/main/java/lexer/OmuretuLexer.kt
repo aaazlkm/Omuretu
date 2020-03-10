@@ -1,3 +1,5 @@
+package lexer
+
 import exception.ParseException
 import token.IdToken
 import token.NumberToken
@@ -9,9 +11,9 @@ import java.io.Reader
 /**
  * FIXME 日本語入力できない
  */
-class Lexer(
+class OmuretuLexer(
         reader: Reader
-) {
+) : Lexer {
     companion object {
         private const val KEY_SPACE = "space"
         private const val KEY_COMMENT = "comment"
@@ -20,7 +22,7 @@ class Lexer(
         private const val KEY_ID = "id"
         private const val KEY_CONTENT = "content"
 
-        private const val REGEX_PAT_SPACE = """(?<$KEY_SPACE>\s*)"""
+        private const val REGEX_PAT_SPACE = """(?<$KEY_SPACE>(\s*))"""
         private const val REGEX_PAT_COMMENT = "(?<$KEY_COMMENT>(//.*))"
         private const val REGEX_PAT_NUMBER = "(?<$KEY_NUMBER>([0-9]+))"
         private const val REGEX_PAT_STRING = """(?<$KEY_STRING>("(\\"|\\\\|\\n|[^"])*"))"""
@@ -40,24 +42,13 @@ class Lexer(
     private val existsReadableText: Boolean
         get() = !this.tokenQueue.contains(Token.EOF)
 
-    /**
-     * 新しいトークンを取り出す
-     *
-     * @return Token
-     */
-    fun takeOutNewToken(): Token {
+    override fun pickOutNewToken(): Token {
         val token = readTokenAt(0)
         if (this.tokenQueue.isNotEmpty()) tokenQueue.removeAt(0)
         return token
     }
 
-    /**
-     * 現在のトークンからi個先のトークンを読み込む
-     *
-     * @param i
-     * @return Token
-     */
-    fun readTokenAt(i: Int): Token {
+    override fun readTokenAt(i: Int): Token {
         return tokenQueue.getOrNull(i)?.let { token ->
             token
         } ?: run {

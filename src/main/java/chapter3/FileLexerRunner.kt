@@ -1,6 +1,6 @@
 package chapter3
 
-import Lexer
+import lexer.OmuretuLexer
 import token.IdToken
 import token.NumberToken
 import token.StringToken
@@ -10,10 +10,10 @@ import java.io.FileNotFoundException
 class FileLexerRunner {
     fun main(args: Array<String>) {
         try {
-            val lexer = Lexer(CodeDialog.file())
+            val lexer = OmuretuLexer(CodeDialog.file())
             var token: Token
             while (true) {
-                token = lexer.takeOutNewToken()
+                token = lexer.pickOutNewToken()
                 if (token === Token.EOF) break
                 System.out.println("=> $token")
             }
@@ -24,10 +24,10 @@ class FileLexerRunner {
 }
 
 fun main(args: Array<String>) {
-    val lexer = Lexer(CodeDialog())
+    val lexer = OmuretuLexer(CodeDialog())
     var token: Token
     while (true) {
-        token = lexer.takeOutNewToken()
+        token = lexer.pickOutNewToken()
         if (token === Token.EOF) break
         val log  = when(token) {
             is IdToken -> {
