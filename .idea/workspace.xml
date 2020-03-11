@@ -2,10 +2,45 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="5537ad33-5456-48de-ac9a-dc4c5684a633" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.gradle/5.2.1/executionHistory/executionHistory.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.2.1/executionHistory/executionHistory.lock" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/BasicPaser.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/ast/BinaryExpression.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/ast/BlockStmnt.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/ast/IfStmnt.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/ast/Name.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/ast/NegativeExpression.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/ast/NullStmnt.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/ast/NumberLiteral.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/ast/Operation.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/ast/PrimaryExpression.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/ast/StringLiteral.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/ast/WhileStmnt.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/chapter5/PaserRunner.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/parser/ASTTreeFactory.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/parser/Parser.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/parser/ast/ASTLeaf.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/parser/ast/ASTList.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/parser/ast/ASTTree.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/parser/element/Element.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/parser/element/Expression.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/parser/element/Leaf.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/parser/element/Option.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/parser/element/OrTree.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/parser/element/Repeat.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/parser/element/Skip.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/parser/element/Symbol.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/parser/element/Token.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/parser/element/Tree.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Lexer.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/OmuretuLexer.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/chapter3/CodeDialog.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/chapter3/CodeDialog.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/chapter3/FileLexerRunner.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/chapter3/FileLexerRunner.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/exception/ParseException.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/exception/ParseException.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/lexer/Lexer.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/lexer/Lexer.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/lexer/OmuretuLexer.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/lexer/OmuretuLexer.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/token/IdToken.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/lexer/token/IdToken.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/token/NumberToken.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/lexer/token/NumberToken.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/token/StringToken.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/lexer/token/StringToken.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/token/Token.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/lexer/token/Token.kt" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -24,6 +59,7 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
+        <option value="Kotlin Interface" />
         <option value="Kotlin Class" />
         <option value="Kotlin File" />
       </list>
@@ -33,18 +69,27 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="ProjectId" id="1YsjC9jotBcw9gCpC1X8Wvya2cd" />
-  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
   <component name="PropertiesComponent">
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="project.structure.last.edited" value="Modules" />
-    <property name="project.structure.proportion" value="0.0" />
-    <property name="project.structure.side.proportion" value="0.0" />
-    <property name="settings.editor.selected.configurable" value="editor.preferences.completion" />
+    <property name="project.structure.proportion" value="0.15" />
+    <property name="project.structure.side.proportion" value="0.2" />
+    <property name="settings.editor.selected.configurable" value="preferences.keymap" />
   </component>
   <component name="RecentsManager">
     <key name="MoveKotlinTopLevelDeclarationsDialog.RECENTS_KEY">
+      <recent name="ast" />
       <recent name="chapter3" />
       <recent name="token" />
+    </key>
+    <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
+      <recent name="" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/main/java/lexer" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -59,7 +104,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="Kotlin.chapter5.ParserRunner">
     <configuration name="chapter3.FileLexerRunnerKt" type="JetRunConfigurationType" factoryName="Kotlin" temporary="true" nameIsGenerated="true">
       <module name="omuretu.main" />
       <option name="VM_PARAMETERS" />
@@ -73,8 +118,22 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="chapter5.ParserRunner" type="JetRunConfigurationType" factoryName="Kotlin" temporary="true" nameIsGenerated="true">
+      <module name="omuretu.main" />
+      <option name="VM_PARAMETERS" />
+      <option name="PROGRAM_PARAMETERS" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <option name="MAIN_CLASS_NAME" value="chapter5.ParserRunner" />
+      <option name="WORKING_DIRECTORY" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Kotlin.chapter5.ParserRunner" />
         <item itemvalue="Kotlin.chapter3.FileLexerRunnerKt" />
       </list>
     </recent_temporary>
@@ -97,11 +156,16 @@
       <map>
         <entry key="MAIN">
           <value>
-            <State />
+            <State>
+              <option name="COLUMN_ORDER" />
+            </State>
           </value>
         </entry>
       </map>
     </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <option name="LOCAL_CHANGES_DETAILS_PREVIEW_SHOWN" value="true" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/omuretu$chapter3_FileLexerRunnerKt.ic" NAME="chapter3.FileLexerRunnerKt Coverage Results" MODIFIED="1583765969319" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />

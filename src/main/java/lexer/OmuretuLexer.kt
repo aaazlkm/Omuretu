@@ -1,10 +1,10 @@
 package lexer
 
 import exception.ParseException
-import token.IdToken
-import token.NumberToken
-import token.StringToken
-import token.Token
+import lexer.token.IdToken
+import lexer.token.NumberToken
+import lexer.token.StringToken
+import lexer.token.Token
 import java.io.LineNumberReader
 import java.io.Reader
 
@@ -107,7 +107,7 @@ class OmuretuLexer(
                 }
                 position = matcher.end()
             } else {
-                throw ParseException("bad token at line $lineNumber")
+                throw ParseException("bad lexer.token at line $lineNumber")
             }
         }
 

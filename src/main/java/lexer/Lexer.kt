@@ -1,6 +1,6 @@
 package lexer
 
-import token.Token
+import lexer.token.Token
 
 interface Lexer {
     /**

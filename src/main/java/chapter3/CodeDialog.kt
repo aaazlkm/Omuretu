@@ -32,7 +32,7 @@ class CodeDialog : Reader() {
         return size
     }
 
-    protected fun print(s: String) {
+     fun print(s: String) {
         println(s)
     }
 
@@ -40,7 +40,7 @@ class CodeDialog : Reader() {
     override fun close() {
     }
 
-    protected fun showDialog(): String? {
+     fun showDialog(): String? {
         val area = JTextArea(20, 40)
         val pane = JScrollPane(area)
         val result = JOptionPane.showOptionDialog(null, pane, "Input",

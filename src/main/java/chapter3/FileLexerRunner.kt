@@ -1,10 +1,10 @@
 package chapter3
 
 import lexer.OmuretuLexer
-import token.IdToken
-import token.NumberToken
-import token.StringToken
-import token.Token
+import lexer.token.IdToken
+import lexer.token.NumberToken
+import lexer.token.StringToken
+import lexer.token.Token
 import java.io.FileNotFoundException
 
 class FileLexerRunner {
