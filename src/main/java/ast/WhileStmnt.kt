@@ -7,8 +7,17 @@ class WhileStmnt(
         val condition: ASTTree,
         val body: ASTTree
 ) : ASTList(listOf(condition, body)) {
+    companion object Factory: FactoryMethod {
+        const val KEYWORD_WHILE = "while"
+
+        @JvmStatic
+        override fun newInstance(argument: List<ASTTree>): ASTTree? {
+            if (argument.size != 2) return null
+            return WhileStmnt(argument[0], argument[1])
+        }
+    }
 
     override fun toString(): String {
-        return "(while $condition $body)"
+        return "($KEYWORD_WHILE $condition $body)"
     }
 }

@@ -1,6 +1,6 @@
 package chapter3
 
-import lexer.OmuretuLexer
+import OmuretuLexer
 import lexer.token.IdToken
 import lexer.token.NumberToken
 import lexer.token.StringToken

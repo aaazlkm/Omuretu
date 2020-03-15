@@ -5,6 +5,7 @@ import lexer.token.IdToken
 import parser.ASTTreeFactory
 import parser.Parser
 import parser.ast.ASTLeaf
+import parser.ast.ASTList
 import parser.ast.ASTTree
 import java.util.ArrayList
 import java.util.HashMap
@@ -14,20 +15,20 @@ class Expression constructor(
         var parser: Parser,
         var operators: Operators
 ) : Element {
-    class Precedence(val value: Int, val assoc: Assoc) {
-        enum class Assoc { LEFT, RIGHT }
-    }
-
     class Operators : HashMap<String, Precedence>() {
         fun add(name: String, precedence: Int, assoc: Precedence.Assoc) {
             put(name, Precedence(precedence, assoc))
         }
     }
 
+    class Precedence(val value: Int, val assoc: Assoc) {
+        enum class Assoc { LEFT, RIGHT }
+    }
+
     private val factory: ASTTreeFactory = if (clazz == null) {
         ASTTreeFactory.createInstance()
     } else {
-        ASTTreeFactory.createInstance(clazz, List::class.java)
+        ASTTreeFactory.createInstance(clazz, ASTList.argumentType)
     }
 
     override fun parseTokens(lexer: Lexer, results: MutableList<ASTTree>) {
@@ -46,19 +47,19 @@ class Expression constructor(
     }
 
     private fun doShift(lexer: Lexer, left: ASTTree, precedence: Int): ASTTree {
-        val list = ArrayList<ASTTree>()
-        list.add(left)
-        list.add(ASTLeaf(lexer.pickOutNewToken()))
+        val astTrees = ArrayList<ASTTree>()
+        astTrees.add(left)
+        astTrees.add(ASTLeaf(lexer.pickOutNewToken()))
         var right = parser.parseTokens(lexer)
         var nextPrecedence: Precedence
         while (true) {
             nextPrecedence = getNextOperator(lexer) ?: break
-            if (rightIsExpr(precedence, nextPrecedence)) break
+            if (!rightIsExpression(precedence, nextPrecedence)) break
             right = doShift(lexer, right, nextPrecedence.value)
         }
+        astTrees.add(right)
 
-        list.add(right)
-        return factory.make(list)
+        return factory.makeASTTree(astTrees)
     }
 
     private fun getNextOperator(lexer: Lexer): Precedence? {
@@ -70,12 +71,10 @@ class Expression constructor(
         }
     }
 
-    private fun rightIsExpr(precedence: Int, nextPrecedence: Precedence): Boolean {
+    private fun rightIsExpression(precedence: Int, nextPrecedence: Precedence): Boolean {
         return when (nextPrecedence.assoc) {
             Precedence.Assoc.LEFT -> precedence < nextPrecedence.value
             Precedence.Assoc.RIGHT -> precedence <= nextPrecedence.value
         }
     }
-
-
 }

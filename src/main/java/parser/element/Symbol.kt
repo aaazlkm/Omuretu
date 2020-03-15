@@ -15,16 +15,16 @@ import java.util.HashSet
 // check ok
 
 abstract class Symbol constructor(type: Class<out ASTLeaf>?) : Element {
-    val factory: ASTTreeFactory = if (type == null) {
+    private val factory: ASTTreeFactory = if (type == null) {
         ASTTreeFactory.createInstance()
     } else {
-        ASTTreeFactory.createInstance(type, Token::class.java)
+        ASTTreeFactory.createInstance(type, ASTLeaf.argumentType)
     }
 
     override fun parseTokens(lexer: Lexer, results: MutableList<ASTTree>) {
         val token = lexer.pickOutNewToken()
         if (validateToken(token)) {
-            val astLeaf = factory.make(token)
+            val astLeaf = factory.makeASTTree(token)
             results.add(astLeaf)
         } else {
             throw ParseException(token)

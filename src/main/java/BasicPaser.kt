@@ -1,37 +1,48 @@
 import ast.*
 import lexer.Lexer
 import lexer.token.IdToken
-import lexer.token.Token
 import parser.Parser
 import parser.ast.ASTTree
 import parser.element.Expression
 import java.util.HashSet
 
 class BasicParser {
-    internal var reserved = HashSet<String>()
-    internal var operators = Expression.Operators()
-    internal var expr0 = Parser.rule()
-    internal var primary = Parser.rule(PrimaryExpression::class.java)
-            .or(Parser.rule().sep("(").ast(expr0).sep(")"),
+    private var reserved = HashSet<String>()
+    private var operators = Expression.Operators()
+    private var expression0 = Parser.rule()
+    private var primary = Parser.rule(PrimaryExpression::class.java)
+            .or(
+                    Parser.rule().sep("(").ast(expression0).sep(")"),
                     Parser.rule().number(NumberLiteral::class.java),
                     Parser.rule().identifier(reserved, Name::class.java),
-                    Parser.rule().string(StringLiteral::class.java))
-    internal var factor = Parser.rule().or(Parser.rule(NegativeExpression::class.java).sep("-").ast(primary), primary)
-    internal var expr = expr0.expression(factor, operators, BinaryExpression::class.java)
+                    Parser.rule().string(StringLiteral::class.java)
+            )
+    private var factor = Parser.rule()
+            .or(
+                    Parser.rule(NegativeExpression::class.java).sep("-").ast(primary),
+                    primary
+            )
+    private var expression = expression0
+            .expression(factor, operators, BinaryExpression::class.java)
 
-    internal var statement0 = Parser.rule()
-    internal var block = Parser.rule(BlockStmnt::class.java)
-            .sep("{").option(statement0)
+    private var statement0 = Parser.rule()
+    private var block = Parser.rule(BlockStmnt::class.java)
+            .sep(BlockStmnt.BLOCK_START)
+            .option(statement0)
             .repeat(Parser.rule().sep(";", IdToken.EOL).option(statement0))
-            .sep("}")
-    internal var simple = Parser.rule(PrimaryExpression::class.java).ast(expr)
-    internal var statement = statement0.or(
-            Parser.rule(IfStmnt::class.java).sep("if").ast(expr).ast(block).option(Parser.rule().sep("else").ast(block)),
-            Parser.rule(WhileStmnt::class.java).sep("while").ast(expr).ast(block),
-            simple
-    )
-
-    internal var program = Parser.rule().or(statement, Parser.rule(NullStmnt::class.java))
+            .sep(BlockStmnt.BLOCK_END)
+    private var simple = Parser.rule(PrimaryExpression::class.java).ast(expression)
+    private var statement = statement0
+            .or(
+                    Parser.rule(IfStmnt::class.java).sep(IfStmnt.KEYWORD_IF).ast(expression).ast(block).option(Parser.rule().sep(IfStmnt.KEYWORD_ELSE).ast(block)),
+                    Parser.rule(WhileStmnt::class.java).sep(WhileStmnt.KEYWORD_WHILE).ast(expression).ast(block),
+                    simple
+            )
+    private var program = Parser.rule()
+            .or(
+                    statement,
+                    Parser.rule(NullStmnt::class.java)
+            )
             .sep(";", IdToken.EOL)
 
     init {

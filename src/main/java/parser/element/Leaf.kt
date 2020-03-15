@@ -20,7 +20,7 @@ open class Leaf(private vararg val patterns: String) : Element {
         if (patterns.isEmpty()) {
             throw ParseException(token)
         } else {
-            throw ParseException("$patterns expected.", token)
+            throw ParseException("${patterns.contentDeepToString()} expected.", token)
         }
     }
 

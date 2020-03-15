@@ -7,9 +7,6 @@ import parser.ast.ASTTree
 import parser.element.*
 import java.util.HashSet
 
-/**
- * FIXME Builderにする
- */
 class Parser {
     companion object {
         fun rule(clazz: Class<out ASTList>? = null): Parser {
@@ -24,7 +21,7 @@ class Parser {
         this.factory = if (clazz == null) {
             ASTTreeFactory.createInstance()
         } else {
-            ASTTreeFactory.createInstance(clazz, List::class.java)
+            ASTTreeFactory.createInstance(clazz, ASTList.argumentType)
         }
     }
 
@@ -39,7 +36,7 @@ class Parser {
             it.parseTokens(lexer, results)
         }
 
-        return factory.make(results)
+        return factory.makeASTTree(results)
     }
 
     fun judgeNextSuccessOrNot(lexer: Lexer): Boolean {
@@ -51,16 +48,16 @@ class Parser {
     }
 
     fun reset(): Parser {
-        this.elements = mutableListOf()
+        this.elements.clear()
         return this
     }
 
-    fun reset(clazz: Class<out ASTTree>?): Parser {
-        elements = mutableListOf()
+    fun reset(clazz: Class<out ASTList>?): Parser {
+        this.elements.clear()
         this.factory = if (clazz == null) {
             ASTTreeFactory.createInstance()
         } else {
-            ASTTreeFactory.createInstance(clazz)
+            ASTTreeFactory.createInstance(clazz, ASTList.argumentType)
         }
         return this
     }

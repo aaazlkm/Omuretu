@@ -7,4 +7,6 @@ open class Token(
         /** end of file */
         val EOF = Token(-1)
     }
+
+    override fun toString(): String = ""
 }

@@ -5,4 +5,6 @@ class IdToken(lineNumber: Int, val id: String) : Token(lineNumber) {
         /** end of line */
         const val EOL = "\\n"
     }
+
+    override fun toString(): String = id
 }
