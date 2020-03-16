@@ -2,59 +2,95 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="5537ad33-5456-48de-ac9a-dc4c5684a633" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/omuretu/Constants.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/omuretu/ast/BinaryExpression.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/omuretu/ast/BlockStmnt.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/omuretu/ast/NullStmnt.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/omuretu/exception/OmuretuException.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/omuretu/operator/AssignmentOperator.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/omuretu/operator/EqualOperator.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/omuretu/operator/GreaterOperator.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/omuretu/operator/LessOperator.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/omuretu/operator/MinusOperator.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/omuretu/operator/MultiOperator.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/omuretu/operator/PlusOperator.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/omuretu/operator/QuotientOperator.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/omuretu/operator/SurplusOperator.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/omuretu/operator/base/Operator.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/omuretu/operator/base/OperatorDefinition.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/omuretu/parser/basic/BasicEnvironment.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/parser/Environment.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/runner/IntrprinterRunner.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/5.2.1/executionHistory/executionHistory.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.2.1/executionHistory/executionHistory.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/5.2.1/executionHistory/executionHistory.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.2.1/executionHistory/executionHistory.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/5.2.1/fileHashes/fileHashes.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.2.1/fileHashes/fileHashes.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/5.2.1/fileHashes/fileHashes.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.2.1/fileHashes/fileHashes.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/kotlin/main/BasicParser.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/kotlin/main/BasicParser.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/kotlin/main/ast/BinaryExpression.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/kotlin/main/ast/BinaryExpression.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/kotlin/main/ast/BlockStmnt.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/kotlin/main/ast/BlockStmnt.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/kotlin/main/ast/IfStmnt.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/kotlin/main/ast/IfStmnt.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/kotlin/main/ast/Name.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/kotlin/main/ast/Name.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/kotlin/main/ast/NegativeExpression.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/kotlin/main/ast/NegativeExpression.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/kotlin/main/ast/NullStmnt.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/kotlin/main/ast/NullStmnt.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/kotlin/main/ast/NumberLiteral.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/kotlin/main/ast/NumberLiteral.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/kotlin/main/ast/Operation.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/kotlin/main/ast/Operation.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/kotlin/main/ast/PrimaryExpression.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/kotlin/main/ast/PrimaryExpression.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/kotlin/main/ast/StringLiteral.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/kotlin/main/ast/StringLiteral.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/kotlin/main/ast/WhileStmnt.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/kotlin/main/ast/WhileStmnt.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/kotlin/main/chapter3/FileLexerRunner.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/kotlin/main/chapter3/FileLexerRunner.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/kotlin/main/chapter3/FileLexerRunnerKt.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/kotlin/main/chapter3/FileLexerRunnerKt.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/kotlin/main/chapter5/ParserRunner.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/kotlin/main/chapter5/ParserRunner.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/kotlin/main/lexer/token/IdToken.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/kotlin/main/lexer/token/IdToken.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/kotlin/main/lexer/token/NumberToken.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/kotlin/main/lexer/token/NumberToken.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/kotlin/main/lexer/token/StringToken.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/kotlin/main/lexer/token/StringToken.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/kotlin/main/lexer/token/Token.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/kotlin/main/lexer/token/Token.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/kotlin/main/BasicParser.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/kotlin/main/META-INF/omuretu.kotlin_module" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/kotlin/main/META-INF/omuretu.kotlin_module" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/kotlin/main/OmuretuLexer$Companion.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/kotlin/main/OmuretuLexer.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/kotlin/main/ast/BinaryExpression$Factory.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/kotlin/main/ast/BinaryExpression.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/kotlin/main/ast/BlockStmnt$Companion.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/kotlin/main/ast/BlockStmnt.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/kotlin/main/ast/IfStmnt$Factory.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/kotlin/main/ast/IfStmnt.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/kotlin/main/ast/Name$Factory.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/kotlin/main/ast/Name.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/kotlin/main/ast/NegativeExpression$Factory.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/kotlin/main/ast/NegativeExpression.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/kotlin/main/ast/NullStmnt.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/kotlin/main/ast/NumberLiteral$Factory.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/kotlin/main/ast/NumberLiteral.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/kotlin/main/ast/Operation$Factory.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/kotlin/main/ast/Operation.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/kotlin/main/ast/PrimaryExpression$Factory.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/kotlin/main/ast/PrimaryExpression.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/kotlin/main/ast/StringLiteral$Factory.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/kotlin/main/ast/StringLiteral.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/kotlin/main/ast/WhileStmnt$Factory.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/kotlin/main/ast/WhileStmnt.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/kotlin/main/chapter3/CodeDialog$Companion.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/kotlin/main/chapter3/CodeDialog.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/kotlin/main/chapter3/FileLexerRunner.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/kotlin/main/chapter3/FileLexerRunnerKt.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/kotlin/main/chapter5/ParserRunner.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/kotlin/main/exception/ParseException$Companion.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/kotlin/main/exception/ParseException.class" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/build/classes/kotlin/main/parser/ASTTreeFactory$Companion$createInstance$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/kotlin/main/parser/ASTTreeFactory$Companion$createInstance$1.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build/classes/kotlin/main/parser/ASTTreeFactory$Companion$createInstance$2.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/kotlin/main/parser/ASTTreeFactory$Companion$createInstance$2.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/kotlin/main/parser/ASTTreeFactory$Companion$createInstance$3.class" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/build/classes/kotlin/main/parser/ASTTreeFactory$Companion.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/kotlin/main/parser/ASTTreeFactory$Companion.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/kotlin/main/parser/ASTTreeFactory$FactoryMethod$Companion.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/kotlin/main/parser/ASTTreeFactory$FactoryMethod.class" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/build/classes/kotlin/main/parser/ASTTreeFactory.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/kotlin/main/parser/ASTTreeFactory.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build/classes/kotlin/main/parser/Parser.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/kotlin/main/parser/Parser.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/kotlin/main/parser/ast/ASTLeaf$Factory.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/kotlin/main/parser/ast/ASTLeaf$Factory.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build/classes/kotlin/main/parser/ast/ASTLeaf.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/kotlin/main/parser/ast/ASTLeaf.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/kotlin/main/parser/ast/ASTList$Factory.class" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/build/classes/kotlin/main/parser/ast/ASTList.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/kotlin/main/parser/ast/ASTList.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build/classes/kotlin/main/parser/ast/ASTTree.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/kotlin/main/parser/ast/ASTTree.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/kotlin/main/parser/ast/AstListWithChildren.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/kotlin/main/parser/element/Expression$Operators.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/kotlin/main/parser/element/Expression$Operators.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/kotlin/main/parser/element/Expression$Precedence$Assoc.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/kotlin/main/parser/element/Expression$Precedence$Assoc.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/kotlin/main/parser/element/Expression$Precedence.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/kotlin/main/parser/element/Expression$Precedence.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build/classes/kotlin/main/parser/element/Expression.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/kotlin/main/parser/element/Expression.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build/classes/kotlin/main/parser/element/Leaf.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/kotlin/main/parser/element/Leaf.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/kotlin/main/parser/element/OrTree.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/kotlin/main/parser/element/OrTree.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build/classes/kotlin/main/parser/element/Symbol.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/kotlin/main/parser/element/Symbol.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build/kotlin/compileKotlin/build-history.bin" beforeDir="false" afterPath="$PROJECT_DIR$/build/kotlin/compileKotlin/build-history.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build/kotlin/compileKotlin/caches-jvm/inputs/source-to-output.tab" beforeDir="false" afterPath="$PROJECT_DIR$/build/kotlin/compileKotlin/caches-jvm/inputs/source-to-output.tab" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build/kotlin/compileKotlin/caches-jvm/inputs/source-to-output.tab.keystream" beforeDir="false" afterPath="$PROJECT_DIR$/build/kotlin/compileKotlin/caches-jvm/inputs/source-to-output.tab.keystream" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build/kotlin/compileKotlin/caches-jvm/inputs/source-to-output.tab.keystream.len" beforeDir="false" afterPath="$PROJECT_DIR$/build/kotlin/compileKotlin/caches-jvm/inputs/source-to-output.tab.keystream.len" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build/kotlin/compileKotlin/caches-jvm/inputs/source-to-output.tab.len" beforeDir="false" afterPath="$PROJECT_DIR$/build/kotlin/compileKotlin/caches-jvm/inputs/source-to-output.tab.len" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/kotlin/compileKotlin/caches-jvm/inputs/source-to-output.tab.values" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/build/kotlin/compileKotlin/caches-jvm/inputs/source-to-output.tab.values.at" beforeDir="false" afterPath="$PROJECT_DIR$/build/kotlin/compileKotlin/caches-jvm/inputs/source-to-output.tab.values.at" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/kotlin/compileKotlin/caches-jvm/inputs/source-to-output.tab.values.s" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/build/kotlin/compileKotlin/caches-jvm/inputs/source-to-output.tab_i" beforeDir="false" afterPath="$PROJECT_DIR$/build/kotlin/compileKotlin/caches-jvm/inputs/source-to-output.tab_i" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build/kotlin/compileKotlin/caches-jvm/jvm/kotlin/class-fq-name-to-source.tab" beforeDir="false" afterPath="$PROJECT_DIR$/build/kotlin/compileKotlin/caches-jvm/jvm/kotlin/class-fq-name-to-source.tab" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build/kotlin/compileKotlin/caches-jvm/jvm/kotlin/class-fq-name-to-source.tab.keystream" beforeDir="false" afterPath="$PROJECT_DIR$/build/kotlin/compileKotlin/caches-jvm/jvm/kotlin/class-fq-name-to-source.tab.keystream" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build/kotlin/compileKotlin/caches-jvm/jvm/kotlin/class-fq-name-to-source.tab.keystream.len" beforeDir="false" afterPath="$PROJECT_DIR$/build/kotlin/compileKotlin/caches-jvm/jvm/kotlin/class-fq-name-to-source.tab.keystream.len" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/kotlin/compileKotlin/caches-jvm/jvm/kotlin/class-fq-name-to-source.tab.len" beforeDir="false" afterPath="$PROJECT_DIR$/build/kotlin/compileKotlin/caches-jvm/jvm/kotlin/class-fq-name-to-source.tab.len" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/kotlin/compileKotlin/caches-jvm/jvm/kotlin/class-fq-name-to-source.tab.values" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/build/kotlin/compileKotlin/caches-jvm/jvm/kotlin/class-fq-name-to-source.tab.values.at" beforeDir="false" afterPath="$PROJECT_DIR$/build/kotlin/compileKotlin/caches-jvm/jvm/kotlin/class-fq-name-to-source.tab.values.at" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/kotlin/compileKotlin/caches-jvm/jvm/kotlin/class-fq-name-to-source.tab.values.s" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/build/kotlin/compileKotlin/caches-jvm/jvm/kotlin/class-fq-name-to-source.tab_i" beforeDir="false" afterPath="$PROJECT_DIR$/build/kotlin/compileKotlin/caches-jvm/jvm/kotlin/class-fq-name-to-source.tab_i" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build/kotlin/compileKotlin/caches-jvm/jvm/kotlin/constants.tab" beforeDir="false" afterPath="$PROJECT_DIR$/build/kotlin/compileKotlin/caches-jvm/jvm/kotlin/constants.tab" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build/kotlin/compileKotlin/caches-jvm/jvm/kotlin/constants.tab.keystream" beforeDir="false" afterPath="$PROJECT_DIR$/build/kotlin/compileKotlin/caches-jvm/jvm/kotlin/constants.tab.keystream" afterDir="false" />
@@ -66,17 +102,23 @@
       <change beforePath="$PROJECT_DIR$/build/kotlin/compileKotlin/caches-jvm/jvm/kotlin/internal-name-to-source.tab.keystream" beforeDir="false" afterPath="$PROJECT_DIR$/build/kotlin/compileKotlin/caches-jvm/jvm/kotlin/internal-name-to-source.tab.keystream" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build/kotlin/compileKotlin/caches-jvm/jvm/kotlin/internal-name-to-source.tab.keystream.len" beforeDir="false" afterPath="$PROJECT_DIR$/build/kotlin/compileKotlin/caches-jvm/jvm/kotlin/internal-name-to-source.tab.keystream.len" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build/kotlin/compileKotlin/caches-jvm/jvm/kotlin/internal-name-to-source.tab.len" beforeDir="false" afterPath="$PROJECT_DIR$/build/kotlin/compileKotlin/caches-jvm/jvm/kotlin/internal-name-to-source.tab.len" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/kotlin/compileKotlin/caches-jvm/jvm/kotlin/internal-name-to-source.tab.values" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/build/kotlin/compileKotlin/caches-jvm/jvm/kotlin/internal-name-to-source.tab.values.at" beforeDir="false" afterPath="$PROJECT_DIR$/build/kotlin/compileKotlin/caches-jvm/jvm/kotlin/internal-name-to-source.tab.values.at" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/kotlin/compileKotlin/caches-jvm/jvm/kotlin/internal-name-to-source.tab.values.s" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/build/kotlin/compileKotlin/caches-jvm/jvm/kotlin/internal-name-to-source.tab_i" beforeDir="false" afterPath="$PROJECT_DIR$/build/kotlin/compileKotlin/caches-jvm/jvm/kotlin/internal-name-to-source.tab_i" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build/kotlin/compileKotlin/caches-jvm/jvm/kotlin/package-parts.tab" beforeDir="false" afterPath="$PROJECT_DIR$/build/kotlin/compileKotlin/caches-jvm/jvm/kotlin/package-parts.tab" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/kotlin/compileKotlin/caches-jvm/jvm/kotlin/package-parts.tab.keystream" beforeDir="false" afterPath="$PROJECT_DIR$/build/kotlin/compileKotlin/caches-jvm/jvm/kotlin/package-parts.tab.keystream" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/kotlin/compileKotlin/caches-jvm/jvm/kotlin/package-parts.tab.keystream.len" beforeDir="false" afterPath="$PROJECT_DIR$/build/kotlin/compileKotlin/caches-jvm/jvm/kotlin/package-parts.tab.keystream.len" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/kotlin/compileKotlin/caches-jvm/jvm/kotlin/package-parts.tab.len" beforeDir="false" afterPath="$PROJECT_DIR$/build/kotlin/compileKotlin/caches-jvm/jvm/kotlin/package-parts.tab.len" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build/kotlin/compileKotlin/caches-jvm/jvm/kotlin/package-parts.tab.values.at" beforeDir="false" afterPath="$PROJECT_DIR$/build/kotlin/compileKotlin/caches-jvm/jvm/kotlin/package-parts.tab.values.at" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/kotlin/compileKotlin/caches-jvm/jvm/kotlin/package-parts.tab_i" beforeDir="false" afterPath="$PROJECT_DIR$/build/kotlin/compileKotlin/caches-jvm/jvm/kotlin/package-parts.tab_i" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build/kotlin/compileKotlin/caches-jvm/jvm/kotlin/proto.tab" beforeDir="false" afterPath="$PROJECT_DIR$/build/kotlin/compileKotlin/caches-jvm/jvm/kotlin/proto.tab" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build/kotlin/compileKotlin/caches-jvm/jvm/kotlin/proto.tab.keystream" beforeDir="false" afterPath="$PROJECT_DIR$/build/kotlin/compileKotlin/caches-jvm/jvm/kotlin/proto.tab.keystream" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build/kotlin/compileKotlin/caches-jvm/jvm/kotlin/proto.tab.keystream.len" beforeDir="false" afterPath="$PROJECT_DIR$/build/kotlin/compileKotlin/caches-jvm/jvm/kotlin/proto.tab.keystream.len" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build/kotlin/compileKotlin/caches-jvm/jvm/kotlin/proto.tab.len" beforeDir="false" afterPath="$PROJECT_DIR$/build/kotlin/compileKotlin/caches-jvm/jvm/kotlin/proto.tab.len" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/kotlin/compileKotlin/caches-jvm/jvm/kotlin/proto.tab.values" beforeDir="false" afterPath="$PROJECT_DIR$/build/kotlin/compileKotlin/caches-jvm/jvm/kotlin/proto.tab.values" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/kotlin/compileKotlin/caches-jvm/jvm/kotlin/proto.tab.values" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/build/kotlin/compileKotlin/caches-jvm/jvm/kotlin/proto.tab.values.at" beforeDir="false" afterPath="$PROJECT_DIR$/build/kotlin/compileKotlin/caches-jvm/jvm/kotlin/proto.tab.values.at" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/kotlin/compileKotlin/caches-jvm/jvm/kotlin/proto.tab.values.s" beforeDir="false" afterPath="$PROJECT_DIR$/build/kotlin/compileKotlin/caches-jvm/jvm/kotlin/proto.tab.values.s" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/kotlin/compileKotlin/caches-jvm/jvm/kotlin/proto.tab.values.s" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/build/kotlin/compileKotlin/caches-jvm/jvm/kotlin/proto.tab_i" beforeDir="false" afterPath="$PROJECT_DIR$/build/kotlin/compileKotlin/caches-jvm/jvm/kotlin/proto.tab_i" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build/kotlin/compileKotlin/caches-jvm/jvm/kotlin/source-to-classes.tab" beforeDir="false" afterPath="$PROJECT_DIR$/build/kotlin/compileKotlin/caches-jvm/jvm/kotlin/source-to-classes.tab" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build/kotlin/compileKotlin/caches-jvm/jvm/kotlin/source-to-classes.tab.keystream" beforeDir="false" afterPath="$PROJECT_DIR$/build/kotlin/compileKotlin/caches-jvm/jvm/kotlin/source-to-classes.tab.keystream" afterDir="false" />
@@ -113,37 +155,34 @@
       <change beforePath="$PROJECT_DIR$/build/kotlin/compileKotlin/caches-jvm/lookups/lookups.tab.keystream" beforeDir="false" afterPath="$PROJECT_DIR$/build/kotlin/compileKotlin/caches-jvm/lookups/lookups.tab.keystream" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build/kotlin/compileKotlin/caches-jvm/lookups/lookups.tab.keystream.len" beforeDir="false" afterPath="$PROJECT_DIR$/build/kotlin/compileKotlin/caches-jvm/lookups/lookups.tab.keystream.len" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build/kotlin/compileKotlin/caches-jvm/lookups/lookups.tab.len" beforeDir="false" afterPath="$PROJECT_DIR$/build/kotlin/compileKotlin/caches-jvm/lookups/lookups.tab.len" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/kotlin/compileKotlin/caches-jvm/lookups/lookups.tab.values" beforeDir="false" afterPath="$PROJECT_DIR$/build/kotlin/compileKotlin/caches-jvm/lookups/lookups.tab.values" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/kotlin/compileKotlin/caches-jvm/lookups/lookups.tab.values" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/build/kotlin/compileKotlin/caches-jvm/lookups/lookups.tab.values.at" beforeDir="false" afterPath="$PROJECT_DIR$/build/kotlin/compileKotlin/caches-jvm/lookups/lookups.tab.values.at" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/kotlin/compileKotlin/caches-jvm/lookups/lookups.tab.values.s" beforeDir="false" afterPath="$PROJECT_DIR$/build/kotlin/compileKotlin/caches-jvm/lookups/lookups.tab.values.s" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/kotlin/compileKotlin/caches-jvm/lookups/lookups.tab.values.s" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/build/kotlin/compileKotlin/caches-jvm/lookups/lookups.tab_i" beforeDir="false" afterPath="$PROJECT_DIR$/build/kotlin/compileKotlin/caches-jvm/lookups/lookups.tab_i" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build/kotlin/compileKotlin/last-build.bin" beforeDir="false" afterPath="$PROJECT_DIR$/build/kotlin/compileKotlin/last-build.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/BasicPaser.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/BasicPaser.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ast/BinaryExpression.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ast/BinaryExpression.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ast/BlockStmnt.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ast/BlockStmnt.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ast/IfStmnt.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ast/IfStmnt.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ast/Name.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ast/Name.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ast/NegativeExpression.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ast/NegativeExpression.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ast/NullStmnt.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ast/NullStmnt.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ast/NumberLiteral.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ast/NumberLiteral.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ast/Operation.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ast/Operation.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ast/PrimaryExpression.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ast/PrimaryExpression.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ast/StringLiteral.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ast/StringLiteral.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ast/WhileStmnt.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ast/WhileStmnt.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/chapter3/FileLexerRunner.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/chapter3/FileLexerRunner.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/chapter5/PaserRunner.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/chapter5/PaserRunner.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/lexer/OmuretuLexer.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/OmuretuLexer.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/lexer/token/IdToken.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/lexer/token/IdToken.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/lexer/token/NumberToken.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/lexer/token/NumberToken.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/lexer/token/StringToken.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/lexer/token/StringToken.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/lexer/token/Token.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/lexer/token/Token.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/BasicPaser.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/omuretu/parser/basic/BasicParser.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/OmuretuLexer.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/omuretu/OmuretuLexer.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ast/BinaryExpression.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ast/BlockStmnt.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ast/IfStmnt.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/omuretu/ast/IfStmnt.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ast/Name.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/omuretu/ast/Name.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ast/NegativeExpression.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/omuretu/ast/NegativeExpression.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ast/NullStmnt.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ast/NumberLiteral.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/omuretu/ast/NumberLiteral.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ast/Operation.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ast/PrimaryExpression.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/omuretu/ast/PrimaryExpression.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ast/StringLiteral.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/omuretu/ast/StringLiteral.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ast/WhileStmnt.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/omuretu/ast/WhileStmnt.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/chapter3/CodeDialog.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/runner/CodeDialog.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/chapter3/FileLexerRunner.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/runner/FileLexerRunner.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/chapter5/PaserRunner.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/runner/PaserRunner.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/exception/ParseException.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/parser/exception/ParseException.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/parser/ASTTreeFactory.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/parser/ASTTreeFactory.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/parser/Parser.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/parser/Parser.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/parser/ast/ASTLeaf.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/parser/ast/ASTLeaf.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/parser/ast/ASTList.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/parser/ast/ASTList.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/parser/ast/ASTTree.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/parser/ast/ASTTree.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/parser/element/Expression.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/parser/element/Expression.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/parser/element/Leaf.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/parser/element/Leaf.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/parser/element/OrTree.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/parser/element/OrTree.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/parser/element/Symbol.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/parser/element/Symbol.kt" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -164,8 +203,10 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="Kotlin Interface" />
-        <option value="Kotlin Class" />
+        <option value="package-info" />
+        <option value="Kotlin Object" />
         <option value="Kotlin File" />
+        <option value="Kotlin Class" />
       </list>
     </option>
   </component>
@@ -185,15 +226,19 @@
   </component>
   <component name="RecentsManager">
     <key name="MoveKotlinTopLevelDeclarationsDialog.RECENTS_KEY">
-      <recent name="" />
-      <recent name="ast" />
-      <recent name="chapter3" />
-      <recent name="token" />
+      <recent name="omuretu.exception" />
+      <recent name="runner" />
+      <recent name="omuretu" />
+      <recent name="omuretu.parser.basic" />
+      <recent name="parser.ast" />
     </key>
     <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
       <recent name="" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/main/java/omuretu/operator/base" />
+      <recent name="$PROJECT_DIR$/src/main/java/runner" />
+      <recent name="$PROJECT_DIR$/src/main/java/omuretu" />
       <recent name="$PROJECT_DIR$/src/main/java/lexer" />
     </key>
   </component>
@@ -209,20 +254,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Kotlin.chapter5.ParserRunner">
-    <configuration name="chapter3.FileLexerRunnerKt" type="JetRunConfigurationType" factoryName="Kotlin" temporary="true" nameIsGenerated="true">
-      <module name="omuretu.main" />
-      <option name="VM_PARAMETERS" />
-      <option name="PROGRAM_PARAMETERS" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" />
-      <option name="PASS_PARENT_ENVS" value="true" />
-      <option name="MAIN_CLASS_NAME" value="chapter3.FileLexerRunnerKt" />
-      <option name="WORKING_DIRECTORY" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
+  <component name="RunManager" selected="Kotlin.runner.IntrprinterRunnerKt">
     <configuration name="chapter5.ParserRunner" type="JetRunConfigurationType" factoryName="Kotlin" temporary="true" nameIsGenerated="true">
       <module name="omuretu.main" />
       <option name="VM_PARAMETERS" />
@@ -236,10 +268,37 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="runner.FileLexerRunnerKt" type="JetRunConfigurationType" factoryName="Kotlin" temporary="true" nameIsGenerated="true">
+      <module name="omuretu.main" />
+      <option name="VM_PARAMETERS" />
+      <option name="PROGRAM_PARAMETERS" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <option name="MAIN_CLASS_NAME" value="runner.FileLexerRunnerKt" />
+      <option name="WORKING_DIRECTORY" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="runner.IntrprinterRunnerKt" type="JetRunConfigurationType" factoryName="Kotlin" temporary="true" nameIsGenerated="true">
+      <module name="omuretu.main" />
+      <option name="VM_PARAMETERS" />
+      <option name="PROGRAM_PARAMETERS" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <option name="MAIN_CLASS_NAME" value="runner.IntrprinterRunnerKt" />
+      <option name="WORKING_DIRECTORY" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Kotlin.runner.IntrprinterRunnerKt" />
         <item itemvalue="Kotlin.chapter5.ParserRunner" />
-        <item itemvalue="Kotlin.chapter3.FileLexerRunnerKt" />
+        <item itemvalue="Kotlin.runner.FileLexerRunnerKt" />
       </list>
     </recent_temporary>
   </component>
@@ -276,9 +335,29 @@
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="kotlin-line">
-          <url>file://$PROJECT_DIR$/src/main/java/chapter5/PaserRunner.kt</url>
+          <url>file://$PROJECT_DIR$/src/main/java/runner/PaserRunner.kt</url>
           <line>16</line>
           <option name="timeStamp" value="41" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="kotlin-line">
+          <url>file://$PROJECT_DIR$/src/main/java/omuretu/ast/WhileStmnt.kt</url>
+          <line>26</line>
+          <option name="timeStamp" value="51" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="kotlin-line">
+          <url>file://$PROJECT_DIR$/src/main/java/omuretu/operator/AssignmentOperator.kt</url>
+          <line>7</line>
+          <option name="timeStamp" value="52" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="kotlin-line">
+          <url>file://$PROJECT_DIR$/src/main/java/omuretu/ast/BinaryExpression.kt</url>
+          <line>33</line>
+          <option name="timeStamp" value="54" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="kotlin-line">
+          <url>file://$PROJECT_DIR$/src/main/java/omuretu/ast/BlockStmnt.kt</url>
+          <line>16</line>
+          <option name="timeStamp" value="55" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

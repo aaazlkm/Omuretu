@@ -1,7 +1,7 @@
 package parser.ast
 
 import lexer.token.Token
-import parser.ASTTreeFactory
+import parser.Environment
 
 open class ASTLeaf(open val token: Token) : ASTTree {
     interface FactoryMethod {
@@ -15,6 +15,10 @@ open class ASTLeaf(open val token: Token) : ASTTree {
         override fun newInstance(argument: Token): ASTTree? {
             return ASTLeaf(argument)
         }
+    }
+
+    override fun evaluate(environment: Environment): Any {
+        TODO("not implemented")
     }
 
     override fun toString(): String = token.toString()

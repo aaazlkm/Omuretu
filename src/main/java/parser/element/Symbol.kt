@@ -1,6 +1,6 @@
 package parser.element
 
-import exception.ParseException
+import parser.exception.ParseException
 import lexer.Lexer
 import lexer.token.IdToken
 import lexer.token.NumberToken

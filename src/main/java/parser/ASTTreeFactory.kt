@@ -1,6 +1,6 @@
 package parser
 
-import exception.ParseException
+import parser.exception.ParseException
 import lexer.token.Token
 import parser.ast.*
 
@@ -38,12 +38,12 @@ interface ASTTreeFactory {
         fun createInstance(clazz: Class<out ASTTree>, argumentTypes: Class<*>): ASTTreeFactory {
             val method = clazz.getMethod(FACTORY_METHOD_NAME, argumentTypes)
             return object : ASTTreeFactory {
-                override fun makeASTTree(constructorArguments: Any): ASTTree {
-                    return method.invoke(null, constructorArguments) as? ASTTree ?: throw ParseException("")
+                override fun makeASTTree(arguments: Any): ASTTree {
+                    return method.invoke(null, arguments) as? ASTTree ?: throw ParseException("")
                 }
             }
         }
     }
 
-    fun makeASTTree(constructorArguments: Any): ASTTree
+    fun makeASTTree(arguments: Any): ASTTree
 }

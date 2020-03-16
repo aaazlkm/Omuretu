@@ -1,6 +1,10 @@
 package parser.ast
 
+import parser.Environment
+
 interface ASTTree {
+    fun evaluate(environment: Environment): Any
+
     /**
      * デバック用
      *
@@ -8,4 +12,3 @@ interface ASTTree {
      */
     override fun toString(): String
 }
-

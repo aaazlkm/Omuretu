@@ -1,6 +1,6 @@
 package parser.ast
 
-import parser.ASTTreeFactory
+import parser.Environment
 
 open class ASTList(val children: List<ASTTree>) : ASTTree {
     interface FactoryMethod {
@@ -18,6 +18,10 @@ open class ASTList(val children: List<ASTTree>) : ASTTree {
 
     val numberOfChildren: Int
         get() = children.size
+
+    override fun evaluate(environment: Environment): Any {
+        TODO("not implemented")
+    }
 
     override fun toString(): String {
         val builder = StringBuilder()
