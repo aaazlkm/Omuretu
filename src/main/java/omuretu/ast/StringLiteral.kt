@@ -3,7 +3,7 @@ package omuretu.ast
 import parser.ast.ASTLeaf
 import lexer.token.StringToken
 import lexer.token.Token
-import parser.Environment
+import omuretu.Environment
 import parser.ast.ASTTree
 
 class StringLiteral(

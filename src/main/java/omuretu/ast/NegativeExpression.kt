@@ -1,7 +1,7 @@
 package omuretu.ast
 
 import omuretu.exception.OmuretuException
-import parser.Environment
+import omuretu.Environment
 import parser.ast.ASTList
 import parser.ast.ASTTree
 

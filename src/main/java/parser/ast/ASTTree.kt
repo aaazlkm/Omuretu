@@ -1,6 +1,6 @@
 package parser.ast
 
-import parser.Environment
+import omuretu.Environment
 
 interface ASTTree {
     fun evaluate(environment: Environment): Any

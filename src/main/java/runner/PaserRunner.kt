@@ -1,7 +1,7 @@
 package runner
 
 import omuretu.OmuretuLexer
-import omuretu.parser.basic.BasicParser
+import omuretu.parser.BasicParser
 import lexer.token.Token
 import parser.ast.ASTList
 

@@ -1,6 +1,6 @@
 package parser.ast
 
-import parser.Environment
+import omuretu.Environment
 
 open class ASTList(val children: List<ASTTree>) : ASTTree {
     interface FactoryMethod {

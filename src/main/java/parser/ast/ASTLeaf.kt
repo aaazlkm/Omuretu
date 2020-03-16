@@ -1,7 +1,7 @@
 package parser.ast
 
 import lexer.token.Token
-import parser.Environment
+import omuretu.Environment
 
 open class ASTLeaf(open val token: Token) : ASTTree {
     interface FactoryMethod {

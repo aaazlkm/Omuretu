@@ -1,16 +1,16 @@
 package runner
 
 import omuretu.Environment
-import omuretu.parser.BasicParser
+import omuretu.NestedEnvironment
 import omuretu.OmuretuLexer
+import omuretu.parser.ClosureParser
 import lexer.token.Token
-import omuretu.BasicEnvironment
 
 fun main(args: Array<String>) {
-    run(BasicParser(), BasicEnvironment())
+    run(ClosureParser(), NestedEnvironment())
 }
 
-fun run(bp: BasicParser, env: Environment) {
+fun run(bp: ClosureParser, env: Environment) {
     val lexer = OmuretuLexer(CodeDialog())
     while (lexer.readTokenAt(0) !== Token.EOF) {
         val astTree = bp.parse(lexer)
@@ -18,3 +18,8 @@ fun run(bp: BasicParser, env: Environment) {
         println("=> $result")
     }
 }
+
+/**
+inc = closure (x) { x + 1 }
+inc(3)
+ */

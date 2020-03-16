@@ -47,30 +47,17 @@ class Parser {
         }
     }
 
-    fun reset(): Parser {
+    fun resetElements(): Parser {
         this.elements.clear()
         return this
     }
 
-    fun reset(clazz: Class<out ASTList>?): Parser {
+    fun resetElementsAndFactory(clazz: Class<out ASTList>?): Parser {
         this.elements.clear()
         this.factory = if (clazz == null) {
             ASTTreeFactory.createInstance()
         } else {
             ASTTreeFactory.createInstance(clazz, ASTList.argumentType)
-        }
-        return this
-    }
-
-    fun insertChoice(parser: Parser): Parser {
-        val element = elements.firstOrNull()
-        if (element is OrTree) {
-            element.insert(parser)
-        } else {
-            val otherwise = Parser(this).apply {
-                reset(null)
-            }
-            elements.add(OrTree(parser, otherwise))
         }
         return this
     }
@@ -81,7 +68,7 @@ class Parser {
      * @param clazz
      * @return
      */
-    fun number(clazz: Class<out ASTLeaf>? = null): Parser {
+    fun number(clazz: Class<out ASTLeaf>): Parser {
         elements.add(NumberSymbol(clazz))
         return this
     }
@@ -154,20 +141,22 @@ class Parser {
     }
 
     /**
-     * TODO
+     * pat1 | pat2
+     * 部分木が作成されるので省略されたかわかる
      *
      * @param parser
      * @return
      */
     fun maybe(parser: Parser): Parser {
         val p2 = Parser(parser)
-        p2.reset()
+        p2.resetElements()
         elements.add(OrTree(parser, p2))
         return this
     }
 
     /**
-     * TODO
+     * pat1 | pat2
+     * 部分木が作成されないので省略されたかわからない
      *
      * @param parser
      * @return

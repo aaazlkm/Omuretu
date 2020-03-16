@@ -1,16 +1,18 @@
 package runner
 
 import omuretu.Environment
-import omuretu.parser.BasicParser
+import omuretu.NestedEnvironment
 import omuretu.OmuretuLexer
+import omuretu.parser.FuncParser
 import lexer.token.Token
-import omuretu.BasicEnvironment
+
+
 
 fun main(args: Array<String>) {
-    run(BasicParser(), BasicEnvironment())
+    run(FuncParser(), NestedEnvironment())
 }
 
-fun run(bp: BasicParser, env: Environment) {
+fun run(bp: FuncParser, env: Environment) {
     val lexer = OmuretuLexer(CodeDialog())
     while (lexer.readTokenAt(0) !== Token.EOF) {
         val astTree = bp.parse(lexer)
@@ -18,3 +20,15 @@ fun run(bp: BasicParser, env: Environment) {
         println("=> $result")
     }
 }
+
+/**
+def fib (n) {
+if n < 2 {
+n
+} else {
+fib(n - 1) + fib(n - 2)
+}
+}
+
+fib(10)
+ */

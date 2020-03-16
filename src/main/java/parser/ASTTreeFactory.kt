@@ -39,7 +39,7 @@ interface ASTTreeFactory {
             val method = clazz.getMethod(FACTORY_METHOD_NAME, argumentTypes)
             return object : ASTTreeFactory {
                 override fun makeASTTree(arguments: Any): ASTTree {
-                    return method.invoke(null, arguments) as? ASTTree ?: throw ParseException("")
+                    return method.invoke(null, arguments) as? ASTTree ?: throw ParseException("class $clazz")
                 }
             }
         }
