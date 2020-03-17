@@ -22,7 +22,7 @@ class ClosureStmnt(
     }
 
     override fun evaluate(environment: Environment): Any {
-        return Function(parameters, blockStmnt, environment)
+        return Function.OmuretuFunction(parameters, blockStmnt, environment)
     }
 
     override fun toString(): String {

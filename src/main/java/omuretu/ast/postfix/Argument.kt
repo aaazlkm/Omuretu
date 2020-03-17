@@ -3,7 +3,8 @@ package omuretu.ast.postfix
 import omuretu.Environment
 import omuretu.NestedEnvironment
 import omuretu.exception.OmuretuException
-import omuretu.model.Function
+import omuretu.model.Function.OmuretuFunction
+import omuretu.model.Function.NativeFunction
 import parser.ast.ASTTree
 
 class Argument(
@@ -31,7 +32,20 @@ class Argument(
      * @return
      */
     override fun evaluate(environment: Environment, value: Any): Any {
-        val function = value as? Function ?: throw OmuretuException("bad function", this)
+        return when (value) {
+            is OmuretuFunction -> {
+                evaluateWhenOmuretuFunction(value, environment)
+            }
+            is NativeFunction -> {
+                evaluateWhenNativeFunction(value, environment)
+            }
+            else -> {
+                throw OmuretuException("bad function type", this)
+            }
+        }
+    }
+
+    private fun evaluateWhenOmuretuFunction(function: OmuretuFunction, environment: Environment): Any {
         if (astTrees.size != function.parameters.parameterNames.size) throw OmuretuException("bad number odf argument", this)
         val nestedEnvironment = NestedEnvironment(function.environment as? NestedEnvironment)
         // パラメータの値をenvironmentに追加
@@ -40,4 +54,14 @@ class Argument(
         }
         return function.blockStmnt.evaluate(nestedEnvironment)
     }
-}
+
+    private fun evaluateWhenNativeFunction(function: NativeFunction, environment: Environment): Any {
+        if (astTrees.size != function.numberOfParameter) throw OmuretuException("bad number odf argument", this)
+        val parameters = astTrees.map { it.evaluate(environment) }.toTypedArray()
+        return try {
+            function.method.invoke(null, *parameters)
+        } catch (exception: Exception) {
+            throw OmuretuException("bad native function call: ${function.name}")
+        }
+    }
+ }

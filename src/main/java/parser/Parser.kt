@@ -48,7 +48,7 @@ class Parser {
     }
 
     fun resetElements(): Parser {
-        this.elements.clear()
+        this.elements = mutableListOf()
         return this
     }
 
@@ -141,21 +141,20 @@ class Parser {
     }
 
     /**
-     * pat1 | pat2
+     * [pat]
      * 部分木が作成されるので省略されたかわかる
      *
      * @param parser
      * @return
      */
     fun maybe(parser: Parser): Parser {
-        val p2 = Parser(parser)
-        p2.resetElements()
-        elements.add(OrTree(parser, p2))
+        val parser2 = Parser(parser).resetElements()
+        elements.add(OrTree(parser, parser2))
         return this
     }
 
     /**
-     * pat1 | pat2
+     * [pat]
      * 部分木が作成されないので省略されたかわからない
      *
      * @param parser

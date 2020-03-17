@@ -6,6 +6,8 @@ class MinusOperator : RValueOperator {
     override fun calculate(left: Any, right: Any): Any? {
         return if (left is Int && right is Int) {
             left - right
+        } else if (left is Long && right is Long) {
+            left - right
         } else {
             null
         }

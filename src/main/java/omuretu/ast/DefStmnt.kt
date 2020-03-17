@@ -1,9 +1,9 @@
 package omuretu.ast
 
 import omuretu.Environment
+import omuretu.model.Function
 import parser.ast.ASTList
 import parser.ast.ASTTree
-import omuretu.model.Function
 
 class DefStmnt(
         val nameLiteral: NameLiteral,
@@ -24,7 +24,7 @@ class DefStmnt(
     }
 
     override fun evaluate(environment: Environment): Any {
-        environment.put(nameLiteral.token.id, Function(parameters, blockStmnt, environment))
+        environment.put(nameLiteral.token.id, Function.OmuretuFunction(parameters, blockStmnt, environment))
         return nameLiteral.token.id
     }
 

@@ -2,10 +2,7 @@ package omuretu.ast
 
 import omuretu.Environment
 import omuretu.OMURETU_DEFAULT_RETURN_VALUE
-import omuretu.ast.postfix.Argument
 import omuretu.ast.postfix.Postfix
-import omuretu.exception.OmuretuException
-import omuretu.model.Function
 import parser.ast.ASTList
 import parser.ast.ASTTree
 
@@ -28,7 +25,7 @@ class PrimaryExpression(
 
     // 上記の`newInstance`メソッドから、このメソッドが呼ばれる時必ず`postFixes`が要素を持つ
     override fun evaluate(environment: Environment): Any {
-        var result: Any = OMURETU_DEFAULT_RETURN_VALUE
+        var result: Any = literal.evaluate(environment)
         postFixes.forEach {
             result = it.evaluate(environment, literal.evaluate(environment))
         }

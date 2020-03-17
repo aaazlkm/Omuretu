@@ -17,9 +17,10 @@ import parser.ast.ASTTree
 class Repeat(var parser: Parser) : Element {
     override fun parseTokens(lexer: Lexer, results: MutableList<ASTTree>) {
         while (parser.judgeNextSuccessOrNot(lexer)) {
-            when (val astTree = parser.parseTokens(lexer)) {
-                is ASTLeaf -> results.add(astTree)
-                is ASTList -> if (astTree.numberOfChildren > 0) results.add(astTree)
+            val astTree = parser.parseTokens(lexer)
+            // 余計な枝を作らないように
+            if (astTree::class.java != ASTList::class.java || (astTree as ASTList).numberOfChildren > 0) {
+                results.add(astTree)
             }
         }
     }
