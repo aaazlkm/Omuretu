@@ -10,5 +10,5 @@ abstract class Postfix(children: List<ASTTree>): ASTList(children) {
         const val KEYWORD_PARENTHESIS_END = ")"
     }
 
-    abstract fun evaluate(environment: Environment, value: Any): Any
+    abstract fun evaluate(environment: Environment, leftValue: Any): Any
 }

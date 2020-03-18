@@ -1,13 +1,22 @@
 package omuretu.ast.binaryexpression.operator
 
-import omuretu.ast.binaryexpression.operator.base.RValueOperator
+import omuretu.Environment
+import omuretu.ast.binaryexpression.operator.base.Operator
+import omuretu.exception.OmuretuException
+import parser.ast.ASTTree
 
-class QuotientOperator : RValueOperator {
-    override fun calculate(left: Any, right: Any): Any? {
-        return if (left is Int && right is Int) {
-            left / right
+class QuotientOperator(
+        override val leftTree: ASTTree,
+        override val rightTree: ASTTree,
+        override val environment: Environment
+) : Operator {
+    override fun calculate(): Any {
+        val leftValue = leftTree.evaluate(environment)
+        val rightValue = rightTree.evaluate(environment)
+        return if (leftValue is Int && rightValue is Int) {
+            leftValue / rightValue
         } else {
-            null
+            throw OmuretuException("failed to operator: $this")
         }
     }
 }

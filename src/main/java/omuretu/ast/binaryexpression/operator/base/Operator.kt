@@ -1,10 +1,15 @@
 package omuretu.ast.binaryexpression.operator.base
 
 import omuretu.Environment
+import parser.ast.ASTTree
 
-interface Operator
+interface Operator {
+    val leftTree: ASTTree
 
-interface LValueOperator : Operator {
+    val rightTree: ASTTree
+
+    val environment: Environment
+
     /**
      * TODO
      *
@@ -13,17 +18,5 @@ interface LValueOperator : Operator {
      * @param environment
      * @return
      */
-    fun calculate(key: String, value: Any, environment: Environment)
-}
-
-interface RValueOperator : Operator {
-    /**
-     * 計算を行う
-     * 失敗したときnullを返す
-     *
-     * @param left
-     * @param right
-     * @return
-     */
-    fun calculate(left: Any, right: Any): Any?
+    fun calculate(): Any
 }

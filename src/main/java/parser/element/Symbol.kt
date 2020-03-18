@@ -11,9 +11,6 @@ import parser.ast.ASTLeaf
 import parser.ast.ASTTree
 import java.util.HashSet
 
-// TODO あとで下記を消す
-// check ok
-
 abstract class Symbol constructor(type: Class<out ASTLeaf>?) : Element {
     private val factory: ASTTreeFactory = if (type == null) {
         ASTTreeFactory.createInstance()

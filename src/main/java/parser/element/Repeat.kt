@@ -6,9 +6,6 @@ import parser.ast.ASTLeaf
 import parser.ast.ASTList
 import parser.ast.ASTTree
 
-// TODO あとで下記を消す
-// check ok
-
 /**
  * { pat } パターンpatの0回以上の繰り返しと一致
  *

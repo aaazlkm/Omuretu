@@ -7,8 +7,6 @@ import lexer.token.Token
 import parser.ast.ASTLeaf
 import parser.ast.ASTTree
 
-// TODO あとで下記を消す
-// check ok
 open class Leaf(private vararg val patterns: String) : Element {
     override fun parseTokens(lexer: Lexer, results: MutableList<ASTTree>) {
         val token = lexer.pickOutNewToken()

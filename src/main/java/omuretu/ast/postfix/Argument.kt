@@ -28,16 +28,16 @@ class Argument(
      * この関数ないで使用できる変数の情報が入っている
      *
      * @param environment
-     * @param value
+     * @param leftValue
      * @return
      */
-    override fun evaluate(environment: Environment, value: Any): Any {
-        return when (value) {
+    override fun evaluate(environment: Environment, leftValue: Any): Any {
+        return when (leftValue) {
             is OmuretuFunction -> {
-                evaluateWhenOmuretuFunction(value, environment)
+                evaluateWhenOmuretuFunction(leftValue, environment)
             }
             is NativeFunction -> {
-                evaluateWhenNativeFunction(value, environment)
+                evaluateWhenNativeFunction(leftValue, environment)
             }
             else -> {
                 throw OmuretuException("bad function type", this)
@@ -50,7 +50,7 @@ class Argument(
         val nestedEnvironment = NestedEnvironment(function.environment as? NestedEnvironment)
         // パラメータの値をenvironmentに追加
         function.parameters.parameterNames.forEachIndexed { index, parameterName ->
-            nestedEnvironment.putInThisEnvironment(parameterName, astTrees[index].evaluate(environment))
+            nestedEnvironment.putOnlyThisEnvironment(parameterName, astTrees[index].evaluate(environment))
         }
         return function.blockStmnt.evaluate(nestedEnvironment)
     }

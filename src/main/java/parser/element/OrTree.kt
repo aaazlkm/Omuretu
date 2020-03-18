@@ -5,9 +5,6 @@ import lexer.Lexer
 import parser.Parser
 import parser.ast.ASTTree
 
-// TODO あとで下記を消す
-// check ok
-
 /**
  * pat1 | pat2
  *

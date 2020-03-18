@@ -30,19 +30,19 @@ class NestedEnvironment(
 
     override fun put(key: String, value: Any) {
         val environment = searchEnvironmentHasThisKey(key) ?: this
-        environment.putInThisEnvironment(key, value)
+        environment.putOnlyThisEnvironment(key, value)
     }
 
     //endregion
 
-    fun putInThisEnvironment(key: String, value: Any) {
+    fun putOnlyThisEnvironment(key: String, value: Any) {
         keyToValue[key] = value
     }
 
     fun searchEnvironmentHasThisKey(key: String): NestedEnvironment? {
-        return if (keyToValue[key] != null)
+        return if (keyToValue[key] != null) {
             this
-        else {
+        } else {
             outEnvironment?.searchEnvironmentHasThisKey(key)
         }
     }

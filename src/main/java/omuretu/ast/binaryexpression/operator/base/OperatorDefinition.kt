@@ -1,6 +1,8 @@
 package omuretu.ast.binaryexpression.operator.base
 
+import omuretu.Environment
 import omuretu.ast.binaryexpression.operator.*
+import parser.ast.ASTTree
 import parser.element.Expression
 
 enum class OperatorDefinition {
@@ -65,17 +67,17 @@ enum class OperatorDefinition {
             }
         }
 
-    fun getOperator(): Operator {
+    fun createOperator(leftTree: ASTTree, rightTree: ASTTree, environment: Environment): Operator {
         return when (this) {
-            ASSIGNMENT -> AssignmentOperator()
-            EQUAL -> EqualOperator()
-            LESS -> LessOperator()
-            MINUS -> MinusOperator()
-            GREATER -> GreaterOperator()
-            MULTI -> MultiOperator()
-            PLUS -> PlusOperator()
-            QUOTIENT -> QuotientOperator()
-            SURPLUS -> SurplusOperator()
+            ASSIGNMENT -> AssignmentOperator(leftTree, rightTree, environment)
+            EQUAL -> EqualOperator(leftTree, rightTree, environment)
+            LESS -> LessOperator(leftTree, rightTree, environment)
+            MINUS -> MinusOperator(leftTree, rightTree, environment)
+            GREATER -> GreaterOperator(leftTree, rightTree, environment)
+            MULTI -> MultiOperator(leftTree, rightTree, environment)
+            PLUS -> PlusOperator(leftTree, rightTree, environment)
+            QUOTIENT -> QuotientOperator(leftTree, rightTree, environment)
+            SURPLUS -> SurplusOperator(leftTree, rightTree, environment)
         }
     }
 }
