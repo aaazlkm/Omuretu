@@ -7,7 +7,7 @@ import omuretu.model.Function.OmuretuFunction
 import omuretu.model.Function.NativeFunction
 import parser.ast.ASTTree
 
-class Argument(
+class ArgumentPostfix(
         private val astTrees: List<ASTTree>
 ) : Postfix(astTrees) {
     companion object Factory : FactoryMethod {
@@ -15,7 +15,7 @@ class Argument(
 
         @JvmStatic
         override fun newInstance(argument: List<ASTTree>): ASTTree? {
-            return Argument(argument)
+            return ArgumentPostfix(argument)
         }
     }
 

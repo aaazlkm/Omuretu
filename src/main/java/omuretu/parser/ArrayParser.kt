@@ -1,15 +1,16 @@
 package omuretu.parser
 
-import com.sun.jdi.connect.Connector
 import lexer.Lexer
 import lexer.token.IdToken
 import omuretu.ast.*
 import omuretu.ast.binaryexpression.BinaryExpression
 import omuretu.ast.binaryexpression.operator.base.OperatorDefinition
+import omuretu.ast.listeral.ArrayLiteral
 import omuretu.ast.listeral.NameLiteral
 import omuretu.ast.listeral.NumberLiteral
 import omuretu.ast.listeral.StringLiteral
 import omuretu.ast.postfix.ArgumentPostfix
+import omuretu.ast.postfix.ArrayPostfix
 import omuretu.ast.postfix.DotPostfix
 import omuretu.ast.postfix.Postfix
 import parser.Parser
@@ -17,30 +18,39 @@ import parser.ast.ASTTree
 import parser.element.Expression
 import java.util.HashSet
 
-class ClassParser {
+class ArrayParser {
     private var reserved = HashSet<String>()
     private var operators = Expression.Operators()
 
     private var program = Parser.rule()
 
+    // classの定義
     private var klass = Parser.rule(ClassStmnt::class.java)
     private var classBody = Parser.rule(ClassBodyStmnt::class.java)
     private var member = Parser.rule()
 
+    // def の定義
     private var def = Parser.rule(DefStmnt::class.java)
     private var paramList = Parser.rule()
     private var params = Parser.rule(ParameterList::class.java)
     private var param = Parser.rule()
 
+    // array の定義
+    private var array = Parser.rule()
+
+    // statement の定義
     private var statement = Parser.rule()
 
+    // simple の定義
     private var simple = Parser.rule(PrimaryExpression::class.java)
     private var block = Parser.rule(BlockStmnt::class.java)
 
+    // expression の定義
     private var expression = Parser.rule()
     private var factor = Parser.rule()
     private var primary = Parser.rule(PrimaryExpression::class.java)
 
+    // postfix の定義
     private var postfix = Parser.rule()
     private var args = Parser.rule(ArgumentPostfix::class.java)
     private var dot = Parser.rule(DotPostfix::class.java)
@@ -73,6 +83,11 @@ class ClassParser {
         params.ast(param).repeat(Parser.rule().sep(ParameterList.KEYWORD_PARAMETER_BREAK).ast(param))
         param.identifier(reserved, NameLiteral::class.java)
 
+        // arrayの定義
+        array.sep(ArrayLiteral.KEYWORD_BRACKETS_START)
+                .maybe(Parser.rule(ArrayLiteral::class.java).ast(expression).repeat(Parser.rule().sep(",").ast(expression)))
+                .sep(ArrayLiteral.KEYWORD_BRACKETS_END)
+
         // statement の定義
         statement.or(
                 Parser.rule(IfStmnt::class.java).sep(IfStmnt.KEYWORD_IF).ast(expression).ast(block).option(Parser.rule().sep(IfStmnt.KEYWORD_ELSE).ast(block)),
@@ -80,7 +95,7 @@ class ClassParser {
                 simple
         )
 
-        // simple
+        // simple の定義
         simple.ast(expression).option(args)
         block.sep(BlockStmnt.BLOCK_START)
                 .option(statement)
@@ -94,6 +109,7 @@ class ClassParser {
                 primary
         )
         primary.or(
+                array,
                 Parser.rule(ClosureStmnt::class.java).sep(ClosureStmnt.KEYWORD_CLOSURE).ast(paramList).ast(block),
                 Parser.rule().sep("(").ast(expression).sep(")"),
                 Parser.rule().number(NumberLiteral::class.java),
@@ -104,7 +120,8 @@ class ClassParser {
         // postfix の定義
         postfix.or(
                 dot,
-                Parser.rule().sep(Postfix.KEYWORD_PARENTHESIS_START).maybe(args).sep(Postfix.KEYWORD_PARENTHESIS_END)
+                Parser.rule().sep(Postfix.KEYWORD_PARENTHESIS_START).maybe(args).sep(Postfix.KEYWORD_PARENTHESIS_END),
+                Parser.rule(ArrayPostfix::class.java).sep(ArrayPostfix.KEYWORD_BRACKETS_START).ast(expression).sep(ArrayPostfix.KEYWORD_BRACKETS_END)
         )
         args.ast(expression).repeat(Parser.rule().sep(ArgumentPostfix.KEYWORD_ARGUMENT_BREAK).ast(expression))
         dot.sep(DotPostfix.KEYWORD_DOT).identifier(reserved, NameLiteral::class.java)
@@ -112,6 +129,7 @@ class ClassParser {
         reserved.add(";")
         reserved.add("}")
         reserved.add(")")
+        reserved.add("]")
         reserved.add(IdToken.EOL)
 
         OperatorDefinition.values().forEach {

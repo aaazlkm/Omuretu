@@ -5,7 +5,10 @@ import lexer.token.IdToken
 import omuretu.ast.*
 import omuretu.ast.binaryexpression.BinaryExpression
 import omuretu.ast.binaryexpression.operator.base.OperatorDefinition
-import omuretu.ast.postfix.Argument
+import omuretu.ast.listeral.NameLiteral
+import omuretu.ast.listeral.NumberLiteral
+import omuretu.ast.listeral.StringLiteral
+import omuretu.ast.postfix.ArgumentPostfix
 import omuretu.ast.postfix.Postfix
 import parser.Parser
 import parser.ast.ASTTree
@@ -32,7 +35,7 @@ class FuncParser {
     private var primary = Parser.rule(PrimaryExpression::class.java)
 
     private var postfix = Parser.rule()
-    private var args = Parser.rule(Argument::class.java)
+    private var args = Parser.rule(ArgumentPostfix::class.java)
 
     init {
         program.or(
@@ -74,7 +77,7 @@ class FuncParser {
 
         // postfix の定義
         postfix.sep(Postfix.KEYWORD_PARENTHESIS_START).maybe(args).sep(Postfix.KEYWORD_PARENTHESIS_END)
-        args.ast(expression).repeat(Parser.rule().sep(Argument.KEYWORD_ARGUMENT_BREAK).ast(expression))
+        args.ast(expression).repeat(Parser.rule().sep(ArgumentPostfix.KEYWORD_ARGUMENT_BREAK).ast(expression))
 
         reserved.add(";")
         reserved.add("}")

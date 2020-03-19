@@ -5,6 +5,9 @@ import lexer.Lexer
 import lexer.token.IdToken
 import omuretu.ast.binaryexpression.BinaryExpression
 import omuretu.ast.binaryexpression.operator.base.OperatorDefinition
+import omuretu.ast.listeral.NameLiteral
+import omuretu.ast.listeral.NumberLiteral
+import omuretu.ast.listeral.StringLiteral
 import parser.Parser
 import parser.ast.ASTTree
 import parser.element.Expression

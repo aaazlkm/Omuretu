@@ -1,5 +1,6 @@
 package omuretu.ast
 
+import omuretu.ast.listeral.NameLiteral
 import parser.ast.ASTList
 import parser.ast.ASTTree
 

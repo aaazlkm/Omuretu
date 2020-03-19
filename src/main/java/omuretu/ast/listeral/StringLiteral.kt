@@ -1,4 +1,4 @@
-package omuretu.ast
+package omuretu.ast.listeral
 
 import parser.ast.ASTLeaf
 import lexer.token.StringToken

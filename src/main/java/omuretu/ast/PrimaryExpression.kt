@@ -38,12 +38,11 @@ class PrimaryExpression(
         return result
     }
 
-    fun obtainObject(environment: Environment): Object {
+    fun obtainObject(environment: Environment): Any {
         var result: Any = literal.evaluate(environment)
-
         postFixes.subList(0, (postFixes.size - 1)).forEach {
             result = it.evaluate(environment, result)
         }
-        return result as? Object ?: throw OmuretuException("")
+        return result
     }
 }

@@ -1,13 +1,13 @@
 package omuretu.ast.postfix
 
 import omuretu.Environment
-import omuretu.ast.NameLiteral
+import omuretu.ast.listeral.NameLiteral
 import omuretu.exception.OmuretuException
 import omuretu.model.Class
 import omuretu.model.Object
 import parser.ast.ASTTree
 
-class Dot(
+class DotPostfix(
         private val nameLiteral: NameLiteral
 ) : Postfix(listOf(nameLiteral)) {
     companion object Factory : FactoryMethod {
@@ -17,7 +17,7 @@ class Dot(
         @JvmStatic
         override fun newInstance(argument: List<ASTTree>): ASTTree? {
             val name = argument.getOrNull(0) as? NameLiteral ?: return null
-            return Dot(name)
+            return DotPostfix(name)
         }
     }
 
