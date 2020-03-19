@@ -10,6 +10,8 @@ class ArrayLiteral(
     companion object Factory : FactoryMethod {
         const val KEYWORD_BRACKETS_START = "["
         const val KEYWORD_BRACKETS_END = "]"
+        const val KEYWORD_PARAMETER_BREAK = ","
+
 
         @JvmStatic
         override fun newInstance(argument: List<ASTTree>): ASTTree? {

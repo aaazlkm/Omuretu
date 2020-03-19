@@ -1,4 +1,4 @@
-package omuretu.ast
+package omuretu.ast.statement
 
 import omuretu.OMURETU_FALSE
 import omuretu.OMURETU_DEFAULT_RETURN_VALUE

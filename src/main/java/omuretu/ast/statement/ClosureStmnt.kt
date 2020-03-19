@@ -1,4 +1,4 @@
-package omuretu.ast
+package omuretu.ast.statement
 
 import omuretu.Environment
 import omuretu.model.Function
@@ -6,7 +6,7 @@ import parser.ast.ASTList
 import parser.ast.ASTTree
 
 class ClosureStmnt(
-        val parameters: ParameterList,
+        val parameters: ParameterStmnt,
         val blockStmnt: BlockStmnt
 ) : ASTList(listOf(parameters, blockStmnt)) {
     companion object Factory : FactoryMethod {
@@ -15,7 +15,7 @@ class ClosureStmnt(
         @JvmStatic
         override fun newInstance(argument: List<ASTTree>): ASTTree? {
             if (argument.size != 2) return null
-            val parameters = argument[0] as? ParameterList ?: return null
+            val parameters = argument[0] as? ParameterStmnt ?: return null
             val blockStmnt = argument[1] as? BlockStmnt ?: return null
             return ClosureStmnt(parameters, blockStmnt)
         }

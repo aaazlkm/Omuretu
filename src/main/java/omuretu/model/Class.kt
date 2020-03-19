@@ -2,8 +2,8 @@ package omuretu.model
 
 import omuretu.Environment
 import omuretu.NestedEnvironment
-import omuretu.ast.ClassBodyStmnt
-import omuretu.ast.ClassStmnt
+import omuretu.ast.statement.ClassBodyStmnt
+import omuretu.ast.statement.ClassStmnt
 import omuretu.exception.OmuretuException
 
 data class Class(

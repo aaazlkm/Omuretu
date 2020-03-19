@@ -8,6 +8,10 @@ import omuretu.ast.binaryexpression.operator.base.OperatorDefinition
 import omuretu.ast.listeral.NameLiteral
 import omuretu.ast.listeral.NumberLiteral
 import omuretu.ast.listeral.StringLiteral
+import omuretu.ast.statement.BlockStmnt
+import omuretu.ast.statement.IfStmnt
+import omuretu.ast.statement.NullStmnt
+import omuretu.ast.statement.WhileStmnt
 import parser.Parser
 import parser.ast.ASTTree
 import parser.element.Expression

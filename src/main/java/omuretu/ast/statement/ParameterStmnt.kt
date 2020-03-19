@@ -1,10 +1,10 @@
-package omuretu.ast
+package omuretu.ast.statement
 
 import omuretu.ast.listeral.NameLiteral
 import parser.ast.ASTList
 import parser.ast.ASTTree
 
-class ParameterList(
+class ParameterStmnt(
         private val nameLiterals: List<NameLiteral>
 ) : ASTList(nameLiterals) {
     companion object Factory : FactoryMethod {
@@ -16,7 +16,7 @@ class ParameterList(
         override fun newInstance(argument: List<ASTTree>): ASTTree? {
             val names = argument.mapNotNull { it as? NameLiteral }
             return if (names.size == argument.size) {
-                ParameterList(names)
+                ParameterStmnt(names)
             } else {
                 null
             }

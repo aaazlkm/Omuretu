@@ -1,4 +1,4 @@
-package omuretu.ast
+package omuretu.ast.statement
 
 import omuretu.Environment
 import omuretu.ast.listeral.NameLiteral

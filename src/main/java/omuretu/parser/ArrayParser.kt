@@ -13,6 +13,7 @@ import omuretu.ast.postfix.ArgumentPostfix
 import omuretu.ast.postfix.ArrayPostfix
 import omuretu.ast.postfix.DotPostfix
 import omuretu.ast.postfix.Postfix
+import omuretu.ast.statement.*
 import parser.Parser
 import parser.ast.ASTTree
 import parser.element.Expression
@@ -32,7 +33,7 @@ class ArrayParser {
     // def の定義
     private var def = Parser.rule(DefStmnt::class.java)
     private var paramList = Parser.rule()
-    private var params = Parser.rule(ParameterList::class.java)
+    private var params = Parser.rule(ParameterStmnt::class.java)
     private var param = Parser.rule()
 
     // array の定義
@@ -79,13 +80,13 @@ class ArrayParser {
 
         // def の定義
         def.sep(DefStmnt.KEYWORD_DEF).identifier(reserved, NameLiteral::class.java).ast(paramList).ast(block)
-        paramList.sep(ParameterList.KEYWORD_PARENTHESIS_START).maybe(params).sep(ParameterList.KEYWORD_PARENTHESIS_END)
-        params.ast(param).repeat(Parser.rule().sep(ParameterList.KEYWORD_PARAMETER_BREAK).ast(param))
+        paramList.sep(ParameterStmnt.KEYWORD_PARENTHESIS_START).maybe(params).sep(ParameterStmnt.KEYWORD_PARENTHESIS_END)
+        params.ast(param).repeat(Parser.rule().sep(ParameterStmnt.KEYWORD_PARAMETER_BREAK).ast(param))
         param.identifier(reserved, NameLiteral::class.java)
 
         // arrayの定義
         array.sep(ArrayLiteral.KEYWORD_BRACKETS_START)
-                .maybe(Parser.rule(ArrayLiteral::class.java).ast(expression).repeat(Parser.rule().sep(",").ast(expression)))
+                .maybe(Parser.rule(ArrayLiteral::class.java).ast(expression).repeat(Parser.rule().sep(ArrayLiteral.KEYWORD_PARAMETER_BREAK).ast(expression)))
                 .sep(ArrayLiteral.KEYWORD_BRACKETS_END)
 
         // statement の定義

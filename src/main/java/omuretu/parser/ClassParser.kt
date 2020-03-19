@@ -1,6 +1,5 @@
 package omuretu.parser
 
-import com.sun.jdi.connect.Connector
 import lexer.Lexer
 import lexer.token.IdToken
 import omuretu.ast.*
@@ -12,6 +11,7 @@ import omuretu.ast.listeral.StringLiteral
 import omuretu.ast.postfix.ArgumentPostfix
 import omuretu.ast.postfix.DotPostfix
 import omuretu.ast.postfix.Postfix
+import omuretu.ast.statement.*
 import parser.Parser
 import parser.ast.ASTTree
 import parser.element.Expression
@@ -29,7 +29,7 @@ class ClassParser {
 
     private var def = Parser.rule(DefStmnt::class.java)
     private var paramList = Parser.rule()
-    private var params = Parser.rule(ParameterList::class.java)
+    private var params = Parser.rule(ParameterStmnt::class.java)
     private var param = Parser.rule()
 
     private var statement = Parser.rule()
@@ -69,8 +69,8 @@ class ClassParser {
 
         // def の定義
         def.sep(DefStmnt.KEYWORD_DEF).identifier(reserved, NameLiteral::class.java).ast(paramList).ast(block)
-        paramList.sep(ParameterList.KEYWORD_PARENTHESIS_START).maybe(params).sep(ParameterList.KEYWORD_PARENTHESIS_END)
-        params.ast(param).repeat(Parser.rule().sep(ParameterList.KEYWORD_PARAMETER_BREAK).ast(param))
+        paramList.sep(ParameterStmnt.KEYWORD_PARENTHESIS_START).maybe(params).sep(ParameterStmnt.KEYWORD_PARENTHESIS_END)
+        params.ast(param).repeat(Parser.rule().sep(ParameterStmnt.KEYWORD_PARAMETER_BREAK).ast(param))
         param.identifier(reserved, NameLiteral::class.java)
 
         // statement の定義

@@ -1,4 +1,4 @@
-package omuretu.ast
+package omuretu.ast.statement
 
 import omuretu.Environment
 import omuretu.OMURETU_DEFAULT_RETURN_VALUE
