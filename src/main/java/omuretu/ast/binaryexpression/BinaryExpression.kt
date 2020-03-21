@@ -3,7 +3,9 @@ package omuretu.ast.binaryexpression
 import lexer.token.IdToken
 import omuretu.exception.OmuretuException
 import omuretu.ast.binaryexpression.operator.base.OperatorDefinition
-import omuretu.Environment
+import omuretu.environment.Environment
+import omuretu.NestedIdNameLocationMap
+import omuretu.ast.listeral.IdNameLiteral
 import parser.ast.ASTLeaf
 import parser.ast.ASTList
 import parser.ast.ASTTree
@@ -19,6 +21,20 @@ class BinaryExpression(
             if (argument.size != 3) return null
             val operation = argument[1] as? ASTLeaf ?: return null
             return BinaryExpression(argument[0], operation, argument[2])
+        }
+    }
+
+    override fun lookupIdNamesLocation(idNameLocationMap: NestedIdNameLocationMap) {
+        val operatorToken = operator.token as? IdToken ?: throw OmuretuException("cannnot evaluate:", this)
+        when {
+            operatorToken.id == OperatorDefinition.ASSIGNMENT.rawOperator && left is IdNameLiteral -> { // FIXME うまくない気がする
+                left.lookupIdNamesForAssign(idNameLocationMap)
+                right.lookupIdNamesLocation(idNameLocationMap)
+            }
+            else -> {
+                left.lookupIdNamesLocation(idNameLocationMap)
+                right.lookupIdNamesLocation(idNameLocationMap)
+            }
         }
     }
 

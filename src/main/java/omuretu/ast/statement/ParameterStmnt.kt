@@ -1,12 +1,14 @@
 package omuretu.ast.statement
 
-import omuretu.ast.listeral.NameLiteral
+import omuretu.environment.EnvironmentKey
+import omuretu.NestedIdNameLocationMap
+import omuretu.ast.listeral.IdNameLiteral
 import parser.ast.ASTList
 import parser.ast.ASTTree
 
 class ParameterStmnt(
-        private val nameLiterals: List<NameLiteral>
-) : ASTList(nameLiterals) {
+        private val idNameLiterals: List<IdNameLiteral>
+) : ASTList(idNameLiterals) {
     companion object Factory : FactoryMethod {
         const val KEYWORD_PARAMETER_BREAK = ","
         const val KEYWORD_PARENTHESIS_START = "("
@@ -14,7 +16,7 @@ class ParameterStmnt(
 
         @JvmStatic
         override fun newInstance(argument: List<ASTTree>): ASTTree? {
-            val names = argument.mapNotNull { it as? NameLiteral }
+            val names = argument.mapNotNull { it as? IdNameLiteral }
             return if (names.size == argument.size) {
                 ParameterStmnt(names)
             } else {
@@ -24,5 +26,16 @@ class ParameterStmnt(
     }
 
     val parameterNames: List<String>
-        get() = nameLiterals.map { it.name }
+        get() = idNameLiterals.map { it.name }
+
+    var parameterEnvironmentKeys: Array<EnvironmentKey>? = null
+
+    override fun lookupIdNamesLocation(idNameLocationMap: NestedIdNameLocationMap) {
+        val parameterLocation = arrayOfNulls<EnvironmentKey>(idNameLiterals.size)
+        idNameLiterals.forEachIndexed { index, idNameLiteral ->
+            val location = idNameLocationMap.putAndReturnLocation(idNameLiteral.name)
+            parameterLocation[index] = EnvironmentKey(location.ancestorAt, location.indexInIdNames)
+        }
+        this.parameterEnvironmentKeys = parameterLocation.mapNotNull { it }.toTypedArray()
+    }
 }

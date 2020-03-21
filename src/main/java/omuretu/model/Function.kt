@@ -1,6 +1,6 @@
 package omuretu.model
 
-import omuretu.Environment
+import omuretu.environment.Environment
 import omuretu.ast.statement.BlockStmnt
 import omuretu.ast.statement.ParameterStmnt
 import java.lang.reflect.Method
@@ -9,7 +9,8 @@ sealed class Function {
     data class OmuretuFunction(
             val parameters: ParameterStmnt,
             val blockStmnt: BlockStmnt,
-            val environment: Environment
+            val environment: Environment,
+            val numberOfIdName: Int
     ): Function()
 
     data class NativeFunction(

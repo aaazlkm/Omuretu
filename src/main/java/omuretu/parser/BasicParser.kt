@@ -5,7 +5,7 @@ import lexer.Lexer
 import lexer.token.IdToken
 import omuretu.ast.binaryexpression.BinaryExpression
 import omuretu.ast.binaryexpression.operator.base.OperatorDefinition
-import omuretu.ast.listeral.NameLiteral
+import omuretu.ast.listeral.IdNameLiteral
 import omuretu.ast.listeral.NumberLiteral
 import omuretu.ast.listeral.StringLiteral
 import omuretu.ast.statement.BlockStmnt
@@ -35,7 +35,7 @@ class BasicParser {
         primary.or(
                 Parser.rule().sep("(").ast(expression).sep(")"),
                 Parser.rule().number(NumberLiteral::class.java),
-                Parser.rule().identifier(reserved, NameLiteral::class.java),
+                Parser.rule().identifier(reserved, IdNameLiteral::class.java),
                 Parser.rule().string(StringLiteral::class.java)
         )
         factor.or(

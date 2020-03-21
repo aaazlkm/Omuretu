@@ -1,7 +1,8 @@
 package parser.ast
 
 import lexer.token.Token
-import omuretu.Environment
+import omuretu.environment.Environment
+import omuretu.NestedIdNameLocationMap
 
 open class ASTLeaf(open val token: Token) : ASTTree {
     interface FactoryMethod {
@@ -16,6 +17,8 @@ open class ASTLeaf(open val token: Token) : ASTTree {
             return ASTLeaf(argument)
         }
     }
+
+    override fun lookupIdNamesLocation(idNameLocationMap: NestedIdNameLocationMap) {}
 
     override fun evaluate(environment: Environment): Any {
         TODO("not implemented")

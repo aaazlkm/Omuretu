@@ -1,6 +1,6 @@
 package omuretu.native
 
-import omuretu.NestedEnvironment
+import omuretu.environment.GlobalEnvironment
 import omuretu.exception.OmuretuException
 import omuretu.model.Function
 import java.lang.reflect.Method
@@ -20,12 +20,11 @@ object NativeFunctionEnvironmentFactory {
             FunctionDefinition("getCurrentTimeMillis")
     )
 
-    fun create(): NestedEnvironment {
-        val environment = NestedEnvironment()
+    fun createBasedOn(environment: GlobalEnvironment): GlobalEnvironment {
         functionDefinitions
                 .map { it.name to getMethodByReflection(it.name, *it.parameterType) }
                 .forEach { (name, nativeMethod) ->
-                    environment.put(name, Function.NativeFunction(name, nativeMethod, nativeMethod.parameterCount))
+                    environment.putValueByIdName(name, Function.NativeFunction(name, nativeMethod, nativeMethod.parameterCount))
                 }
         return environment
     }

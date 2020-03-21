@@ -1,13 +1,14 @@
 package runner
 
-import omuretu.Environment
+import omuretu.environment.Environment
 import omuretu.parser.BasicParser
 import omuretu.OmuretuLexer
 import lexer.token.Token
-import omuretu.BasicEnvironment
+import omuretu.environment.GlobalEnvironment
 
 fun main(args: Array<String>) {
-    run(BasicParser(), BasicEnvironment())
+    val environment = GlobalEnvironment()
+    run(BasicParser(), environment)
 }
 
 fun run(bp: BasicParser, env: Environment) {

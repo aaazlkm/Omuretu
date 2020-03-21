@@ -1,7 +1,7 @@
 package omuretu.ast.postfix
 
-import omuretu.Environment
-import omuretu.NestedEnvironment
+import omuretu.environment.Environment
+import omuretu.environment.NestedEnvironment
 import omuretu.exception.OmuretuException
 import omuretu.model.Function.OmuretuFunction
 import omuretu.model.Function.NativeFunction
@@ -47,11 +47,15 @@ class ArgumentPostfix(
 
     private fun evaluateWhenOmuretuFunction(function: OmuretuFunction, environment: Environment): Any {
         if (astTrees.size != function.parameters.parameterNames.size) throw OmuretuException("bad number odf argument", this)
-        val nestedEnvironment = NestedEnvironment(function.environment as? NestedEnvironment)
+        val nestedEnvironment = NestedEnvironment(
+                function.numberOfIdName,
+                function.environment as? NestedEnvironment
+        )
         // パラメータの値をenvironmentに追加
-        function.parameters.parameterNames.forEachIndexed { index, parameterName ->
-            nestedEnvironment.putOnlyThisEnvironment(parameterName, astTrees[index].evaluate(environment))
-        }
+        function.parameters.parameterEnvironmentKeys?.forEachIndexed { index, environmentKey ->
+            nestedEnvironment.put(environmentKey, astTrees[index].evaluate(environment))
+        } ?: throw OmuretuException("cannnot find parameter location", this)
+
         return function.blockStmnt.evaluate(nestedEnvironment)
     }
 

@@ -1,6 +1,8 @@
 package omuretu.ast.statement
 
-import omuretu.Environment
+import omuretu.environment.Environment
+import omuretu.NestedIdNameLocationMap
+import omuretu.exception.OmuretuException
 import omuretu.model.Function
 import parser.ast.ASTList
 import parser.ast.ASTTree
@@ -21,8 +23,19 @@ class ClosureStmnt(
         }
     }
 
+    private var numberOfIdName: Int? = null
+
+    override fun lookupIdNamesLocation(idNameLocationMap: NestedIdNameLocationMap) {
+        val nestedIdNameLocationMap = NestedIdNameLocationMap(idNameLocationMap)
+        parameters.lookupIdNamesLocation(nestedIdNameLocationMap)
+        blockStmnt.lookupIdNamesLocation(nestedIdNameLocationMap)
+        numberOfIdName = nestedIdNameLocationMap.idNamesSize
+    }
+
     override fun evaluate(environment: Environment): Any {
-        return Function.OmuretuFunction(parameters, blockStmnt, environment)
+        return numberOfIdName?.let {
+            Function.OmuretuFunction(parameters, blockStmnt, environment, it)
+        } ?: throw OmuretuException("cannot get idNames size")
     }
 
     override fun toString(): String {

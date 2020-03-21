@@ -1,10 +1,9 @@
 package omuretu.model
 
-import omuretu.Environment
-import omuretu.NestedEnvironment
+import omuretu.environment.Environment
+import omuretu.environment.NestedEnvironment
 import omuretu.ast.statement.ClassBodyStmnt
 import omuretu.ast.statement.ClassStmnt
-import omuretu.exception.OmuretuException
 
 data class Class(
         val classStmnt: ClassStmnt,
@@ -16,11 +15,12 @@ data class Class(
         get() = classStmnt.bodyStmnt
 
     init {
-        when (val superClassInfo = classStmnt.superClassName?.let { environment.get(it) }) {
-            null -> this.superClass = null
-            is Class -> this.superClass = superClassInfo
-            else -> throw OmuretuException("unknown super class type $superClassInfo")
-        }
+        this.superClass = null
+//        when (val superClassInfo = classStmnt.superClassName?.let { environment.get(it) }) {
+//            null -> this.superClass = null
+//            is Class -> this.superClass = superClassInfo
+//            else -> throw OmuretuException("unknown super class type $superClassInfo")
+//        }
     }
 
     override fun toString(): String {
@@ -28,7 +28,7 @@ data class Class(
     }
 
     fun createClassEnvironment(): NestedEnvironment {
-        val environment = NestedEnvironment(environment as? NestedEnvironment)
+        val environment = NestedEnvironment(10, environment as? NestedEnvironment)
         crateEachClassEnvironment(this, environment)
         return environment
     }

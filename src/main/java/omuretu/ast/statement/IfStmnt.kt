@@ -2,7 +2,7 @@ package omuretu.ast.statement
 
 import omuretu.OMURETU_FALSE
 import omuretu.OMURETU_DEFAULT_RETURN_VALUE
-import omuretu.Environment
+import omuretu.environment.Environment
 import parser.ast.ASTList
 import parser.ast.ASTTree
 

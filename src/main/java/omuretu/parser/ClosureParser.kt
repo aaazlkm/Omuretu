@@ -5,7 +5,7 @@ import lexer.token.IdToken
 import omuretu.ast.*
 import omuretu.ast.binaryexpression.BinaryExpression
 import omuretu.ast.binaryexpression.operator.base.OperatorDefinition
-import omuretu.ast.listeral.NameLiteral
+import omuretu.ast.listeral.IdNameLiteral
 import omuretu.ast.listeral.NumberLiteral
 import omuretu.ast.listeral.StringLiteral
 import omuretu.ast.postfix.ArgumentPostfix
@@ -46,10 +46,10 @@ class ClosureParser {
         ).sep(";", IdToken.EOL)
 
         // def の定義
-        def.sep(DefStmnt.KEYWORD_DEF).identifier(reserved, NameLiteral::class.java).ast(paramList).ast(block)
+        def.sep(DefStmnt.KEYWORD_DEF).identifier(reserved, IdNameLiteral::class.java).ast(paramList).ast(block)
         paramList.sep(ParameterStmnt.KEYWORD_PARENTHESIS_START).maybe(params).sep(ParameterStmnt.KEYWORD_PARENTHESIS_END)
         params.ast(param).repeat(Parser.rule().sep(ParameterStmnt.KEYWORD_PARAMETER_BREAK).ast(param))
-        param.identifier(reserved, NameLiteral::class.java)
+        param.identifier(reserved, IdNameLiteral::class.java)
 
         // statement の定義
         statement.or(
@@ -73,7 +73,7 @@ class ClosureParser {
                 Parser.rule(ClosureStmnt::class.java).sep(ClosureStmnt.KEYWORD_CLOSURE).ast(paramList).ast(block),
                 Parser.rule().sep("(").ast(expression).sep(")"),
                 Parser.rule().number(NumberLiteral::class.java),
-                Parser.rule().identifier(reserved, NameLiteral::class.java),
+                Parser.rule().identifier(reserved, IdNameLiteral::class.java),
                 Parser.rule().string(StringLiteral::class.java)
         ).repeat(postfix)
 

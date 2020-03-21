@@ -6,7 +6,7 @@ import omuretu.ast.*
 import omuretu.ast.binaryexpression.BinaryExpression
 import omuretu.ast.binaryexpression.operator.base.OperatorDefinition
 import omuretu.ast.listeral.ArrayLiteral
-import omuretu.ast.listeral.NameLiteral
+import omuretu.ast.listeral.IdNameLiteral
 import omuretu.ast.listeral.NumberLiteral
 import omuretu.ast.listeral.StringLiteral
 import omuretu.ast.postfix.ArgumentPostfix
@@ -66,8 +66,8 @@ class ArrayParser {
 
         // classの定義
         klass.sep(ClassStmnt.KEYWORD_CLASS)
-                .identifier(reserved, NameLiteral::class.java)
-                .option(Parser.rule().sep(ClassStmnt.KEYWORD_EXTENDS).identifier(reserved, NameLiteral::class.java))
+                .identifier(reserved, IdNameLiteral::class.java)
+                .option(Parser.rule().sep(ClassStmnt.KEYWORD_EXTENDS).identifier(reserved, IdNameLiteral::class.java))
                 .ast(classBody)
         classBody.sep(ClassBodyStmnt.KEYWORD_BRACES_START)
                 .option(member)
@@ -79,10 +79,10 @@ class ArrayParser {
         )
 
         // def の定義
-        def.sep(DefStmnt.KEYWORD_DEF).identifier(reserved, NameLiteral::class.java).ast(paramList).ast(block)
+        def.sep(DefStmnt.KEYWORD_DEF).identifier(reserved, IdNameLiteral::class.java).ast(paramList).ast(block)
         paramList.sep(ParameterStmnt.KEYWORD_PARENTHESIS_START).maybe(params).sep(ParameterStmnt.KEYWORD_PARENTHESIS_END)
         params.ast(param).repeat(Parser.rule().sep(ParameterStmnt.KEYWORD_PARAMETER_BREAK).ast(param))
-        param.identifier(reserved, NameLiteral::class.java)
+        param.identifier(reserved, IdNameLiteral::class.java)
 
         // arrayの定義
         array.sep(ArrayLiteral.KEYWORD_BRACKETS_START)
@@ -114,7 +114,7 @@ class ArrayParser {
                 Parser.rule(ClosureStmnt::class.java).sep(ClosureStmnt.KEYWORD_CLOSURE).ast(paramList).ast(block),
                 Parser.rule().sep("(").ast(expression).sep(")"),
                 Parser.rule().number(NumberLiteral::class.java),
-                Parser.rule().identifier(reserved, NameLiteral::class.java),
+                Parser.rule().identifier(reserved, IdNameLiteral::class.java),
                 Parser.rule().string(StringLiteral::class.java)
         ).repeat(postfix)
 
@@ -125,7 +125,7 @@ class ArrayParser {
                 Parser.rule(ArrayPostfix::class.java).sep(ArrayPostfix.KEYWORD_BRACKETS_START).ast(expression).sep(ArrayPostfix.KEYWORD_BRACKETS_END)
         )
         args.ast(expression).repeat(Parser.rule().sep(ArgumentPostfix.KEYWORD_ARGUMENT_BREAK).ast(expression))
-        dot.sep(DotPostfix.KEYWORD_DOT).identifier(reserved, NameLiteral::class.java)
+        dot.sep(DotPostfix.KEYWORD_DOT).identifier(reserved, IdNameLiteral::class.java)
 
         reserved.add(";")
         reserved.add("}")

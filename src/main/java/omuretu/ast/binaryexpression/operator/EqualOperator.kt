@@ -1,6 +1,6 @@
 package omuretu.ast.binaryexpression.operator
 
-import omuretu.Environment
+import omuretu.environment.Environment
 import omuretu.OMURETU_FALSE
 import omuretu.OMURETU_TRUE
 import omuretu.ast.binaryexpression.operator.base.Operator

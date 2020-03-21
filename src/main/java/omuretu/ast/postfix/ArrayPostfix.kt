@@ -1,6 +1,6 @@
 package omuretu.ast.postfix
 
-import omuretu.Environment
+import omuretu.environment.Environment
 import omuretu.exception.OmuretuException
 import parser.ast.ASTTree
 

@@ -1,15 +1,15 @@
 package runner
 
-import omuretu.Environment
-import omuretu.NestedEnvironment
+import omuretu.environment.Environment
 import omuretu.OmuretuLexer
 import omuretu.parser.FuncParser
 import lexer.token.Token
-
+import omuretu.environment.GlobalEnvironment
 
 
 fun main(args: Array<String>) {
-    run(FuncParser(), NestedEnvironment())
+    val environment = GlobalEnvironment()
+    run(FuncParser(), environment)
 }
 
 fun run(bp: FuncParser, env: Environment) {

@@ -1,6 +1,7 @@
 package parser.ast
 
-import omuretu.Environment
+import omuretu.environment.Environment
+import omuretu.NestedIdNameLocationMap
 
 open class ASTList(val children: List<ASTTree>) : ASTTree {
     interface FactoryMethod {
@@ -18,6 +19,12 @@ open class ASTList(val children: List<ASTTree>) : ASTTree {
 
     val numberOfChildren: Int
         get() = children.size
+
+    override fun lookupIdNamesLocation(idNameLocationMap: NestedIdNameLocationMap) {
+        children.forEach {
+            it.lookupIdNamesLocation(idNameLocationMap)
+        }
+    }
 
     override fun evaluate(environment: Environment): Any {
         TODO("not implemented")

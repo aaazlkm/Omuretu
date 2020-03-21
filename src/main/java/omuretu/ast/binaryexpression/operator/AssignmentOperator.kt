@@ -1,7 +1,7 @@
 package omuretu.ast.binaryexpression.operator
 
-import omuretu.Environment
-import omuretu.ast.listeral.NameLiteral
+import omuretu.environment.Environment
+import omuretu.ast.listeral.IdNameLiteral
 import omuretu.ast.PrimaryExpression
 import omuretu.ast.binaryexpression.operator.base.Operator
 import omuretu.ast.postfix.ArrayPostfix
@@ -18,7 +18,7 @@ class AssignmentOperator(
     override fun calculate(): Any {
         return when (leftTree) {
             is PrimaryExpression -> calculateWhenPrimaryExpression(leftTree, rightTree, environment)
-            is NameLiteral -> calculateWhenNameLiteral(leftTree, rightTree, environment)
+            is IdNameLiteral -> calculateWhenNameLiteral(leftTree, rightTree, environment)
             else -> throw OmuretuException("failed to operator: $this")
         }
     }
@@ -45,9 +45,9 @@ class AssignmentOperator(
         }
     }
 
-    private fun calculateWhenNameLiteral(nameLiteral: NameLiteral, rightTree: ASTTree, environment: Environment): Any {
+    private fun calculateWhenNameLiteral(idNameLiteral: IdNameLiteral, rightTree: ASTTree, environment: Environment): Any {
         val rightValue = rightTree.evaluate(environment)
-        environment.put(nameLiteral.name, rightValue)
+        idNameLiteral.evaluateForAssign(environment, rightValue)
         return rightValue
     }
 }

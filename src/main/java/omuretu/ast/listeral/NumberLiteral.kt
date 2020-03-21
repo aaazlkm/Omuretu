@@ -3,7 +3,7 @@ package omuretu.ast.listeral
 import parser.ast.ASTLeaf
 import lexer.token.NumberToken
 import lexer.token.Token
-import omuretu.Environment
+import omuretu.environment.Environment
 import parser.ast.ASTTree
 
 class NumberLiteral(

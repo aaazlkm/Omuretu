@@ -1,6 +1,6 @@
 package omuretu.ast.binaryexpression.operator.base
 
-import omuretu.Environment
+import omuretu.environment.Environment
 import parser.ast.ASTTree
 
 interface Operator {

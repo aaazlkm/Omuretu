@@ -1,6 +1,6 @@
 package omuretu.ast.statement
 
-import omuretu.Environment
+import omuretu.environment.Environment
 import omuretu.OMURETU_DEFAULT_RETURN_VALUE
 import parser.ast.ASTList
 import parser.ast.ASTTree

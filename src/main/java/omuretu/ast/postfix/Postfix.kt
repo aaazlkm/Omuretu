@@ -1,6 +1,6 @@
 package omuretu.ast.postfix
 
-import omuretu.Environment
+import omuretu.environment.Environment
 import parser.ast.ASTList
 import parser.ast.ASTTree
 

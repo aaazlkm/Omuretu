@@ -1,13 +1,14 @@
 package runner
 
-import omuretu.Environment
-import omuretu.NestedEnvironment
+import omuretu.environment.Environment
 import omuretu.OmuretuLexer
 import omuretu.parser.ClosureParser
 import lexer.token.Token
+import omuretu.environment.GlobalEnvironment
 
 fun main(args: Array<String>) {
-    run(ClosureParser(), NestedEnvironment())
+    val environment = GlobalEnvironment()
+    run(ClosureParser(), environment)
 }
 
 fun run(bp: ClosureParser, env: Environment) {

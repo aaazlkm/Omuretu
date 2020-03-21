@@ -1,15 +1,17 @@
 package runner
 
-import omuretu.Environment
+import omuretu.environment.Environment
 import omuretu.OmuretuLexer
 import omuretu.native.NativeFunctionEnvironmentFactory
 import omuretu.parser.ClassParser
 import lexer.token.Token
+import omuretu.environment.GlobalEnvironment
 
 object ClassRunner {
     @JvmStatic
     fun main(args: Array<String>) {
-        run(ClassParser(), NativeFunctionEnvironmentFactory.create())
+        val environment = GlobalEnvironment()
+        run(ClassParser(), NativeFunctionEnvironmentFactory.createBasedOn(environment))
     }
 
     private fun run(bp: ClassParser, env: Environment) {

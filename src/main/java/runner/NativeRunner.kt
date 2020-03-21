@@ -1,17 +1,17 @@
 package runner
 
-import omuretu.Environment
-import omuretu.NestedEnvironment
+import omuretu.environment.Environment
 import omuretu.OmuretuLexer
 import omuretu.native.NativeFunctionEnvironmentFactory
-import omuretu.parser.FuncParser
 import lexer.token.Token
+import omuretu.environment.GlobalEnvironment
 import omuretu.parser.ClosureParser
 
 object NativeRunner {
     @JvmStatic
     fun main(args: Array<String>) {
-        run(ClosureParser(), NativeFunctionEnvironmentFactory.create())
+        val environment = GlobalEnvironment()
+        run(ClosureParser(), NativeFunctionEnvironmentFactory.createBasedOn(environment))
     }
 
     private fun run(bp: ClosureParser, env: Environment) {
