@@ -1,9 +1,9 @@
 package omuretu.ast.statement
 
 import omuretu.environment.Environment
-import omuretu.environment.EnvironmentKey
 import omuretu.NestedIdNameLocationMap
 import omuretu.ast.listeral.IdNameLiteral
+import omuretu.environment.GlobalEnvironment
 import omuretu.exception.OmuretuException
 import parser.ast.ASTList
 import parser.ast.ASTTree
@@ -13,14 +13,14 @@ class ClassStmnt(
         private val idNameLiteral: IdNameLiteral,
         private val superClassIdNameLiteral: IdNameLiteral? = null,
         val bodyStmnt: ClassBodyStmnt
-) : ASTList(if(superClassIdNameLiteral == null) listOf(idNameLiteral, bodyStmnt) else listOf(idNameLiteral, superClassIdNameLiteral, bodyStmnt)) {
+) : ASTList(if (superClassIdNameLiteral == null) listOf(idNameLiteral, bodyStmnt) else listOf(idNameLiteral, superClassIdNameLiteral, bodyStmnt)) {
     companion object Factory : FactoryMethod {
         const val KEYWORD_CLASS = "class"
         const val KEYWORD_EXTENDS = "extends"
 
         @JvmStatic
         override fun newInstance(argument: List<ASTTree>): ASTTree? {
-             when(argument.size) {
+            when (argument.size) {
                 2 -> {
                     val nameLiteral = argument[0] as? IdNameLiteral ?: return null
                     val bodyStmnt = argument[1] as? ClassBodyStmnt ?: return null
@@ -40,22 +40,32 @@ class ClassStmnt(
     }
 
     val name: String
-        get()  = idNameLiteral.name
+        get() = idNameLiteral.name
 
     val superClassName: String?
         get() = superClassIdNameLiteral?.name
 
-    var environmentKey: EnvironmentKey? = null
-
     override fun lookupIdNamesLocation(idNameLocationMap: NestedIdNameLocationMap) {
-        val location = idNameLocationMap.putAndReturnLocation(idNameLiteral.name)
-        environmentKey = EnvironmentKey(location.ancestorAt, location.indexInIdNames)
+        // スーパークラスを持つ場合環境がないとスーパークラスの定義を取得することができないためここでは何もできない
     }
 
     override fun evaluate(environment: Environment): Any {
-        val environmentKey = environmentKey ?: throw OmuretuException("donot defined class name ${idNameLiteral.name}")
-        val classs = Class(this, environment)
-        environment.put(environmentKey, classs)
+        val globalEnvironment = environment as? GlobalEnvironment
+                ?: throw OmuretuException("class can define only in global environment")
+        val classMemberLocationMap = NestedIdNameLocationMap(globalEnvironment.idNameLocationMap)
+        // クラスボディのメンバー最初にthisを追加
+        val thisLocation = classMemberLocationMap.putOnlyThisMapAndReturnLocation("this")
+        val classs = Class(this, globalEnvironment, classMemberLocationMap, thisLocation)
+
+        // 継承先のクラスのメンバーをコピー
+        classs.superClass?.copyThisMembersTo(classMemberLocationMap)
+
+        // クラスボディ内の変数の位置
+        bodyStmnt.lookupIdNamesLocation(classMemberLocationMap)
+
+        // クラス名を登録
+        globalEnvironment.putValueByIdName(name, classs)
+
         return name
     }
 

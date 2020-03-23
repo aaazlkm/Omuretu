@@ -12,11 +12,27 @@ class NestedIdNameLocationMap(
     val idNamesSize: Int
         get() = idNameToIndex.size
 
+    fun getLocationFromOnlyThisMap(idName: String): Location? {
+        return idNameToIndex[idName]?.let { Location(0, it) }
+    }
+
     fun getLocationFromAllMap(idName: String): Location? {
         return getLocationAboveAncestorAt(idName, 0)
     }
 
-    fun getLocationAboveAncestorAt(idName: String, ancestorAt: Int): Location? {
+    fun putAndReturnLocation(idName: String): Location {
+        return getLocationFromAllMap(idName) ?: registerAndCreateLocation(idName)
+    }
+
+    fun putOnlyThisMapAndReturnLocation(idName: String): Location {
+        return idNameToIndex[idName]?.let { Location(0, it) } ?: registerAndCreateLocation(idName)
+    }
+
+    fun copyFrom(idNameLocationMapParent: NestedIdNameLocationMap) {
+        this.idNameToIndex.putAll(idNameLocationMapParent.idNameToIndex)
+    }
+
+    private fun getLocationAboveAncestorAt(idName: String, ancestorAt: Int): Location? {
         val index = idNameToIndex[idName]
         return if (index == null) {
             idNameLocationMapParent?.getLocationAboveAncestorAt(idName, ancestorAt + 1)
@@ -25,18 +41,14 @@ class NestedIdNameLocationMap(
         }
     }
 
-    fun putAndReturnLocation(idName: String): Location {
-        return getLocationFromAllMap(idName) ?: createAndAddLocation(idName)
-    }
-
-    fun putOnlyThisMapAndReturnLocation(idName: String): Location {
-        return idNameToIndex[idName]?.let { Location(0, it) } ?: createAndAddLocation(idName)
-    }
-
-    private fun createAndAddLocation(idName: String): Location {
-        val index = idNameToIndex.size
+    private fun registerAndCreateLocation(idName: String): Location {
+        val index = createNewIndex()
         idNameToIndex[idName] = index
         return Location(0, index)
+    }
+
+    private fun createNewIndex(): Int {
+        return idNameToIndex.size
     }
 }
 

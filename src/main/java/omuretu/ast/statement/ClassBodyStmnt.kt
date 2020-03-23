@@ -1,5 +1,6 @@
 package omuretu.ast.statement
 
+import omuretu.NestedIdNameLocationMap
 import omuretu.environment.Environment
 import omuretu.OMURETU_DEFAULT_RETURN_VALUE
 import parser.ast.ASTList
@@ -16,6 +17,10 @@ class ClassBodyStmnt(
         override fun newInstance(argument: List<ASTTree>): ASTTree? {
             return ClassBodyStmnt(argument)
         }
+    }
+
+    override fun lookupIdNamesLocation(idNameLocationMap: NestedIdNameLocationMap) {
+        members.forEach { it.lookupIdNamesLocation(idNameLocationMap) }
     }
 
     override fun evaluate(environment: Environment): Any {

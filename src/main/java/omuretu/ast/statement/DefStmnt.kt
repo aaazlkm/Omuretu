@@ -27,13 +27,17 @@ class DefStmnt(
         }
     }
 
+    val name: String
+        get() = idNameLiteral.name
+
     var environmentKey: EnvironmentKey? = null
 
     var idNamesSize: Int? = null
 
     override fun lookupIdNamesLocation(idNameLocationMap: NestedIdNameLocationMap) {
-        val location = idNameLocationMap.putAndReturnLocation(idNameLiteral.name)
+        val location = idNameLocationMap.putAndReturnLocation(name)
         environmentKey = EnvironmentKey(location.ancestorAt, location.indexInIdNames)
+
         val nestIdNameLocationMap = NestedIdNameLocationMap(idNameLocationMap)
         parameters.lookupIdNamesLocation(nestIdNameLocationMap)
         blockStmnt.lookupIdNamesLocation(nestIdNameLocationMap)

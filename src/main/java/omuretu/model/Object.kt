@@ -1,26 +1,30 @@
 package omuretu.model
 
-import omuretu.environment.NestedEnvironment
+import omuretu.environment.Environment
+import omuretu.environment.EnvironmentKey
 import omuretu.exception.AccessException
 
 data class Object(
-        private val environment: NestedEnvironment
+        private val classs: Class
 ) {
+    lateinit var environment: Environment
+
     // 外のenviromentから変数を取得使用した場合Accessエラーを投げる
     fun getMember(memberName: String): Any? {
-//        val environment = environment.searchEnvironmentHasThisKey(memberName) ?: run {
-//            throw AccessException("there is not defined this member $memberName")
-//        }
-//        if (this.environment == environment) {
-//            return this.environment.get(memberName)
-//        } else {
-//            throw AccessException("you cannot access this member $memberName")
-//        }
-        throw AccessException("you cannot access this member $memberName")
-
+        val memberLocation = classs.getMemberLocationOf(memberName) ?: throw AccessException("there is no member $memberName")
+        return environment.get(memberLocation.let { EnvironmentKey(it.ancestorAt, it.indexInIdNames) })
     }
 
     fun putMember(memberName: String, member: Any) {
-//        environment.putOnlyThisEnvironment(memberName, member)
+        // メソッドの時は更新できないようにする
+        when(getMember(memberName)) {
+            is Function -> {
+                throw AccessException("cannnot assigun function $memberName")
+            }
+            else -> {
+                val memberIndex = classs.getMemberLocationOf(memberName) ?: throw AccessException("there is no member $memberName")
+                environment.put(memberIndex.let { EnvironmentKey(it.ancestorAt, it.indexInIdNames) }, member)
+            }
+        }
     }
 }

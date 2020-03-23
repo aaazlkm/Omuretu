@@ -40,8 +40,9 @@ class IdNameLiteral(
     }
 
     fun lookupIdNamesForAssign(idNameLocationMap: NestedIdNameLocationMap) {
-        val location = idNameLocationMap.putAndReturnLocation(name)
-        environmentKey = EnvironmentKey(location.ancestorAt, location.indexInIdNames)
+        idNameLocationMap.putAndReturnLocation(name).let {
+            environmentKey = EnvironmentKey(it.ancestorAt, it.indexInIdNames)
+        }
     }
 
     fun evaluateForAssign(environment: Environment, value: Any) {

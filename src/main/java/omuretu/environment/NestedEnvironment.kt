@@ -6,14 +6,14 @@ open class NestedEnvironment(
         numberOfIdNames: Int,
         private val outEnvironment: NestedEnvironment? = null
 ) : Environment {
-    var idNamesToValue = arrayOfNulls<Any>(numberOfIdNames)
+    var indexToValues = arrayOfNulls<Any>(numberOfIdNames)
 
     //region Environment
 
     override fun put(key: EnvironmentKey, value: Any) {
         if (key.ancestorAt < 0) throw OmuretuException("illegal ancestorAt: ${key.ancestorAt}")
         if (key.ancestorAt == 0) {
-            idNamesToValue[key.index] = value
+            indexToValues[key.index] = value
         } else {
             outEnvironment?.put(EnvironmentKey(key.ancestorAt - 1, key.index), value)
         }
@@ -22,7 +22,7 @@ open class NestedEnvironment(
     override fun get(key: EnvironmentKey): Any? {
         if (key.ancestorAt < 0) throw OmuretuException("illegal ancestorAt: ${key.ancestorAt}")
         return if (key.ancestorAt == 0) {
-            idNamesToValue[key.index]
+            indexToValues[key.index]
         } else {
             outEnvironment?.get(EnvironmentKey(key.ancestorAt - 1, key.index))
         }

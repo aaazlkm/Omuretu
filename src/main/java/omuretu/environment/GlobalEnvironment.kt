@@ -19,7 +19,7 @@ class GlobalEnvironment : NestedEnvironment(10) {
 
     fun getValueByIdName(idName: String): Any? {
         return idNameLocationMap.getLocationFromAllMap(idName)?.let {
-            idNamesToValue.getOrNull(it.indexInIdNames)
+            indexToValues.getOrNull(it.indexInIdNames)
         }
     }
 
@@ -35,10 +35,10 @@ class GlobalEnvironment : NestedEnvironment(10) {
      * @param value 変数の値
      */
     private fun putValueByIndex(index: Int, value: Any) {
-        if (index >= idNamesToValue.size)  {
-            val newLength = index - idNamesToValue.size
-            idNamesToValue = idNamesToValue.copyOf(newLength + 10).mapNotNull { it }.toTypedArray() // 10個分余分に配列を確保しておく
+        if (index >= indexToValues.size)  {
+            val newLength = index - indexToValues.size
+            indexToValues = indexToValues.copyOf(newLength + 10).mapNotNull { it }.toTypedArray() // 10個分余分に配列を確保しておく
         }
-        idNamesToValue[index] = value
+        indexToValues[index] = value
     }
 }

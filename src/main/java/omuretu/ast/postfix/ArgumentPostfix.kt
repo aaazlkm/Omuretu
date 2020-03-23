@@ -6,6 +6,7 @@ import omuretu.exception.OmuretuException
 import omuretu.model.Function.OmuretuFunction
 import omuretu.model.Function.NativeFunction
 import parser.ast.ASTTree
+import javax.xml.stream.Location
 
 class ArgumentPostfix(
         private val astTrees: List<ASTTree>

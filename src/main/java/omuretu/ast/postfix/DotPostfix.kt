@@ -1,5 +1,6 @@
 package omuretu.ast.postfix
 
+import omuretu.NestedIdNameLocationMap
 import omuretu.environment.Environment
 import omuretu.ast.listeral.IdNameLiteral
 import omuretu.exception.OmuretuException
@@ -24,6 +25,8 @@ class DotPostfix(
     val name: String
         get() = idNameLiteral.name
 
+    override fun lookupIdNamesLocation(idNameLocationMap: NestedIdNameLocationMap) {}
+
     override fun evaluate(environment: Environment): Any {
         throw OmuretuException("must be called `evaluate(environment: Environment, value: Any)` instead of this method", this)
     }
@@ -33,9 +36,9 @@ class DotPostfix(
             is Class -> {
                 if (name == KEYWORD_NEW) {
                     // インスタンス化
-                    val objectEnvironment = leftValue.createClassEnvironment()
-                    val objectt = Object(objectEnvironment)
-//                    objectEnvironment.put("this", objectt) // TODO thisも使用できるようにする
+                    val objectt = Object(leftValue)
+                    val objectEnvironment = leftValue.createClassEnvironment(objectt)
+                    objectt.environment = objectEnvironment
                     return objectt
                 } else {
                     throw OmuretuException("bad member access: ", this)
