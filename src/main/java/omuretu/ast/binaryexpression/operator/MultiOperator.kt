@@ -2,6 +2,7 @@ package omuretu.ast.binaryexpression.operator
 
 import omuretu.environment.Environment
 import omuretu.ast.binaryexpression.operator.base.Operator
+import omuretu.ast.binaryexpression.operator.base.RightValueOperator
 import omuretu.exception.OmuretuException
 import parser.ast.ASTTree
 
@@ -9,7 +10,7 @@ class MultiOperator(
         override val leftTree: ASTTree,
         override val rightTree: ASTTree,
         override val environment: Environment
-) : Operator {
+) : RightValueOperator {
     override fun calculate(): Any {
         val leftValue = leftTree.evaluate(environment)
         val rightValue = rightTree.evaluate(environment)

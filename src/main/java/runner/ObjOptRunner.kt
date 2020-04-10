@@ -55,3 +55,31 @@ print p.y
 print p.z
 
  */
+
+/**
+class Fib {
+fib0 = 0
+fib1 = 1
+a = 0
+
+def fib (n) {
+a = n
+if n == 0 {
+fib0
+} else {
+if (n == 1) {
+this.fib1
+} else {
+fib(n - 1) + this.fib(n - 2)
+}
+}
+}
+}
+
+t = getCurrentTimeMillis()
+f = Fib.new
+f.fib 33
+print getCurrentTimeMillis() - t + "msec"
+
+ 3194
+ */
