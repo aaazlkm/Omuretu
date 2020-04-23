@@ -28,6 +28,20 @@ object ObjOptRunner {
 }
 
 /**
+def fib (n) {
+if n < 2 {
+n
+} else {
+fib(n - 1) + fib(n - 2)
+}
+}
+
+t = getCurrentTimeMillis()
+fib 15
+print getCurrentTimeMillis() - t + "msec"
+
+---------------------------------------------------------------------
+
 class Position {
 x = y = 0
 

@@ -111,7 +111,6 @@ class ArrayParser {
         )
         primary.or(
                 array,
-                Parser.rule(ClosureStmnt::class.java).sep(ClosureStmnt.KEYWORD_CLOSURE).ast(paramList).ast(block),
                 Parser.rule().sep("(").ast(expression).sep(")"),
                 Parser.rule().number(NumberLiteral::class.java),
                 Parser.rule().identifier(reserved, IdNameLiteral::class.java),

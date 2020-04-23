@@ -2,6 +2,7 @@ package omuretu.ast
 
 import omuretu.environment.Environment
 import omuretu.ast.postfix.Postfix
+import omuretu.vertualmachine.ByteCodeStore
 import parser.ast.ASTList
 import parser.ast.ASTTree
 
@@ -26,6 +27,13 @@ class PrimaryExpression(
     // 上記の`newInstance`メソッドから、このメソッドが呼ばれる時必ず`postFixes`は要素を持つ
     val firstPostFix: Postfix
         get() = postFixes.first()
+
+    override fun compile(byteCodeStore: ByteCodeStore) {
+        literal.compile(byteCodeStore)
+        postFixes.forEach {
+            it.compile(byteCodeStore)
+        }
+    }
 
     // 上記の`newInstance`メソッドから、このメソッドが呼ばれる時必ず`postFixes`が要素を持つ
     override fun evaluate(environment: Environment): Any {

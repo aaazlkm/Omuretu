@@ -7,11 +7,15 @@ import omuretu.exception.OmuretuException
 import omuretu.environment.Environment
 import omuretu.environment.EnvironmentKey
 import omuretu.NestedIdNameLocationMap
+import omuretu.vertualmachine.ByteCodeStore
+import omuretu.vertualmachine.OmuretuVirtualMachine
+import omuretu.vertualmachine.opecode.GmoveOpecode
+import omuretu.vertualmachine.opecode.MoveOpecode
 
 class IdNameLiteral(
         override val token: IdToken
 ) : ASTLeaf(token) {
-    companion object Factory: FactoryMethod {
+    companion object Factory : FactoryMethod {
         @JvmStatic
         override fun newInstance(argument: Token): ASTLeaf? {
             return if (argument is IdToken) {
@@ -31,7 +35,41 @@ class IdNameLiteral(
         idNameLocationMap.getLocationFromAllMap(name)?.let {
             environmentKey = EnvironmentKey(it.ancestorAt, it.indexInIdNames)
         } ?: run {
-            throw OmuretuException("undifined name: $name")
+            throw OmuretuException("undefined name: $name")
+        }
+    }
+
+    override fun compile(byteCodeStore: ByteCodeStore) {
+        val environmentKey = environmentKey ?: throw OmuretuException("undefined name: $name")
+        when {
+            environmentKey.ancestorAt > 0 -> {
+                val registerAt = OmuretuVirtualMachine.encodeRegisterIndex(byteCodeStore.nextRegister())
+                GmoveOpecode.createByteCode(environmentKey.index.toShort(), registerAt).forEach { byteCodeStore.addByteCode(it) }
+            }
+            environmentKey.ancestorAt == 0 -> {
+                val registerAt = OmuretuVirtualMachine.encodeRegisterIndex(byteCodeStore.nextRegister())
+                MoveOpecode.createByteCode(environmentKey.index.toByte(), registerAt).forEach { byteCodeStore.addByteCode(it) }
+            }
+            else -> {
+                throw OmuretuException("undefined name: $name")
+            }
+        }
+    }
+
+    fun compileAssign(byteCodeStore: ByteCodeStore) {
+        val environmentKey = environmentKey ?: throw OmuretuException("undefined name: $name")
+        when {
+            environmentKey.ancestorAt > 0 -> {
+                val registerAt = OmuretuVirtualMachine.encodeRegisterIndex(byteCodeStore.registerPosition - 1)
+                GmoveOpecode.createByteCode(registerAt, environmentKey.index.toShort()).forEach { byteCodeStore.addByteCode(it) }
+            }
+            environmentKey.ancestorAt == 0 -> {
+                val registerAt = OmuretuVirtualMachine.encodeRegisterIndex(byteCodeStore.registerPosition - 1)
+                MoveOpecode.createByteCode(registerAt, environmentKey.index.toByte()).forEach { byteCodeStore.addByteCode(it) }
+            }
+            else -> {
+                throw OmuretuException("undefined name: $name")
+            }
         }
     }
 

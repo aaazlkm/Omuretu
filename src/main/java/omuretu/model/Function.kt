@@ -10,19 +10,27 @@ sealed class Function {
             val parameters: ParameterStmnt,
             val blockStmnt: BlockStmnt,
             val environment: Environment,
-            val numberOfIdName: Int
-    ): Function()
+            val numberOfIdName: Int,
+            val entry: Int
+    ) : Function() {
+        val numberOfParameter: Int
+            get() = parameters.numberOfChildren
+    }
 
     data class NativeFunction(
             val name: String,
             val method: Method,
             val numberOfParameter: Int
-    ): Function()
+    ) : Function() {
+        fun invoke(vararg arguments: Any) {
+            method.invoke(null, arguments)
+        }
+    }
 
     override fun toString(): String {
-         return when(this) {
-            is OmuretuFunction ->  "<fun: ${hashCode()} >"
-            is NativeFunction ->  "<native fun: ${hashCode()} >"
+        return when (this) {
+            is OmuretuFunction -> "<fun: ${hashCode()} >"
+            is NativeFunction -> "<native fun: ${hashCode()} >"
         }
     }
 }

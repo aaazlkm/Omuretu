@@ -8,7 +8,7 @@ import omuretu.ast.binaryexpression.operator.base.RightValueOperator
 import omuretu.exception.OmuretuException
 import parser.ast.ASTTree
 
-class GreaterOperator(
+class MoreOperator(
         override val leftTree: ASTTree,
         override val rightTree: ASTTree,
         override val environment: Environment

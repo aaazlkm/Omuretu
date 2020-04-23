@@ -9,6 +9,9 @@ import omuretu.ast.binaryexpression.operator.base.LeftValueOperator
 import omuretu.ast.binaryexpression.operator.base.RightValueOperator
 import omuretu.ast.listeral.IdNameLiteral
 import omuretu.model.InlineCache
+import omuretu.vertualmachine.ByteCodeStore
+import omuretu.vertualmachine.OmuretuVirtualMachine
+import omuretu.vertualmachine.opecode.base.ComputeOpecode
 import parser.ast.ASTLeaf
 import parser.ast.ASTList
 import parser.ast.ASTTree
@@ -40,6 +43,24 @@ class BinaryExpression(
                 left.lookupIdNamesLocation(idNameLocationMap)
                 right.lookupIdNamesLocation(idNameLocationMap)
             }
+        }
+    }
+
+    override fun compile(byteCodeStore: ByteCodeStore) {
+        val operatorToken = operator.token as? IdToken ?: throw OmuretuException("cannnot compile:", this)
+        if (operatorToken.id == OperatorDefinition.ASSIGNMENT.rawOperator) {
+            val leftIdName = left as? IdNameLiteral ?: throw OmuretuException("cannnot compile:", this)
+            right.compile(byteCodeStore)
+            leftIdName.compileAssign(byteCodeStore)
+        } else {
+            left.compile(byteCodeStore)
+            right.compile(byteCodeStore)
+            val registerLeftAt = OmuretuVirtualMachine.encodeRegisterIndex(byteCodeStore.registerPosition - 2)
+            val registerRightAt = OmuretuVirtualMachine.encodeRegisterIndex(byteCodeStore.registerPosition - 1)
+            ComputeOpecode.createByteCode(operatorToken.id, registerLeftAt, registerRightAt).forEach {
+                byteCodeStore.addByteCode(it)
+            }
+            byteCodeStore.prevRegister()
         }
     }
 

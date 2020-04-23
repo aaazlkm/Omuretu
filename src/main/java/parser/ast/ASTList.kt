@@ -2,6 +2,8 @@ package parser.ast
 
 import omuretu.environment.Environment
 import omuretu.NestedIdNameLocationMap
+import omuretu.exception.OmuretuException
+import omuretu.vertualmachine.ByteCodeStore
 
 open class ASTList(val children: List<ASTTree>) : ASTTree {
     interface FactoryMethod {
@@ -26,8 +28,14 @@ open class ASTList(val children: List<ASTTree>) : ASTTree {
         }
     }
 
+    override fun compile(byteCodeStore: ByteCodeStore) {
+        children.forEach {
+            it.compile(byteCodeStore)
+        }
+    }
+
     override fun evaluate(environment: Environment): Any {
-        TODO("not implemented")
+        throw OmuretuException("not override evaluate method")
     }
 
     override fun toString(): String {

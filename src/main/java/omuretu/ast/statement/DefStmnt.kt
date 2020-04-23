@@ -4,8 +4,15 @@ import omuretu.environment.Environment
 import omuretu.environment.EnvironmentKey
 import omuretu.NestedIdNameLocationMap
 import omuretu.ast.listeral.IdNameLiteral
+import omuretu.environment.NestedEnvironment
 import omuretu.exception.OmuretuException
 import omuretu.model.Function
+import omuretu.vertualmachine.ByteCodeStore
+import omuretu.vertualmachine.OmuretuVirtualMachine
+import omuretu.vertualmachine.opecode.MoveOpecode
+import omuretu.vertualmachine.opecode.RestoreOpecode
+import omuretu.vertualmachine.opecode.ReturnOpecode
+import omuretu.vertualmachine.opecode.SaveOpecode
 import parser.ast.ASTList
 import parser.ast.ASTTree
 
@@ -32,7 +39,7 @@ class DefStmnt(
 
     var environmentKey: EnvironmentKey? = null
 
-    var idNamesSize: Int? = null
+    var idNamesInDefSize: Int? = null
 
     override fun lookupIdNamesLocation(idNameLocationMap: NestedIdNameLocationMap) {
         val location = idNameLocationMap.putAndReturnLocation(name)
@@ -41,13 +48,37 @@ class DefStmnt(
         val nestIdNameLocationMap = NestedIdNameLocationMap(idNameLocationMap)
         parameters.lookupIdNamesLocation(nestIdNameLocationMap)
         blockStmnt.lookupIdNamesLocation(nestIdNameLocationMap)
-        idNamesSize = nestIdNameLocationMap.idNamesSize
+        idNamesInDefSize = nestIdNameLocationMap.idNamesSize
+    }
+
+    override fun compile(byteCodeStore: ByteCodeStore) {
+        val idNamesInDefSize = idNamesInDefSize ?: throw OmuretuException("failed to search idnames size in def $this")
+
+        byteCodeStore.apply {
+            setRegisterAt(0)
+            stackFrameSize = idNamesInDefSize + OmuretuVirtualMachine.SAVE_AREA_SIZE
+
+            SaveOpecode.createByteCode(idNamesInDefSize.toByte()).forEach { byteCodeStore.addByteCode(it) }
+
+            blockStmnt.compile(byteCodeStore)
+
+            val registerAt = OmuretuVirtualMachine.encodeRegisterIndex(byteCodeStore.registerPosition - 1)
+            MoveOpecode.createByteCode(registerAt, 0).forEach { byteCodeStore.addByteCode(it) }
+
+            RestoreOpecode.createByteCode(idNamesInDefSize.toByte()).forEach { byteCodeStore.addByteCode(it) }
+
+            ReturnOpecode.createByteCode().forEach { byteCodeStore.addByteCode(it) }
+        }
     }
 
     override fun evaluate(environment: Environment): Any {
+        val nestedEnvironment = environment as? NestedEnvironment ?: throw OmuretuException("function can only be defined in global scode")
         val environmentKey = environmentKey ?: throw OmuretuException("donot defined def name ${idNameLiteral.name}")
-        val idNamesSize = idNamesSize ?: throw OmuretuException("cannnot get idNamesSize ${idNameLiteral.name}")
-        environment.put(environmentKey, Function.OmuretuFunction(parameters, blockStmnt, environment, idNamesSize))
+        val idNamesSize = idNamesInDefSize ?: throw OmuretuException("cannnot get idNamesSize ${idNameLiteral.name}")
+        val byteCodeStore = nestedEnvironment.byteCodeStore ?: throw OmuretuException("cannnot find bytecode")
+        val entry = byteCodeStore.codePosition
+        compile(byteCodeStore)
+        environment.put(environmentKey, Function.OmuretuFunction(parameters, blockStmnt, environment, idNamesSize, entry))
         return idNameLiteral.token.id
     }
 

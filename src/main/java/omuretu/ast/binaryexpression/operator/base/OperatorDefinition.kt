@@ -10,7 +10,7 @@ enum class OperatorDefinition {
     EQUAL,
     LESS,
     MINUS,
-    GREATER,
+    MORE,
     MULTI,
     PLUS,
     QUOTIENT,
@@ -29,7 +29,7 @@ enum class OperatorDefinition {
                 EQUAL -> "=="
                 LESS -> "<"
                 MINUS -> "-"
-                GREATER -> ">"
+                MORE -> ">"
                 MULTI -> "*"
                 PLUS -> "+"
                 QUOTIENT -> "/"
@@ -44,7 +44,7 @@ enum class OperatorDefinition {
                 EQUAL -> 2
                 LESS -> 2
                 MINUS -> 3
-                GREATER -> 2
+                MORE -> 2
                 MULTI -> 4
                 PLUS -> 3
                 QUOTIENT -> 4
@@ -59,7 +59,7 @@ enum class OperatorDefinition {
                 EQUAL -> Expression.Precedence.Assoc.LEFT
                 LESS -> Expression.Precedence.Assoc.LEFT
                 MINUS -> Expression.Precedence.Assoc.LEFT
-                GREATER -> Expression.Precedence.Assoc.LEFT
+                MORE -> Expression.Precedence.Assoc.LEFT
                 MULTI -> Expression.Precedence.Assoc.LEFT
                 PLUS -> Expression.Precedence.Assoc.LEFT
                 QUOTIENT -> Expression.Precedence.Assoc.LEFT
@@ -73,7 +73,7 @@ enum class OperatorDefinition {
             EQUAL -> EqualOperator(leftTree, rightTree, environment)
             LESS -> LessOperator(leftTree, rightTree, environment)
             MINUS -> MinusOperator(leftTree, rightTree, environment)
-            GREATER -> GreaterOperator(leftTree, rightTree, environment)
+            MORE -> MoreOperator(leftTree, rightTree, environment)
             MULTI -> MultiOperator(leftTree, rightTree, environment)
             PLUS -> PlusOperator(leftTree, rightTree, environment)
             QUOTIENT -> QuotientOperator(leftTree, rightTree, environment)
