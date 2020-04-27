@@ -2,30 +2,49 @@ package runner
 
 import omuretu.OmuretuLexer
 import omuretu.ast.statement.NullStmnt
-import omuretu.environment.GlobalEnvironment
+import omuretu.environment.GlobalVariableEnvironment
 import omuretu.native.NativeFunctionEnvironmentFactory
-import omuretu.parser.ArrayParser
+import omuretu.parser.OmuretuParser
 import lexer.token.Token
+import omuretu.NestedIdNameLocationMap
+import omuretu.environment.TypeEnvironmentImpl
+import omuretu.environment.base.TypeEnvironment
 
 object ObjOptRunner {
     @JvmStatic
     fun main(args: Array<String>) {
-        val environment = GlobalEnvironment()
-        run(ArrayParser(), NativeFunctionEnvironmentFactory.createBasedOn(environment))
+        val typeEnvironment = TypeEnvironmentImpl()
+        val variableEnvironment = NativeFunctionEnvironmentFactory.createBasedOn(GlobalVariableEnvironment(), typeEnvironment)
+
+        run(
+                OmuretuParser(),
+                typeEnvironment,
+                variableEnvironment
+        )
     }
 
-    private fun run(bp: ArrayParser, environment: GlobalEnvironment) {
+    private fun run(bp: OmuretuParser, typeEnvironment: TypeEnvironment, environment: GlobalVariableEnvironment) {
         val lexer = OmuretuLexer(CodeDialog())
         while (lexer.readTokenAt(0) !== Token.EOF) {
             val t = bp.parse(lexer)
             if (t !is NullStmnt) {
                 t.lookupIdNamesLocation(environment.idNameLocationMap)
-                val r = t.evaluate(environment)
-                println("=> $r")
+                val type = t.checkType(typeEnvironment)
+                val result = t.evaluate(environment)
+                println("=> $result : $type")
             }
         }
     }
 }
+
+/**
+ *
+def fact(n: Int): Int {
+if n > 1 { n * fact(n - 1) } else { 1 }
+}
+
+fact 5
+ */
 
 /**
 def fib (n) {
@@ -92,8 +111,8 @@ fib(n - 1) + this.fib(n - 2)
 
 t = getCurrentTimeMillis()
 f = Fib.new
-f.fib 33
+f.fib 10
 print getCurrentTimeMillis() - t + "msec"
 
- 3194
+3194
  */

@@ -1,41 +1,36 @@
 package omuretu.ast.statement
 
-import omuretu.environment.EnvironmentKey
-import omuretu.NestedIdNameLocationMap
+import omuretu.ast.TypeTag
 import omuretu.ast.listeral.IdNameLiteral
+import omuretu.environment.base.TypeEnvironment
+import omuretu.exception.OmuretuException
+import omuretu.typechecker.Type
 import parser.ast.ASTList
 import parser.ast.ASTTree
 
 class ParameterStmnt(
-        private val idNameLiterals: List<IdNameLiteral>
-) : ASTList(idNameLiterals) {
+        private val idNameLiteral: IdNameLiteral,
+        private val typeTag: TypeTag
+) : ASTList(listOf(idNameLiteral, typeTag)) {
     companion object Factory : FactoryMethod {
-        const val KEYWORD_PARAMETER_BREAK = ","
-        const val KEYWORD_PARENTHESIS_START = "("
-        const val KEYWORD_PARENTHESIS_END = ")"
-
         @JvmStatic
         override fun newInstance(argument: List<ASTTree>): ASTTree? {
-            val names = argument.mapNotNull { it as? IdNameLiteral }
-            return if (names.size == argument.size) {
-                ParameterStmnt(names)
-            } else {
-                null
-            }
+            if (argument.size != 2) return null
+            val idNameLiteral = argument[0] as? IdNameLiteral ?: return null
+            val typeTag = argument[1] as? TypeTag ?: return null
+            return ParameterStmnt(idNameLiteral, typeTag)
         }
     }
 
-    val parameterNames: List<String>
-        get() = idNameLiterals.map { it.name }
+    val name: String
+        get() = idNameLiteral.name
 
-    var parameterEnvironmentKeys: Array<EnvironmentKey>? = null
+    val type: Type.Defined
+        get() = typeTag.type as Type.Defined // パラメータ型は事前に決まっている
 
-    override fun lookupIdNamesLocation(idNameLocationMap: NestedIdNameLocationMap) {
-        val parameterLocation = arrayOfNulls<EnvironmentKey>(idNameLiterals.size)
-        idNameLiterals.forEachIndexed { index, idNameLiteral ->
-            val location = idNameLocationMap.putAndReturnLocation(idNameLiteral.name)
-            parameterLocation[index] = EnvironmentKey(location.ancestorAt, location.indexInIdNames)
-        }
-        this.parameterEnvironmentKeys = parameterLocation.mapNotNull { it }.toTypedArray()
+    override fun toString() = "$idNameLiteral ${TypeTag.KEYWORD_COLON} $typeTag"
+
+    override fun checkType(typeEnvironment: TypeEnvironment): Type {
+        return typeTag.type ?: throw OmuretuException("undefined type name:", this)
     }
 }

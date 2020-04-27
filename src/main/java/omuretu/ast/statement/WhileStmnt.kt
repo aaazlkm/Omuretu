@@ -2,7 +2,10 @@ package omuretu.ast.statement
 
 import omuretu.OMURETU_FALSE
 import omuretu.OMURETU_DEFAULT_RETURN_VALUE
-import omuretu.environment.Environment
+import omuretu.environment.base.TypeEnvironment
+import omuretu.environment.base.VariableEnvironment
+import omuretu.typechecker.Type
+import omuretu.typechecker.TypeCheckHelper
 import omuretu.vertualmachine.ByteCodeStore
 import omuretu.vertualmachine.OmuretuVirtualMachine
 import omuretu.vertualmachine.opecode.BConstOpecode
@@ -14,7 +17,7 @@ import util.ex.sliceByByte
 
 class WhileStmnt(
         val condition: ASTTree,
-        val body: ASTTree
+        val body: BlockStmnt
 ) : ASTList(listOf(condition, body)) {
     companion object Factory: FactoryMethod {
         const val KEYWORD_WHILE = "while"
@@ -22,8 +25,16 @@ class WhileStmnt(
         @JvmStatic
         override fun newInstance(argument: List<ASTTree>): ASTTree? {
             if (argument.size != 2) return null
-            return WhileStmnt(argument[0], argument[1])
+            val body = argument[1] as? BlockStmnt ?: return null
+            return WhileStmnt(argument[0], body)
         }
+    }
+
+    override fun checkType(typeEnvironment: TypeEnvironment): Type {
+        val conditionType = condition.checkType(typeEnvironment)
+        val bodyType = body.checkType(typeEnvironment)
+        TypeCheckHelper.checkSubTypeOrThrow(conditionType, Type.Defined.Int, this, typeEnvironment)
+        return TypeCheckHelper.union(bodyType, Type.Defined.Int, typeEnvironment) // whileのbodyが一度も実行されない場合Intを返すためunion(Type.Int)している
     }
 
     override fun compile(byteCodeStore: ByteCodeStore) {
@@ -48,12 +59,12 @@ class WhileStmnt(
         }
     }
 
-    override fun evaluate(environment: Environment): Any {
+    override fun evaluate(variableEnvironment: VariableEnvironment): Any {
         var bodyResult: Any = OMURETU_DEFAULT_RETURN_VALUE
         while (true) {
-            val conditionResult = condition.evaluate(environment)
+            val conditionResult = condition.evaluate(variableEnvironment)
             if (conditionResult is Int && conditionResult != OMURETU_FALSE) {
-                bodyResult = body.evaluate(environment)
+                bodyResult = body.evaluate(variableEnvironment)
             } else {
                 return bodyResult
             }

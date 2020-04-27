@@ -1,8 +1,10 @@
 package parser.ast
 
-import omuretu.environment.Environment
+import omuretu.environment.base.VariableEnvironment
 import omuretu.NestedIdNameLocationMap
+import omuretu.environment.base.TypeEnvironment
 import omuretu.exception.OmuretuException
+import omuretu.typechecker.Type
 import omuretu.vertualmachine.ByteCodeStore
 
 open class ASTList(val children: List<ASTTree>) : ASTTree {
@@ -28,25 +30,19 @@ open class ASTList(val children: List<ASTTree>) : ASTTree {
         }
     }
 
+    override fun checkType(typeEnvironment: TypeEnvironment): Type = throw OmuretuException("not override checkType method")
+
     override fun compile(byteCodeStore: ByteCodeStore) {
         children.forEach {
             it.compile(byteCodeStore)
         }
     }
 
-    override fun evaluate(environment: Environment): Any {
+    override fun evaluate(variableEnvironment: VariableEnvironment): Any {
         throw OmuretuException("not override evaluate method")
     }
 
     override fun toString(): String {
-        val builder = StringBuilder()
-        builder.append('(')
-        var sep = ""
-        for (t in children) {
-            builder.append(sep)
-            sep = " "
-            builder.append(t.toString())
-        }
-        return builder.append(')').toString()
+        return children.map { it.toString() }.fold("") { acc, s -> "$acc$s" }
     }
 }

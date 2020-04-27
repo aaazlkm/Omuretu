@@ -1,10 +1,9 @@
 package omuretu.ast.binaryexpression.operator
 
-import omuretu.environment.Environment
+import omuretu.environment.base.VariableEnvironment
 import omuretu.ast.listeral.IdNameLiteral
 import omuretu.ast.PrimaryExpression
 import omuretu.ast.binaryexpression.operator.base.LeftValueOperator
-import omuretu.ast.binaryexpression.operator.base.Operator
 import omuretu.ast.postfix.ArrayPostfix
 import omuretu.ast.postfix.DotPostfix
 import omuretu.exception.OmuretuException
@@ -15,7 +14,7 @@ import parser.ast.ASTTree
 class AssignmentOperator(
         override val leftTree: ASTTree,
         override val rightTree: ASTTree,
-        override val environment: Environment
+        override val variableEnvironment: VariableEnvironment
 ) : LeftValueOperator {
 
     override fun calculate(inlineCache: InlineCache?, doOnSaveInlineCache: ((InlineCache) -> Unit)?): Any {
@@ -35,8 +34,8 @@ class AssignmentOperator(
         val firstPostFix = primaryExpression.firstPostFix
         when (firstPostFix) {
             is DotPostfix -> {
-                val objectt = primaryExpression.obtainObject(environment) as? Object ?: throw OmuretuException("failed to operator: $this")
-                val rightValue = rightTree.evaluate(environment)
+                val objectt = primaryExpression.obtainObject(variableEnvironment) as? Object ?: throw OmuretuException("failed to operator: $this")
+                val rightValue = rightTree.evaluate(variableEnvironment)
                 if (objectt.classs == inlineCache?.classs) {
                     objectt.putMember(inlineCache.location, rightValue)
                 } else {
@@ -47,9 +46,9 @@ class AssignmentOperator(
                 return rightValue
             }
             is ArrayPostfix -> {
-                val index = firstPostFix.index.evaluate(environment) as? Int ?: throw OmuretuException("failed to operator: $this")
-                val rightValue = rightTree.evaluate(environment)
-                (primaryExpression.obtainObject(environment) as? MutableList<Any>)?.set(index, rightValue)
+                val index = firstPostFix.index.evaluate(variableEnvironment) as? Int ?: throw OmuretuException("failed to operator: $this")
+                val rightValue = rightTree.evaluate(variableEnvironment)
+                (primaryExpression.obtainObject(variableEnvironment) as? MutableList<Any>)?.set(index, rightValue)
                 return rightValue
             }
             else -> {
@@ -59,8 +58,8 @@ class AssignmentOperator(
     }
 
     private fun calculateWhenNameLiteral(idNameLiteral: IdNameLiteral): Any {
-        val rightValue = rightTree.evaluate(environment)
-        idNameLiteral.evaluateForAssign(environment, rightValue)
+        val rightValue = rightTree.evaluate(variableEnvironment)
+        idNameLiteral.evaluateForAssign(variableEnvironment, rightValue)
         return rightValue
     }
 }

@@ -1,12 +1,13 @@
 package omuretu.ast.postfix
 
-import omuretu.NestedIdNameLocationMap
-import omuretu.environment.Environment
+import omuretu.environment.base.VariableEnvironment
 import omuretu.ast.listeral.IdNameLiteral
+import omuretu.environment.base.TypeEnvironment
 import omuretu.exception.OmuretuException
 import omuretu.model.Class
 import omuretu.model.InlineCache
 import omuretu.model.Object
+import omuretu.typechecker.Type
 import parser.ast.ASTTree
 
 class DotPostfix(
@@ -28,13 +29,12 @@ class DotPostfix(
 
     var objectInlineCache: InlineCache? = null
 
-    override fun lookupIdNamesLocation(idNameLocationMap: NestedIdNameLocationMap) {}
-
-    override fun evaluate(environment: Environment): Any {
-        throw OmuretuException("must be called `evaluate(environment: Environment, value: Any)` instead of this method", this)
+    override fun checkType(typeEnvironment: TypeEnvironment, leftType: Type): Type {
+        // TODO クラスのプロパティの型を見るようにする
+        return Type.Defined.Any
     }
 
-    override fun evaluate(environment: Environment, leftValue: Any): Any {
+    override fun evaluate(variableEnvironment: VariableEnvironment, leftValue: Any): Any {
         return when (leftValue) {
             is Class -> evaluateWhenCalss(leftValue)
             is Object -> evaluateWhenObject(leftValue)
@@ -47,7 +47,7 @@ class DotPostfix(
             // インスタンス化
             val objectt = Object(classs)
             val objectEnvironment = classs.createClassEnvironment(objectt)
-            objectt.environment = objectEnvironment
+            objectt.variableEnvironment = objectEnvironment
             return objectt
         } else {
             throw OmuretuException("bad member access: ", this)

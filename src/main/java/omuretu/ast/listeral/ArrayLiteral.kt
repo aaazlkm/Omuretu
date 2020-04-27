@@ -1,6 +1,6 @@
 package omuretu.ast.listeral
 
-import omuretu.environment.Environment
+import omuretu.environment.base.VariableEnvironment
 import parser.ast.ASTList
 import parser.ast.ASTTree
 
@@ -19,10 +19,10 @@ class ArrayLiteral(
         }
     }
 
-    override fun evaluate(environment: Environment): Any {
+    override fun evaluate(variableEnvironment: VariableEnvironment): Any {
         val results = mutableListOf<Any>()
         elements.forEach {
-            results.add(it.evaluate(environment))
+            results.add(it.evaluate(variableEnvironment))
         }
         return results
     }

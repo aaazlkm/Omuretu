@@ -2,18 +2,17 @@ package omuretu.model
 
 import omuretu.Location
 import omuretu.NestedIdNameLocationMap
-import omuretu.environment.Environment
-import omuretu.environment.NestedEnvironment
+import omuretu.environment.base.VariableEnvironment
+import omuretu.environment.NestedVariableEnvironment
 import omuretu.ast.statement.ClassBodyStmnt
 import omuretu.ast.statement.ClassStmnt
-import omuretu.ast.statement.DefStmnt
-import omuretu.environment.EnvironmentKey
-import omuretu.environment.GlobalEnvironment
+import omuretu.environment.base.EnvironmentKey
+import omuretu.environment.GlobalVariableEnvironment
 import omuretu.exception.OmuretuException
 
 data class Class(
         val classStmnt: ClassStmnt,
-        private val environment: GlobalEnvironment,
+        private val environment: GlobalVariableEnvironment,
         private val classMemberLocationMap: NestedIdNameLocationMap,
         private val thisLocation: Location
 ) {
@@ -44,19 +43,19 @@ data class Class(
         return classMemberLocationMap.getLocationFromOnlyThisMap(idName)
     }
 
-    fun createClassEnvironment(objectt: Object): NestedEnvironment {
-        val environment = NestedEnvironment(classMemberLocationMap.idNamesSize, environment as? NestedEnvironment)
+    fun createClassEnvironment(objectt: Object): NestedVariableEnvironment {
+        val environment = NestedVariableEnvironment(classMemberLocationMap.idNamesSize, environment as? NestedVariableEnvironment)
         addThisKeyWordToEnvironment(environment, objectt)
         crateSuperClassEnvironment(this, environment)
         return environment
     }
 
-    private fun addThisKeyWordToEnvironment(environment: Environment, objectt: Object) {
-        environment.put(thisLocation.let { EnvironmentKey(it.ancestorAt, it.indexInIdNames) }, objectt)
+    private fun addThisKeyWordToEnvironment(variableEnvironment: VariableEnvironment, objectt: Object) {
+        variableEnvironment.put(thisLocation.let { EnvironmentKey(it.ancestorAt, it.indexInIdNames) }, objectt)
     }
 
-    private fun crateSuperClassEnvironment(classs: Class, environment: Environment) {
-        if (classs.superClass != null) crateSuperClassEnvironment(classs.superClass, environment)
-        classs.body.evaluate(environment)
+    private fun crateSuperClassEnvironment(classs: Class, variableEnvironment: VariableEnvironment) {
+        if (classs.superClass != null) crateSuperClassEnvironment(classs.superClass, variableEnvironment)
+        classs.body.evaluate(variableEnvironment)
     }
 }

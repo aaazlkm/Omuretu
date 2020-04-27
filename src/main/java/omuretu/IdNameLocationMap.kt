@@ -12,6 +12,8 @@ class NestedIdNameLocationMap(
     val idNamesSize: Int
         get() = idNameToIndex.size
 
+    //region get methods
+
     fun getLocationFromOnlyThisMap(idName: String): Location? {
         return idNameToIndex[idName]?.let { Location(0, it) }
     }
@@ -20,6 +22,10 @@ class NestedIdNameLocationMap(
         return getLocationAboveAncestorAt(idName, 0)
     }
 
+    //endregion
+
+    //region put methods
+
     fun putAndReturnLocation(idName: String): Location {
         return getLocationFromAllMap(idName) ?: registerAndCreateLocation(idName)
     }
@@ -27,6 +33,8 @@ class NestedIdNameLocationMap(
     fun putOnlyThisMapAndReturnLocation(idName: String): Location {
         return idNameToIndex[idName]?.let { Location(0, it) } ?: registerAndCreateLocation(idName)
     }
+
+    //endregion
 
     fun copyFrom(idNameLocationMapParent: NestedIdNameLocationMap) {
         this.idNameToIndex.putAll(idNameLocationMapParent.idNameToIndex)

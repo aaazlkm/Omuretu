@@ -1,5 +1,6 @@
 package omuretu.vertualmachine.opecode
 
+import omuretu.OMURETU_FALSE
 import omuretu.OMURETU_TRUE
 import omuretu.exception.OmuretuException
 import omuretu.vertualmachine.OmuretuVirtualMachine
@@ -17,8 +18,10 @@ class MoreOpecode(
         val leftValue = leftValue
         val rightValue = rightValue
 
+        val leftRegisterIndex = leftRegisterIndex
+
         if (leftValue is Number && rightValue is Number) {
-            registers[leftRegisterIndex] = if (leftValue.toInt() > rightValue.toInt()) OMURETU_TRUE else OMURETU_TRUE
+            registers[leftRegisterIndex] = if (leftValue.toInt() > rightValue.toInt()) OMURETU_TRUE else OMURETU_FALSE
             programCounter += PROGRAM_LENGTH
         } else {
             throw OmuretuException("MoreOpecode needs int value: left:$leftValue right:$rightValue")

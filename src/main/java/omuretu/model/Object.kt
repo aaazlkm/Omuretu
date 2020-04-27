@@ -1,17 +1,17 @@
 package omuretu.model
 
 import omuretu.Location
-import omuretu.environment.Environment
-import omuretu.environment.EnvironmentKey
+import omuretu.environment.base.VariableEnvironment
+import omuretu.environment.base.EnvironmentKey
 import omuretu.exception.AccessException
 
 data class Object(
         val classs: Class
 ) {
-    lateinit var environment: Environment
+    lateinit var variableEnvironment: VariableEnvironment
 
     fun getMember(location: Location): Any? {
-        return environment.get(location.let { EnvironmentKey(it.ancestorAt, it.indexInIdNames) })
+        return variableEnvironment.get(location.let { EnvironmentKey(it.ancestorAt, it.indexInIdNames) })
     }
 
     fun getMemberLocationOf(name: String): Location? {
@@ -25,7 +25,7 @@ data class Object(
                 throw AccessException("cannnot assign function $memberLocation")
             }
             else -> {
-                environment.put(memberLocation.let { EnvironmentKey(it.ancestorAt, it.indexInIdNames) }, member)
+                variableEnvironment.put(memberLocation.let { EnvironmentKey(it.ancestorAt, it.indexInIdNames) }, member)
             }
         }
     }

@@ -1,16 +1,20 @@
 package parser.ast
 
-import omuretu.environment.Environment
+import omuretu.environment.base.VariableEnvironment
 import omuretu.NestedIdNameLocationMap
+import omuretu.environment.base.TypeEnvironment
+import omuretu.typechecker.Type
 import omuretu.vertualmachine.ByteCodeStore
 
 interface ASTTree {
 
     fun lookupIdNamesLocation(idNameLocationMap: NestedIdNameLocationMap)
 
+    fun checkType(typeEnvironment: TypeEnvironment): Type
+
     fun compile(byteCodeStore: ByteCodeStore) { }
 
-    fun evaluate(environment: Environment): Any
+    fun evaluate(variableEnvironment: VariableEnvironment): Any
 
     /**
      * デバック用

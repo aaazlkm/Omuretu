@@ -1,7 +1,7 @@
 package omuretu.ast.statement
 
 import omuretu.NestedIdNameLocationMap
-import omuretu.environment.Environment
+import omuretu.environment.base.VariableEnvironment
 import omuretu.OMURETU_DEFAULT_RETURN_VALUE
 import parser.ast.ASTList
 import parser.ast.ASTTree
@@ -23,8 +23,8 @@ class ClassBodyStmnt(
         members.forEach { it.lookupIdNamesLocation(idNameLocationMap) }
     }
 
-    override fun evaluate(environment: Environment): Any {
-        members.forEach { it.evaluate(environment) }
+    override fun evaluate(variableEnvironment: VariableEnvironment): Any {
+        members.forEach { it.evaluate(variableEnvironment) }
         // `environment`にmemberを追加するだけでいいので、返り値はなんでもいい
         return OMURETU_DEFAULT_RETURN_VALUE
     }

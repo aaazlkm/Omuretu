@@ -1,6 +1,6 @@
-package omuretu.environment
+package omuretu.environment.base
 
-interface Environment {
+interface VariableEnvironment: Environment {
     fun put(key: EnvironmentKey, value: Any)
 
     fun get(key: EnvironmentKey): Any?

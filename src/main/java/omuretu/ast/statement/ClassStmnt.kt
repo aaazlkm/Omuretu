@@ -1,9 +1,9 @@
 package omuretu.ast.statement
 
-import omuretu.environment.Environment
+import omuretu.environment.base.VariableEnvironment
 import omuretu.NestedIdNameLocationMap
 import omuretu.ast.listeral.IdNameLiteral
-import omuretu.environment.GlobalEnvironment
+import omuretu.environment.GlobalVariableEnvironment
 import omuretu.exception.OmuretuException
 import parser.ast.ASTList
 import parser.ast.ASTTree
@@ -46,11 +46,11 @@ class ClassStmnt(
         get() = superClassIdNameLiteral?.name
 
     override fun lookupIdNamesLocation(idNameLocationMap: NestedIdNameLocationMap) {
-        // スーパークラスを持つ場合環境がないとスーパークラスの定義を取得することができないためここでは何もできない
+        // スーパークラスを持つ場合環境がないとスーパークラスの定義を取得することができないためここでは何もしない
     }
 
-    override fun evaluate(environment: Environment): Any {
-        val globalEnvironment = environment as? GlobalEnvironment
+    override fun evaluate(variableEnvironment: VariableEnvironment): Any {
+        val globalEnvironment = variableEnvironment as? GlobalVariableEnvironment
                 ?: throw OmuretuException("class can define only in global environment")
         val classMemberLocationMap = NestedIdNameLocationMap(globalEnvironment.idNameLocationMap)
         // クラスボディのメンバー最初にthisを追加

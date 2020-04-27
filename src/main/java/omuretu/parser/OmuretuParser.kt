@@ -19,7 +19,7 @@ import parser.ast.ASTTree
 import parser.element.Expression
 import java.util.HashSet
 
-class ArrayParser {
+class OmuretuParser {
     private var reserved = HashSet<String>()
     private var operators = Expression.Operators()
 
@@ -33,8 +33,8 @@ class ArrayParser {
     // def の定義
     private var def = Parser.rule(DefStmnt::class.java)
     private var paramList = Parser.rule()
-    private var params = Parser.rule(ParameterStmnt::class.java)
-    private var param = Parser.rule()
+    private var params = Parser.rule(ParametersStmnt::class.java)
+    private var param = Parser.rule(ParameterStmnt::class.java)
 
     // array の定義
     private var array = Parser.rule()
@@ -45,6 +45,10 @@ class ArrayParser {
     // simple の定義
     private var simple = Parser.rule(PrimaryExpression::class.java)
     private var block = Parser.rule(BlockStmnt::class.java)
+
+    // variable の定義
+    private var variable = Parser.rule(VarStmnt::class.java)
+    private var typeTag = Parser.rule(TypeTag::class.java)
 
     // expression の定義
     private var expression = Parser.rule()
@@ -79,10 +83,10 @@ class ArrayParser {
         )
 
         // def の定義
-        def.sep(DefStmnt.KEYWORD_DEF).identifier(reserved, IdNameLiteral::class.java).ast(paramList).ast(block)
-        paramList.sep(ParameterStmnt.KEYWORD_PARENTHESIS_START).maybe(params).sep(ParameterStmnt.KEYWORD_PARENTHESIS_END)
-        params.ast(param).repeat(Parser.rule().sep(ParameterStmnt.KEYWORD_PARAMETER_BREAK).ast(param))
-        param.identifier(reserved, IdNameLiteral::class.java)
+        def.sep(DefStmnt.KEYWORD_DEF).identifier(reserved, IdNameLiteral::class.java).ast(paramList).maybe(typeTag).ast(block)
+        paramList.sep(ParametersStmnt.KEYWORD_PARENTHESIS_START).maybe(params).sep(ParametersStmnt.KEYWORD_PARENTHESIS_END)
+        params.ast(param).repeat(Parser.rule().sep(ParametersStmnt.KEYWORD_PARAMETER_BREAK).ast(param))
+        param.identifier(reserved, IdNameLiteral::class.java).ast(typeTag)
 
         // arrayの定義
         array.sep(ArrayLiteral.KEYWORD_BRACKETS_START)
@@ -91,6 +95,7 @@ class ArrayParser {
 
         // statement の定義
         statement.or(
+                variable,
                 Parser.rule(IfStmnt::class.java).sep(IfStmnt.KEYWORD_IF).ast(expression).ast(block).option(Parser.rule().sep(IfStmnt.KEYWORD_ELSE).ast(block)),
                 Parser.rule(WhileStmnt::class.java).sep(WhileStmnt.KEYWORD_WHILE).ast(expression).ast(block),
                 simple
@@ -102,6 +107,10 @@ class ArrayParser {
                 .option(statement)
                 .repeat(Parser.rule().sep(";", IdToken.EOL).option(statement))
                 .sep(BlockStmnt.BLOCK_END)
+
+        // variable の定義
+        variable.sep(VarStmnt.KEYWORD_VAR).identifier(reserved, IdNameLiteral::class.java).maybe(typeTag).sep(VarStmnt.KEYWORD_EQUAL).ast(expression)
+        typeTag.sep(TypeTag.KEYWORD_COLON).identifier(reserved, IdNameLiteral::class.java)
 
         // expression の定義
         expression.expression(factor, operators, BinaryExpression::class.java)
@@ -126,6 +135,7 @@ class ArrayParser {
         args.ast(expression).repeat(Parser.rule().sep(ArgumentPostfix.KEYWORD_ARGUMENT_BREAK).ast(expression))
         dot.sep(DotPostfix.KEYWORD_DOT).identifier(reserved, IdNameLiteral::class.java)
 
+        reserved.add(":")
         reserved.add(";")
         reserved.add("}")
         reserved.add(")")

@@ -1,32 +1,40 @@
 package omuretu.native
 
-import omuretu.environment.GlobalEnvironment
+import omuretu.environment.GlobalVariableEnvironment
+import omuretu.environment.base.EnvironmentKey
+import omuretu.environment.base.TypeEnvironment
 import omuretu.exception.OmuretuException
 import omuretu.model.Function
+import omuretu.typechecker.Type
 import java.lang.reflect.Method
 import javax.swing.JOptionPane
 
 object NativeFunctionEnvironmentFactory {
     private data class FunctionDefinition(
             val name: String,
+            val functionType: Type.Defined.Function,
             val parameterType: Array<Class<*>> = arrayOf()
     )
 
-    private val functionDefinitions = listOf<FunctionDefinition>(
-            FunctionDefinition("print", arrayOf(Any::class.java)),
-            FunctionDefinition("read"),
-            FunctionDefinition("length", arrayOf(String::class.java)),
-            FunctionDefinition("toInt", arrayOf(Any::class.java)),
-            FunctionDefinition("getCurrentTimeMillis")
+    private val functionDefinitions = listOf(
+            FunctionDefinition("print", Type.Defined.Function(Type.Defined.Int, listOf(Type.Defined.Any)), arrayOf(Any::class.java)),
+            FunctionDefinition("read", Type.Defined.Function(Type.Defined.String)),
+            FunctionDefinition("length", Type.Defined.Function(Type.Defined.Int, listOf(Type.Defined.String)), arrayOf(String::class.java)),
+            FunctionDefinition("toInt", Type.Defined.Function(Type.Defined.Int, listOf(Type.Defined.Any)), arrayOf(Any::class.java)),
+            FunctionDefinition("getCurrentTimeMillis", Type.Defined.Function(Type.Defined.Int))
     )
 
-    fun createBasedOn(environment: GlobalEnvironment): GlobalEnvironment {
+    fun createBasedOn(variableEnvironment: GlobalVariableEnvironment, typeEnvironment: TypeEnvironment): GlobalVariableEnvironment {
         functionDefinitions
-                .map { it.name to getMethodByReflection(it.name, *it.parameterType) }
-                .forEach { (name, nativeMethod) ->
-                    environment.putValueByIdName(name, Function.NativeFunction(name, nativeMethod, nativeMethod.parameterCount))
+                .forEach { functionDefinition ->
+                    val nativeMethod = getMethodByReflection(functionDefinition.name, *functionDefinition.parameterType)
+
+                    variableEnvironment.putValueByIdName(functionDefinition.name, Function.NativeFunction(functionDefinition.name, nativeMethod, nativeMethod.parameterCount))
+                    variableEnvironment.idNameLocationMap.getLocationFromAllMap(functionDefinition.name)?.let {
+                        typeEnvironment.put(EnvironmentKey(it.ancestorAt, it.indexInIdNames), functionDefinition.functionType)
+                    }
                 }
-        return environment
+        return variableEnvironment
     }
 
     private fun getMethodByReflection(functionName: String, vararg parameterType: Class<*>): Method {

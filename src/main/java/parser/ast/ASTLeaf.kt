@@ -1,9 +1,11 @@
 package parser.ast
 
 import lexer.token.Token
-import omuretu.environment.Environment
+import omuretu.environment.base.VariableEnvironment
 import omuretu.NestedIdNameLocationMap
+import omuretu.environment.base.TypeEnvironment
 import omuretu.exception.OmuretuException
+import omuretu.typechecker.Type
 import omuretu.vertualmachine.ByteCodeStore
 
 open class ASTLeaf(open val token: Token) : ASTTree {
@@ -20,14 +22,20 @@ open class ASTLeaf(open val token: Token) : ASTTree {
         }
     }
 
-    override fun lookupIdNamesLocation(idNameLocationMap: NestedIdNameLocationMap) {}
-
-    override fun compile(byteCodeStore: ByteCodeStore) {
-        throw OmuretuException("not override compile method")
+    override fun lookupIdNamesLocation(idNameLocationMap: NestedIdNameLocationMap) {
+        // TODO 何もしなくていいのか調査
     }
 
-    override fun evaluate(environment: Environment): Any {
-        throw OmuretuException("not override evaluate method")
+    override fun checkType(typeEnvironment: TypeEnvironment): Type {
+        throw OmuretuException("not override checkType method $this")
+    }
+
+    override fun compile(byteCodeStore: ByteCodeStore) {
+        throw OmuretuException("not override compile method $this")
+    }
+
+    override fun evaluate(variableEnvironment: VariableEnvironment): Any {
+        throw OmuretuException("not override evaluate method $this")
     }
 
     override fun toString(): String = token.toString()

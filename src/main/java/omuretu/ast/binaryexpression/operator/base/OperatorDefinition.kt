@@ -1,6 +1,6 @@
 package omuretu.ast.binaryexpression.operator.base
 
-import omuretu.environment.Environment
+import omuretu.environment.base.VariableEnvironment
 import omuretu.ast.binaryexpression.operator.*
 import parser.ast.ASTTree
 import parser.element.Expression
@@ -67,17 +67,17 @@ enum class OperatorDefinition {
             }
         }
 
-    fun createOperator(leftTree: ASTTree, rightTree: ASTTree, environment: Environment): Operator {
+    fun createOperator(leftTree: ASTTree, rightTree: ASTTree, variableEnvironment: VariableEnvironment): Operator {
         return when (this) {
-            ASSIGNMENT -> AssignmentOperator(leftTree, rightTree, environment)
-            EQUAL -> EqualOperator(leftTree, rightTree, environment)
-            LESS -> LessOperator(leftTree, rightTree, environment)
-            MINUS -> MinusOperator(leftTree, rightTree, environment)
-            MORE -> MoreOperator(leftTree, rightTree, environment)
-            MULTI -> MultiOperator(leftTree, rightTree, environment)
-            PLUS -> PlusOperator(leftTree, rightTree, environment)
-            QUOTIENT -> QuotientOperator(leftTree, rightTree, environment)
-            SURPLUS -> SurplusOperator(leftTree, rightTree, environment)
+            ASSIGNMENT -> AssignmentOperator(leftTree, rightTree, variableEnvironment)
+            EQUAL -> EqualOperator(leftTree, rightTree, variableEnvironment)
+            LESS -> LessOperator(leftTree, rightTree, variableEnvironment)
+            MINUS -> MinusOperator(leftTree, rightTree, variableEnvironment)
+            MORE -> MoreOperator(leftTree, rightTree, variableEnvironment)
+            MULTI -> MultiOperator(leftTree, rightTree, variableEnvironment)
+            PLUS -> PlusOperator(leftTree, rightTree, variableEnvironment)
+            QUOTIENT -> QuotientOperator(leftTree, rightTree, variableEnvironment)
+            SURPLUS -> SurplusOperator(leftTree, rightTree, variableEnvironment)
         }
     }
 }

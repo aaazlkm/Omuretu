@@ -1,6 +1,6 @@
 package omuretu.ast.binaryexpression.operator.base
 
-import omuretu.environment.Environment
+import omuretu.environment.base.VariableEnvironment
 import omuretu.model.InlineCache
 import parser.ast.ASTTree
 
@@ -16,7 +16,7 @@ interface Operator {
 
     val rightTree: ASTTree
 
-    val environment: Environment
+    val variableEnvironment: VariableEnvironment
 }
 
 /**

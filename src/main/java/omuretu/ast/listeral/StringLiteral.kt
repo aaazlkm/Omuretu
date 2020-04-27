@@ -3,7 +3,9 @@ package omuretu.ast.listeral
 import parser.ast.ASTLeaf
 import lexer.token.StringToken
 import lexer.token.Token
-import omuretu.environment.Environment
+import omuretu.environment.base.TypeEnvironment
+import omuretu.environment.base.VariableEnvironment
+import omuretu.typechecker.Type
 import omuretu.vertualmachine.ByteCodeStore
 import omuretu.vertualmachine.OmuretuVirtualMachine
 import omuretu.vertualmachine.opecode.SConstOpecode
@@ -26,6 +28,12 @@ class StringLiteral(
     val string: String
         get() = token.string
 
+    override fun toString(): String = "token: $token"
+
+    override fun checkType(typeEnvironment: TypeEnvironment): Type {
+        return Type.Defined.String
+    }
+
     override fun compile(byteCodeStore: ByteCodeStore) {
         val index = byteCodeStore.strings.size - 1
         byteCodeStore.strings[index] = string
@@ -35,7 +43,7 @@ class StringLiteral(
         }
     }
 
-    override fun evaluate(environment: Environment): Any {
+    override fun evaluate(variableEnvironment: VariableEnvironment): Any {
         return token.string
     }
 }

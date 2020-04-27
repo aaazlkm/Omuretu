@@ -1,7 +1,9 @@
 package omuretu.ast.statement
 
 import omuretu.OMURETU_DEFAULT_RETURN_VALUE
-import omuretu.environment.Environment
+import omuretu.environment.base.TypeEnvironment
+import omuretu.environment.base.VariableEnvironment
+import omuretu.typechecker.Type
 import omuretu.vertualmachine.ByteCodeStore
 import omuretu.vertualmachine.OmuretuVirtualMachine
 import omuretu.vertualmachine.opecode.BConstOpecode
@@ -9,7 +11,7 @@ import parser.ast.ASTList
 import parser.ast.ASTTree
 
 class BlockStmnt(
-        val astTrees: List<ASTTree>
+        private val astTrees: List<ASTTree>
 ) : ASTList(astTrees) {
     companion object Factory : FactoryMethod  {
         val BLOCK_START = "{"
@@ -19,6 +21,10 @@ class BlockStmnt(
         override fun newInstance(argument: List<ASTTree>): ASTTree? {
             return BlockStmnt(argument)
         }
+    }
+
+    override fun checkType(typeEnvironment: TypeEnvironment): Type {
+        return astTrees.map { it.checkType(typeEnvironment) }.lastOrNull() ?: Type.Defined.Int
     }
 
     override fun compile(byteCodeStore: ByteCodeStore) {
@@ -35,10 +41,10 @@ class BlockStmnt(
         }
     }
 
-    override fun evaluate(environment: Environment): Any {
+    override fun evaluate(variableEnvironment: VariableEnvironment): Any {
         var result: Any? = null
         astTrees.forEach {
-            result = it.evaluate(environment)
+            result = it.evaluate(variableEnvironment)
         }
         return result ?: OMURETU_DEFAULT_RETURN_VALUE // FIXME うまくない
     }

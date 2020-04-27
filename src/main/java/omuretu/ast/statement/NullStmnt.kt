@@ -1,7 +1,7 @@
 package omuretu.ast.statement
 
 import omuretu.OMURETU_DEFAULT_RETURN_VALUE
-import omuretu.environment.Environment
+import omuretu.environment.base.VariableEnvironment
 import parser.ast.ASTList
 import parser.ast.ASTTree
 
@@ -14,7 +14,7 @@ class NullStmnt(astTrees: List<ASTTree>) : ASTList(astTrees) {
         }
     }
 
-    override fun evaluate(environment: Environment): Any {
+    override fun evaluate(variableEnvironment: VariableEnvironment): Any {
         return OMURETU_DEFAULT_RETURN_VALUE
     }
 }

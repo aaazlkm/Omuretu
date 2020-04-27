@@ -2,7 +2,10 @@ package omuretu.ast.statement
 
 import omuretu.OMURETU_FALSE
 import omuretu.OMURETU_DEFAULT_RETURN_VALUE
-import omuretu.environment.Environment
+import omuretu.environment.base.TypeEnvironment
+import omuretu.environment.base.VariableEnvironment
+import omuretu.typechecker.Type
+import omuretu.typechecker.TypeCheckHelper
 import omuretu.vertualmachine.ByteCodeStore
 import omuretu.vertualmachine.OmuretuVirtualMachine
 import omuretu.vertualmachine.opecode.BConstOpecode
@@ -14,8 +17,8 @@ import util.ex.sliceByByte
 
 class IfStmnt(
         val condition: ASTTree,
-        val thenBlock: ASTTree,
-        val elseBlock: ASTTree? = null
+        val thenBlock: BlockStmnt,
+        val elseBlock: BlockStmnt? = null
 ) : ASTList(elseBlock?.let { listOf(condition, thenBlock, it) } ?: listOf(condition, thenBlock)) {
     companion object Factory : FactoryMethod {
         const val KEYWORD_IF = "if"
@@ -24,11 +27,27 @@ class IfStmnt(
         @JvmStatic
         override fun newInstance(argument: List<ASTTree>): ASTTree? {
             if (argument.size !in 2..3) return null
+            val thenBlock = argument[1] as? BlockStmnt ?: return null
             return when (argument.size) {
-                2 -> IfStmnt(argument[0], argument[1])
-                3 -> IfStmnt(argument[0], argument[1], argument[2])
+                2 -> IfStmnt(argument[0], thenBlock)
+                3 -> {
+                    val elseBlock = argument[2] as? BlockStmnt ?: return null
+                    IfStmnt(argument[0], thenBlock, elseBlock)
+                }
                 else -> null
             }
+        }
+    }
+
+    override fun checkType(typeEnvironment: TypeEnvironment): Type {
+        val conditionType = condition.checkType(typeEnvironment)
+        TypeCheckHelper.checkSubTypeOrThrow(conditionType, Type.Defined.Int, this, typeEnvironment)
+        val thenBlockType = thenBlock.checkType(typeEnvironment)
+        val elseBlockType = elseBlock?.checkType(typeEnvironment)
+        return if (elseBlockType == null) {
+            thenBlockType
+        } else {
+            TypeCheckHelper.union(thenBlockType, elseBlockType, typeEnvironment)
         }
     }
 
@@ -63,12 +82,12 @@ class IfStmnt(
         }
     }
 
-    override fun evaluate(environment: Environment): Any {
-        val conditionResult = condition.evaluate(environment)
+    override fun evaluate(variableEnvironment: VariableEnvironment): Any {
+        val conditionResult = condition.evaluate(variableEnvironment)
         return if (conditionResult is Int && conditionResult != OMURETU_FALSE) {
-            thenBlock.evaluate(environment)
+            thenBlock.evaluate(variableEnvironment)
         } else {
-            elseBlock?.evaluate(environment) ?: OMURETU_DEFAULT_RETURN_VALUE
+            elseBlock?.evaluate(variableEnvironment) ?: OMURETU_DEFAULT_RETURN_VALUE
         }
     }
 

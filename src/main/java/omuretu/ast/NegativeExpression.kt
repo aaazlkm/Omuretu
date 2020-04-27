@@ -1,7 +1,10 @@
 package omuretu.ast
 
+import omuretu.environment.base.TypeEnvironment
 import omuretu.exception.OmuretuException
-import omuretu.environment.Environment
+import omuretu.environment.base.VariableEnvironment
+import omuretu.typechecker.Type
+import omuretu.typechecker.TypeCheckHelper
 import omuretu.vertualmachine.ByteCodeStore
 import omuretu.vertualmachine.OmuretuVirtualMachine
 import omuretu.vertualmachine.opecode.NegOpecode
@@ -19,6 +22,12 @@ class NegativeExpression(
         }
     }
 
+    override fun checkType(typeEnvironment: TypeEnvironment): Type {
+        val type = operand.checkType(typeEnvironment)
+        TypeCheckHelper.checkSubTypeOrThrow(Type.Defined.Int, type, this, typeEnvironment)
+        return type
+    }
+
     override fun compile(byteCodeStore: ByteCodeStore) {
         operand.compile(byteCodeStore)
         val registerAt = OmuretuVirtualMachine.encodeRegisterIndex(byteCodeStore.registerPosition - 1)
@@ -27,8 +36,8 @@ class NegativeExpression(
         }
     }
 
-    override fun evaluate(environment: Environment): Any {
-        val result = operand.evaluate(environment)
+    override fun evaluate(variableEnvironment: VariableEnvironment): Any {
+        val result = operand.evaluate(variableEnvironment)
         return if (result is Int) {
             -result
         } else {

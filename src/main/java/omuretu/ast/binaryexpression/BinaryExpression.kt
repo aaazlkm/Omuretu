@@ -3,12 +3,15 @@ package omuretu.ast.binaryexpression
 import lexer.token.IdToken
 import omuretu.exception.OmuretuException
 import omuretu.ast.binaryexpression.operator.base.OperatorDefinition
-import omuretu.environment.Environment
+import omuretu.environment.base.VariableEnvironment
 import omuretu.NestedIdNameLocationMap
 import omuretu.ast.binaryexpression.operator.base.LeftValueOperator
 import omuretu.ast.binaryexpression.operator.base.RightValueOperator
 import omuretu.ast.listeral.IdNameLiteral
+import omuretu.environment.base.TypeEnvironment
 import omuretu.model.InlineCache
+import omuretu.typechecker.Type
+import omuretu.typechecker.TypeCheckHelper
 import omuretu.vertualmachine.ByteCodeStore
 import omuretu.vertualmachine.OmuretuVirtualMachine
 import omuretu.vertualmachine.opecode.base.ComputeOpecode
@@ -46,6 +49,32 @@ class BinaryExpression(
         }
     }
 
+    override fun checkType(typeEnvironment: TypeEnvironment): Type {
+        val operatorToken = operator.token as? IdToken ?: throw OmuretuException("cannnot evaluate:", this)
+
+        if (operatorToken.id == OperatorDefinition.ASSIGNMENT.rawOperator) {
+            val rightType = right.checkType(typeEnvironment)
+            val leftIdName = left as? IdNameLiteral ?: throw OmuretuException("cannnot compile:", this)
+            return leftIdName.checkTypeForAssign(typeEnvironment, rightType)
+        }
+
+        val leftType = left.checkType(typeEnvironment)
+        val rightType = right.checkType(typeEnvironment)
+        return when (operatorToken.id) {
+            OperatorDefinition.EQUAL.rawOperator -> {
+                Type.Defined.Int
+            }
+            OperatorDefinition.PLUS.rawOperator -> {
+                TypeCheckHelper.plus(leftType, rightType, typeEnvironment)
+            }
+            else -> {
+                TypeCheckHelper.checkSubTypeOrThrow(Type.Defined.Int, leftType, this, typeEnvironment)
+                TypeCheckHelper.checkSubTypeOrThrow(Type.Defined.Int, rightType , this, typeEnvironment)
+                Type.Defined.Int
+            }
+        }
+    }
+
     override fun compile(byteCodeStore: ByteCodeStore) {
         val operatorToken = operator.token as? IdToken ?: throw OmuretuException("cannnot compile:", this)
         if (operatorToken.id == OperatorDefinition.ASSIGNMENT.rawOperator) {
@@ -64,9 +93,9 @@ class BinaryExpression(
         }
     }
 
-    override fun evaluate(environment: Environment): Any {
+    override fun evaluate(variableEnvironment: VariableEnvironment): Any {
         val operatorToken = operator.token as? IdToken ?: throw OmuretuException("cannnot evaluate:", this)
-        val operator = OperatorDefinition.from(operatorToken.id)?.createOperator(left, right, environment)
+        val operator = OperatorDefinition.from(operatorToken.id)?.createOperator(left, right, variableEnvironment)
                 ?: throw OmuretuException("cannnot evaluate:", this)
         return when (operator) {
             is LeftValueOperator -> {

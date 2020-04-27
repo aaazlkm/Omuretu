@@ -1,14 +1,16 @@
 package omuretu.environment
 
+import omuretu.environment.base.EnvironmentKey
+import omuretu.environment.base.VariableEnvironment
 import omuretu.exception.OmuretuException
 import omuretu.vertualmachine.ByteCodeStore
 import omuretu.vertualmachine.HeapMemory
 
-open class NestedEnvironment(
+open class NestedVariableEnvironment(
         numberOfIdNames: Int,
-        private val outEnvironment: NestedEnvironment? = null
-) : Environment, HeapMemory {
-    var indexToValues = arrayOfNulls<Any>(numberOfIdNames)
+        private val outEnvironment: NestedVariableEnvironment? = null
+) : VariableEnvironment, HeapMemory {
+    protected var values = arrayOfNulls<Any>(numberOfIdNames)
 
     open val byteCodeStore: ByteCodeStore?
         get() = outEnvironment?.byteCodeStore
@@ -18,16 +20,18 @@ open class NestedEnvironment(
     override fun put(key: EnvironmentKey, value: Any) {
         if (key.ancestorAt < 0) throw OmuretuException("illegal ancestorAt: ${key.ancestorAt}")
         if (key.ancestorAt == 0) {
-            indexToValues[key.index] = value
+            values[key.index] = value
         } else {
-            outEnvironment?.put(EnvironmentKey(key.ancestorAt - 1, key.index), value)
+            outEnvironment?.put(EnvironmentKey(key.ancestorAt - 1, key.index), value) ?: run {
+                throw OmuretuException("illegal ancestorAt: ${key.ancestorAt}")
+            }
         }
     }
 
     override fun get(key: EnvironmentKey): Any? {
         if (key.ancestorAt < 0) throw OmuretuException("illegal ancestorAt: ${key.ancestorAt}")
         return if (key.ancestorAt == 0) {
-            indexToValues[key.index]
+            values[key.index]
         } else {
             outEnvironment?.get(EnvironmentKey(key.ancestorAt - 1, key.index))
         }
@@ -38,11 +42,11 @@ open class NestedEnvironment(
     //region heap memory
 
     override fun read(index: Int): Any? {
-        return indexToValues[index]
+        return values[index]
     }
 
     override fun write(index: Int, value: Any?) {
-        indexToValues[index] = value
+        values[index] = value
     }
 
     //endregion

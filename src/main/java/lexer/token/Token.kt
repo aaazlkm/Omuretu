@@ -8,5 +8,5 @@ open class Token(
         val EOF = Token(-1)
     }
 
-    override fun toString(): String = ""
+    override fun toString(): String = "linenumber: $lineNumber, token: $this"
 }
