@@ -1,6 +1,5 @@
 package omuretu.environment
 
-import omuretu.NestedIdNameLocationMap
 import omuretu.environment.base.EnvironmentKey
 import omuretu.vertualmachine.ByteCodeStore
 import omuretu.vertualmachine.HeapMemory

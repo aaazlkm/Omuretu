@@ -1,7 +1,7 @@
 package parser.ast
 
 import omuretu.environment.base.VariableEnvironment
-import omuretu.NestedIdNameLocationMap
+import omuretu.environment.NestedIdNameLocationMap
 import omuretu.environment.base.TypeEnvironment
 import omuretu.typechecker.Type
 import omuretu.vertualmachine.ByteCodeStore

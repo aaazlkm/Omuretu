@@ -38,10 +38,6 @@ abstract class Symbol constructor(type: Class<out ASTLeaf>?) : Element {
 /**
  * IDENTIFIER
  *
- * @property reserved
- * @constructor
- * TODO
- *
  * @param type
  */
 class IdSymbol constructor(type: Class<out ASTLeaf>?, private val reserved: HashSet<String>) : Symbol(type) {
@@ -53,23 +49,16 @@ class IdSymbol constructor(type: Class<out ASTLeaf>?, private val reserved: Hash
 /**
  * NUMBER
  *
- * @constructor
- * TODO
- *
  * @param type
  */
 class NumberSymbol constructor(type: Class<out ASTLeaf>?) : Symbol(type) {
     override fun validateToken(token: Token): Boolean {
         return token is NumberToken
     }
-
 }
 
 /**
  * STRING
- *
- * @constructor
- * TODO
  *
  * @param type
  */

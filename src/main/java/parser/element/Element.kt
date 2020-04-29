@@ -5,7 +5,7 @@ import parser.ast.ASTTree
 
 interface Element {
     /**
-     * TODO
+     * トークンを変換して構文木を作成する
      *
      * @param lexer
      * @param results

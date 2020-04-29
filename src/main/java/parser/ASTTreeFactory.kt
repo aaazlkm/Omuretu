@@ -28,7 +28,6 @@ interface ASTTreeFactory {
                             ASTList(astTrees.toList())
                         }
                     }
-
                     throw ParseException("定義されていません")
                 }
             }

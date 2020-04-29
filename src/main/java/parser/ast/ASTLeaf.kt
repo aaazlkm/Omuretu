@@ -2,7 +2,7 @@ package parser.ast
 
 import lexer.token.Token
 import omuretu.environment.base.VariableEnvironment
-import omuretu.NestedIdNameLocationMap
+import omuretu.environment.NestedIdNameLocationMap
 import omuretu.environment.base.TypeEnvironment
 import omuretu.exception.OmuretuException
 import omuretu.typechecker.Type

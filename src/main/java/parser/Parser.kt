@@ -7,6 +7,11 @@ import parser.ast.ASTTree
 import parser.element.*
 import java.util.HashSet
 
+/**
+ * BNF文法を全て構文解析できるわけではなく、
+ * 1つのトークンを先読みするだけで選択肢のどれを選ぶか一意に決定できる文法でなくてはならない
+ * 非終端記号の文法法則の先頭は終端記号が異なる記号でなければならない
+ */
 class Parser {
     companion object {
         fun rule(clazz: Class<out ASTList>? = null): Parser {
@@ -52,18 +57,8 @@ class Parser {
         return this
     }
 
-    fun resetElementsAndFactory(clazz: Class<out ASTList>?): Parser {
-        this.elements.clear()
-        this.factory = if (clazz == null) {
-            ASTTreeFactory.createInstance()
-        } else {
-            ASTTreeFactory.createInstance(clazz, ASTList.argumentType)
-        }
-        return this
-    }
-
     /**
-     * TODO
+     * 整数リテラルを規則に追加する
      *
      * @param clazz
      * @return
@@ -74,7 +69,7 @@ class Parser {
     }
 
     /**
-     * TODO
+     * 予約語を覗く識別子を規則に追加する
      *
      * @param clazz
      * @param reserved
@@ -86,7 +81,7 @@ class Parser {
     }
 
     /**
-     * TODO
+     * 文字列リテラルを規則に追加する
      *
      * @param clazz
      * @return
@@ -97,7 +92,7 @@ class Parser {
     }
 
     /**
-     * TODO
+     * [pat]に合致する識別子を追加する
      *
      * @param pat
      * @return
@@ -108,7 +103,7 @@ class Parser {
     }
 
     /**
-     * TODO
+     * 抽象構文木に含めない終端記号を規則に追加する
      *
      * @param pat
      * @return
@@ -119,7 +114,7 @@ class Parser {
     }
 
     /**
-     * TODO
+     * 非終端記号pを規則に追加する
      *
      * @param parser
      * @return
@@ -130,7 +125,7 @@ class Parser {
     }
 
     /**
-     * TODO
+     * 非終端記号p1,p2,...,pnのorを規則に追加する
      *
      * @param parsers
      * @return
@@ -141,8 +136,7 @@ class Parser {
     }
 
     /**
-     * [pat]
-     * 部分木が作成されるので省略されたかわかる
+     * 省略可能な非終端記号を規則に追加する
      *
      * @param parser
      * @return
@@ -154,8 +148,8 @@ class Parser {
     }
 
     /**
-     * [pat]
-     * 部分木が作成されないので省略されたかわからない
+     * 省略可能な非終端記号を規則に追加する
+     * 省略時には根だけの抽象構文木になる
      *
      * @param parser
      * @return
@@ -166,7 +160,7 @@ class Parser {
     }
 
     /**
-     * TODO
+     * 非終端記号pの0回以上の繰り返しを規則に追加する
      *
      * @param parser
      * @return
@@ -177,7 +171,7 @@ class Parser {
     }
 
     /**
-     * TODO
+     * 2項演算子の規則を追加する
      *
      * @param subExpression
      * @param operators

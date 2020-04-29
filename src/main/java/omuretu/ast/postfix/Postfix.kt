@@ -8,11 +8,6 @@ import parser.ast.ASTList
 import parser.ast.ASTTree
 
 abstract class Postfix(children: List<ASTTree>): ASTList(children) {
-    companion object {
-        const val KEYWORD_PARENTHESIS_START = "("
-        const val KEYWORD_PARENTHESIS_END = ")"
-    }
-
     override fun checkType(typeEnvironment: TypeEnvironment): Type {
         throw OmuretuException("must be called `checkType(typeEnvironment: TypeEnvironment): Type` instead of this method", this)
     }

@@ -6,7 +6,7 @@ import lexer.token.Token
 import omuretu.exception.OmuretuException
 import omuretu.environment.base.VariableEnvironment
 import omuretu.environment.base.EnvironmentKey
-import omuretu.NestedIdNameLocationMap
+import omuretu.environment.NestedIdNameLocationMap
 import omuretu.environment.base.TypeEnvironment
 import omuretu.typechecker.Type
 import omuretu.typechecker.TypeCheckHelper

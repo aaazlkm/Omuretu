@@ -1,6 +1,6 @@
 package omuretu.model
 
-import omuretu.Location
+import omuretu.environment.Location
 
 
 data class InlineCache(

@@ -1,14 +1,14 @@
 package omuretu.model
 
 import omuretu.environment.base.VariableEnvironment
-import omuretu.ast.statement.BlockStmnt
-import omuretu.ast.statement.ParametersStmnt
+import omuretu.ast.statement.BlockStatement
+import omuretu.ast.statement.ParametersStatement
 import java.lang.reflect.Method
 
 sealed class Function {
     data class OmuretuFunction(
-            val parameters: ParametersStmnt,
-            val blockStmnt: BlockStmnt,
+            val parameters: ParametersStatement,
+            val blockStatement: BlockStatement,
             val variableEnvironment: VariableEnvironment,
             val numberOfIdName: Int,
             val entry: Int

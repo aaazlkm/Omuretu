@@ -1,24 +1,24 @@
 package omuretu.model
 
-import omuretu.Location
-import omuretu.NestedIdNameLocationMap
+import omuretu.environment.Location
+import omuretu.environment.NestedIdNameLocationMap
 import omuretu.environment.base.VariableEnvironment
 import omuretu.environment.NestedVariableEnvironment
-import omuretu.ast.statement.ClassBodyStmnt
-import omuretu.ast.statement.ClassStmnt
+import omuretu.ast.statement.ClassBodyStatement
+import omuretu.ast.statement.ClassStatement
 import omuretu.environment.base.EnvironmentKey
 import omuretu.environment.GlobalVariableEnvironment
 import omuretu.exception.OmuretuException
 
 data class Class(
-        val classStmnt: ClassStmnt,
+        val classStmnt: ClassStatement,
         private val environment: GlobalVariableEnvironment,
         private val classMemberLocationMap: NestedIdNameLocationMap,
         private val thisLocation: Location
 ) {
     val superClass: Class?
 
-    val body: ClassBodyStmnt
+    val body: ClassBodyStatement
         get() = classStmnt.bodyStmnt
 
     init {

@@ -19,6 +19,8 @@ class ArgumentPostfix(
         private val astTrees: List<ASTTree>
 ) : Postfix(astTrees) {
     companion object Factory : FactoryMethod {
+        const val KEYWORD_PARENTHESIS_START = "("
+        const val KEYWORD_PARENTHESIS_END = ")"
         const val KEYWORD_ARGUMENT_BREAK = ","
 
         @JvmStatic
