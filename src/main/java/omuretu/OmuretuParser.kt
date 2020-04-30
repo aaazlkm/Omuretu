@@ -96,9 +96,10 @@ class OmuretuParser {
 
         // statement の定義
         statement.or(
-                variable,
                 Parser.rule(IfStatement::class.java).sep(IfStatement.KEYWORD_IF).ast(expression).ast(block).option(Parser.rule().sep(IfStatement.KEYWORD_ELSE).ast(block)),
-                Parser.rule(WhileStatement::class.java).sep(WhileStatement.KEYWORD_WHILE).ast(expression).ast(block)
+                Parser.rule(WhileStatement::class.java).sep(WhileStatement.KEYWORD_WHILE).ast(expression).ast(block),
+                variable,
+                expression
         )
 
         // variable の定義

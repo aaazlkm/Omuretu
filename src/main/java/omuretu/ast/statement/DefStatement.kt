@@ -61,12 +61,11 @@ class DefStatement(
 
     override fun checkType(typeEnvironment: TypeEnvironment): Type {
         val environmentKey = environmentKey ?: throw OmuretuException("donot defined $this")
-        val returnType = typeTag.type as? Type.Defined ?: throw OmuretuException("undefined type $this")
+        val returnType = typeTag.type as? Type.Defined ?: Type.Defined.Unit
         val parameterTypes = parameters.types
         if (parameters.parameterNames.size != parameterTypes.size) throw OmuretuException("failed to convert parameter type :from ${parameters.parameterNames} to $parameterTypes")
         val functionType = Type.Defined.Function(returnType, parameterTypes)
         typeEnvironment.put(environmentKey, functionType)
-
         val bodyTypeEnvironment = TypeEnvironmentImpl(typeEnvironment)
         parameters.checkType(bodyTypeEnvironment)
         blockStatement.checkType(bodyTypeEnvironment)

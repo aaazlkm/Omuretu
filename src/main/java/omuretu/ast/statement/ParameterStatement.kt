@@ -28,7 +28,7 @@ class ParameterStatement(
     val type: Type.Defined
         get() = typeTag.type as Type.Defined // パラメータ型は事前に決まっている
 
-    override fun toString() = "$idNameLiteral ${TypeTag.KEYWORD_COLON} $typeTag"
+    override fun toString() = "$idNameLiteral $typeTag"
 
     override fun checkType(typeEnvironment: TypeEnvironment): Type {
         return typeTag.type ?: throw OmuretuException("undefined type name:", this)
