@@ -26,6 +26,10 @@ sealed class Type {
             const val NAME = "String"
         }
 
+        object Unit : Defined() {
+            const val NAME = "Unit"
+        }
+
         data class Function(val returnType: Defined, val parameterTypes: List<Defined> = listOf()) : Defined()
     }
 
