@@ -1,8 +1,14 @@
 package omuretu.ast.statement
 
-import omuretu.environment.NestedIdNameLocationMap
+import omuretu.environment.IdNameLocationMap
+import omuretu.environment.base.TypeEnvironment
 import omuretu.environment.base.VariableEnvironment
-import omuretu.OMURETU_DEFAULT_RETURN_VALUE
+import omuretu.typechecker.Type
+import omuretu.vertualmachine.ByteCodeStore
+import omuretu.visitor.CheckTypeVisitor
+import omuretu.visitor.CompileVisitor
+import omuretu.visitor.EvaluateVisitor
+import omuretu.visitor.IdNameLocationVisitor
 import parser.ast.ASTList
 import parser.ast.ASTTree
 
@@ -19,17 +25,19 @@ class ClassBodyStatement(
         }
     }
 
-    override fun lookupIdNamesLocation(idNameLocationMap: NestedIdNameLocationMap) {
-        members.forEach { it.lookupIdNamesLocation(idNameLocationMap) }
+    override fun toString() = "$KEYWORD_BRACES_START $members $KEYWORD_BRACES_END"
+
+    override fun accept(idNameLocationVisitor: IdNameLocationVisitor, idNameLocationMap: IdNameLocationMap) {
+        idNameLocationVisitor.visit(this, idNameLocationMap)
     }
 
-    override fun evaluate(variableEnvironment: VariableEnvironment): Any {
-        members.forEach { it.evaluate(variableEnvironment) }
-        // `environment`にmemberを追加するだけでいいので、返り値はなんでもいい
-        return OMURETU_DEFAULT_RETURN_VALUE
+    override fun accept(checkTypeVisitor: CheckTypeVisitor, typeEnvironment: TypeEnvironment): Type {
+        return checkTypeVisitor.visit(this, typeEnvironment)
     }
 
-    override fun toString(): String {
-        return "(classbody: $members)"
+    override fun accept(compileVisitor: CompileVisitor, byteCodeStore: ByteCodeStore) {}
+
+    override fun accept(evaluateVisitor: EvaluateVisitor, variableEnvironment: VariableEnvironment): Any {
+        return evaluateVisitor.visit(this, variableEnvironment)
     }
 }

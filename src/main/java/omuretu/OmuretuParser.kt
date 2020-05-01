@@ -2,7 +2,6 @@ package omuretu
 
 import lexer.Lexer
 import lexer.token.IdToken
-import omuretu.ast.*
 import omuretu.ast.expression.NegativeExpression
 import omuretu.ast.expression.PrimaryExpression
 import omuretu.ast.expression.binaryexpression.BinaryExpression
@@ -42,7 +41,7 @@ class OmuretuParser {
 
     // variable の定義
     private var variable = Parser.rule(VarStatement::class.java)
-    private var typeTag = Parser.rule(TypeTag::class.java)
+    private var typeTag = Parser.rule(TypeStatement::class.java)
 
     // array の定義
     private var array = Parser.rule()
@@ -104,7 +103,7 @@ class OmuretuParser {
 
         // variable の定義
         variable.sep(VarStatement.KEYWORD_VAR).identifier(reserved, IdNameLiteral::class.java).maybe(typeTag).sep(VarStatement.KEYWORD_EQUAL).ast(expression)
-        typeTag.sep(TypeTag.KEYWORD_COLON).identifier(reserved, IdNameLiteral::class.java)
+        typeTag.sep(TypeStatement.KEYWORD_COLON).identifier(reserved, IdNameLiteral::class.java)
 
         // arrayの定義
         array.sep(ArrayLiteral.KEYWORD_BRACKETS_START)

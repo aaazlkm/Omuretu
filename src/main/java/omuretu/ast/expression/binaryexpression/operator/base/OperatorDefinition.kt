@@ -2,6 +2,7 @@ package omuretu.ast.expression.binaryexpression.operator.base
 
 import omuretu.environment.base.VariableEnvironment
 import omuretu.ast.expression.binaryexpression.operator.*
+import omuretu.visitor.EvaluateVisitor
 import parser.ast.ASTTree
 import parser.element.Expression
 
@@ -67,17 +68,17 @@ enum class OperatorDefinition {
             }
         }
 
-    fun createOperator(leftTree: ASTTree, rightTree: ASTTree, variableEnvironment: VariableEnvironment): Operator {
+    fun createOperator(leftTree: ASTTree, rightTree: ASTTree, evaluateVisitor: EvaluateVisitor, variableEnvironment: VariableEnvironment): Operator {
         return when (this) {
-            ASSIGNMENT -> AssignmentOperator(leftTree, rightTree, variableEnvironment)
-            EQUAL -> EqualOperator(leftTree, rightTree, variableEnvironment)
-            LESS -> LessOperator(leftTree, rightTree, variableEnvironment)
-            MINUS -> MinusOperator(leftTree, rightTree, variableEnvironment)
-            MORE -> MoreOperator(leftTree, rightTree, variableEnvironment)
-            MULTI -> MultiOperator(leftTree, rightTree, variableEnvironment)
-            PLUS -> PlusOperator(leftTree, rightTree, variableEnvironment)
-            QUOTIENT -> QuotientOperator(leftTree, rightTree, variableEnvironment)
-            SURPLUS -> SurplusOperator(leftTree, rightTree, variableEnvironment)
+            ASSIGNMENT -> AssignmentOperator(leftTree, rightTree, evaluateVisitor, variableEnvironment)
+            EQUAL -> EqualOperator(leftTree, rightTree, evaluateVisitor, variableEnvironment)
+            LESS -> LessOperator(leftTree, rightTree, evaluateVisitor, variableEnvironment)
+            MINUS -> MinusOperator(leftTree, rightTree, evaluateVisitor, variableEnvironment)
+            MORE -> MoreOperator(leftTree, rightTree, evaluateVisitor, variableEnvironment)
+            MULTI -> MultiOperator(leftTree, rightTree, evaluateVisitor, variableEnvironment)
+            PLUS -> PlusOperator(leftTree, rightTree, evaluateVisitor, variableEnvironment)
+            QUOTIENT -> QuotientOperator(leftTree, rightTree, evaluateVisitor, variableEnvironment)
+            SURPLUS -> SurplusOperator(leftTree, rightTree, evaluateVisitor, variableEnvironment)
         }
     }
 }

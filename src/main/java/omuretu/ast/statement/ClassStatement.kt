@@ -1,19 +1,23 @@
 package omuretu.ast.statement
 
-import omuretu.environment.base.VariableEnvironment
-import omuretu.environment.NestedIdNameLocationMap
 import omuretu.ast.listeral.IdNameLiteral
-import omuretu.environment.GlobalVariableEnvironment
-import omuretu.exception.OmuretuException
+import omuretu.environment.IdNameLocationMap
+import omuretu.environment.base.TypeEnvironment
+import omuretu.environment.base.VariableEnvironment
+import omuretu.typechecker.Type
+import omuretu.vertualmachine.ByteCodeStore
+import omuretu.visitor.CheckTypeVisitor
+import omuretu.visitor.CompileVisitor
+import omuretu.visitor.EvaluateVisitor
+import omuretu.visitor.IdNameLocationVisitor
 import parser.ast.ASTList
 import parser.ast.ASTTree
-import omuretu.model.Class
 
 class ClassStatement(
         private val idNameLiteral: IdNameLiteral,
         private val superClassIdNameLiteral: IdNameLiteral? = null,
-        val bodyStmnt: ClassBodyStatement
-) : ASTList(if (superClassIdNameLiteral == null) listOf(idNameLiteral, bodyStmnt) else listOf(idNameLiteral, superClassIdNameLiteral, bodyStmnt)) {
+        val bodyStatement: ClassBodyStatement
+) : ASTList(if (superClassIdNameLiteral == null) listOf(idNameLiteral, bodyStatement) else listOf(idNameLiteral, superClassIdNameLiteral, bodyStatement)) {
     companion object Factory : FactoryMethod {
         const val KEYWORD_CLASS = "class"
         const val KEYWORD_EXTENDS = "extends"
@@ -45,31 +49,19 @@ class ClassStatement(
     val superClassName: String?
         get() = superClassIdNameLiteral?.name
 
-    override fun lookupIdNamesLocation(idNameLocationMap: NestedIdNameLocationMap) {
-        // スーパークラスを持つ場合環境がないとスーパークラスの定義を取得することができないためここでは何もしない
+    override fun toString() = "$KEYWORD_CLASS $idNameLiteral $KEYWORD_EXTENDS $superClassIdNameLiteral $bodyStatement"
+
+    override fun accept(idNameLocationVisitor: IdNameLocationVisitor, idNameLocationMap: IdNameLocationMap) {
+        idNameLocationVisitor.visit(this, idNameLocationMap)
     }
 
-    override fun evaluate(variableEnvironment: VariableEnvironment): Any {
-        val globalEnvironment = variableEnvironment as? GlobalVariableEnvironment
-                ?: throw OmuretuException("class can define only in global environment")
-        val classMemberLocationMap = NestedIdNameLocationMap(globalEnvironment.idNameLocationMap)
-        // クラスボディのメンバー最初にthisを追加
-        val thisLocation = classMemberLocationMap.putOnlyThisMapAndReturnLocation("this")
-        val classs = Class(this, globalEnvironment, classMemberLocationMap, thisLocation)
-
-        // 継承先のクラスのメンバーをコピー
-        classs.superClass?.copyThisMembersTo(classMemberLocationMap)
-
-        // クラスボディ内の変数の位置
-        bodyStmnt.lookupIdNamesLocation(classMemberLocationMap)
-
-        // クラス名を登録
-        globalEnvironment.putValueByIdName(name, classs)
-
-        return name
+    override fun accept(checkTypeVisitor: CheckTypeVisitor, typeEnvironment: TypeEnvironment): Type {
+        return checkTypeVisitor.visit(this, typeEnvironment)
     }
 
-    override fun toString(): String {
-        return "class name: $idNameLiteral extendLiteral: $superClassIdNameLiteral bodyStmnt: $bodyStmnt"
+    override fun accept(compileVisitor: CompileVisitor, byteCodeStore: ByteCodeStore) {}
+
+    override fun accept(evaluateVisitor: EvaluateVisitor, variableEnvironment: VariableEnvironment): Any {
+        return evaluateVisitor.visit(this, variableEnvironment)
     }
 }

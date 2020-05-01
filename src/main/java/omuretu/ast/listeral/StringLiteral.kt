@@ -1,14 +1,17 @@
 package omuretu.ast.listeral
 
-import parser.ast.ASTLeaf
 import lexer.token.StringToken
 import lexer.token.Token
+import omuretu.environment.IdNameLocationMap
 import omuretu.environment.base.TypeEnvironment
 import omuretu.environment.base.VariableEnvironment
 import omuretu.typechecker.Type
 import omuretu.vertualmachine.ByteCodeStore
-import omuretu.vertualmachine.OmuretuVirtualMachine
-import omuretu.vertualmachine.opecode.SConstOpecode
+import omuretu.visitor.CheckTypeVisitor
+import omuretu.visitor.CompileVisitor
+import omuretu.visitor.EvaluateVisitor
+import omuretu.visitor.IdNameLocationVisitor
+import parser.ast.ASTLeaf
 import parser.ast.ASTTree
 
 class StringLiteral(
@@ -28,22 +31,19 @@ class StringLiteral(
     val string: String
         get() = token.string
 
-    override fun toString(): String = "token: $token"
+    override fun toString(): String = string
 
-    override fun checkType(typeEnvironment: TypeEnvironment): Type {
-        return Type.Defined.String
+    override fun accept(idNameLocationVisitor: IdNameLocationVisitor, idNameLocationMap: IdNameLocationMap) {}
+
+    override fun accept(checkTypeVisitor: CheckTypeVisitor, typeEnvironment: TypeEnvironment): Type {
+        return checkTypeVisitor.visit(this, typeEnvironment)
     }
 
-    override fun compile(byteCodeStore: ByteCodeStore) {
-        val index = byteCodeStore.strings.size - 1
-        byteCodeStore.strings[index] = string
-        val registerAt = OmuretuVirtualMachine.encodeRegisterIndex(byteCodeStore.nextRegister())
-        SConstOpecode.createByteCode(index.toShort(), registerAt).forEach {
-            byteCodeStore.addByteCode(it)
-        }
+    override fun accept(compileVisitor: CompileVisitor, byteCodeStore: ByteCodeStore) {
+        compileVisitor.visit(this, byteCodeStore)
     }
 
-    override fun evaluate(variableEnvironment: VariableEnvironment): Any {
-        return token.string
+    override fun accept(evaluateVisitor: EvaluateVisitor, variableEnvironment: VariableEnvironment): Any {
+        return evaluateVisitor.visit(this, variableEnvironment)
     }
 }

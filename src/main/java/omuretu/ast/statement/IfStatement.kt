@@ -1,21 +1,16 @@
 package omuretu.ast.statement
 
-import omuretu.OMURETU_FALSE
-import omuretu.OMURETU_DEFAULT_RETURN_VALUE
 import omuretu.environment.base.TypeEnvironment
 import omuretu.environment.base.VariableEnvironment
 import omuretu.typechecker.Type
-import omuretu.typechecker.TypeCheckHelper
 import omuretu.vertualmachine.ByteCodeStore
-import omuretu.vertualmachine.OmuretuVirtualMachine
-import omuretu.vertualmachine.opecode.BConstOpecode
-import omuretu.vertualmachine.opecode.GotoOpecode
-import omuretu.vertualmachine.opecode.IfZeroOpecode
+import omuretu.visitor.CheckTypeVisitor
+import omuretu.visitor.CompileVisitor
+import omuretu.visitor.EvaluateVisitor
 import parser.ast.ASTList
 import parser.ast.ASTTree
-import util.ex.sliceByByte
 
-class IfStatement(
+data class IfStatement(
         val condition: ASTTree,
         val thenBlock: BlockStatement,
         val elseBlock: BlockStatement? = null
@@ -39,59 +34,17 @@ class IfStatement(
         }
     }
 
-    override fun checkType(typeEnvironment: TypeEnvironment): Type {
-        val conditionType = condition.checkType(typeEnvironment)
-        TypeCheckHelper.checkSubTypeOrThrow(conditionType, Type.Defined.Int, this, typeEnvironment)
-        val thenBlockType = thenBlock.checkType(typeEnvironment)
-        val elseBlockType = elseBlock?.checkType(typeEnvironment)
-        return if (elseBlockType == null) {
-            thenBlockType
-        } else {
-            TypeCheckHelper.union(thenBlockType, elseBlockType, typeEnvironment)
-        }
+    override fun toString() = "($KEYWORD_IF $condition $thenBlock $KEYWORD_ELSE $elseBlock)"
+
+    override fun accept(checkTypeVisitor: CheckTypeVisitor, typeEnvironment: TypeEnvironment): Type {
+        return checkTypeVisitor.visit(this, typeEnvironment)
     }
 
-    override fun compile(byteCodeStore: ByteCodeStore) {
-        condition.compile(byteCodeStore)
-        // elseが始まる位置を格納しているCodePosition
-        val codePositionStartIfZero = byteCodeStore.codePosition
-        val codePositionSavingStartElseBlock = codePositionStartIfZero + IfZeroOpecode.SHORT_START
-        val registerAt = OmuretuVirtualMachine.encodeRegisterIndex(byteCodeStore.prevRegister())
-        IfZeroOpecode.createByteCode(registerAt, 0).forEach { byteCodeStore.addByteCode(it) } // 0を渡しているがあとでelse文が始まる位置を渡す
-
-        val registerPosition = byteCodeStore.registerPosition
-        thenBlock.compile(byteCodeStore)
-
-        val codePositionStartGoto = byteCodeStore.codePosition
-        val codePositionSavingEndElseBlock = byteCodeStore.codePosition + GotoOpecode.SHORT_START
-        GotoOpecode.createByteCode(0).forEach { byteCodeStore.addByteCode(it) } // 0を渡しているがあとでelse文が終わる位置を渡す
-
-        (byteCodeStore.codePosition - codePositionStartIfZero).toShort().sliceByByte().forEachIndexed { index, byte ->
-            byteCodeStore.setByteCode(codePositionSavingStartElseBlock + index, byte)
-        }
-
-        byteCodeStore.registerPosition = registerPosition
-        elseBlock?.compile(byteCodeStore) ?: run {
-            // TODO 何をしているのか調査
-            val registerAt = OmuretuVirtualMachine.encodeRegisterIndex(byteCodeStore.nextRegister())
-            BConstOpecode.createByteCode(0, registerAt).forEach { byteCodeStore.addByteCode(it) }
-        }
-
-        (byteCodeStore.codePosition - codePositionStartGoto).toShort().sliceByByte().forEachIndexed { index, byte ->
-            byteCodeStore.setByteCode(codePositionSavingEndElseBlock + index, byte)
-        }
+    override fun accept(compileVisitor: CompileVisitor, byteCodeStore: ByteCodeStore) {
+        compileVisitor.visit(this, byteCodeStore)
     }
 
-    override fun evaluate(variableEnvironment: VariableEnvironment): Any {
-        val conditionResult = condition.evaluate(variableEnvironment)
-        return if (conditionResult is Int && conditionResult != OMURETU_FALSE) {
-            thenBlock.evaluate(variableEnvironment)
-        } else {
-            elseBlock?.evaluate(variableEnvironment) ?: OMURETU_DEFAULT_RETURN_VALUE
-        }
-    }
-
-    override fun toString(): String {
-        return ("($KEYWORD_IF $condition $thenBlock $KEYWORD_ELSE $elseBlock)")
+    override fun accept(evaluateVisitor: EvaluateVisitor, variableEnvironment: VariableEnvironment): Any {
+        return evaluateVisitor.visit(this, variableEnvironment)
     }
 }
