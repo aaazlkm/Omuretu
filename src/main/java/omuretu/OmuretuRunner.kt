@@ -1,16 +1,15 @@
 package omuretu
 
+import lexer.token.Token
 import omuretu.ast.statement.NullStatement
 import omuretu.environment.GlobalVariableEnvironment
-import omuretu.native.NativeFunctionEnvironmentFactory
-import lexer.token.Token
 import omuretu.environment.TypeEnvironmentImpl
-import omuretu.environment.base.TypeEnvironment
+import omuretu.native.NativeFunctionEnvironmentFactory
+import omuretu.visitor.CheckTypeVisitor
+import omuretu.visitor.EvaluateVisitor
+import omuretu.visitor.IdNameLocationVisitor
 import util.utility.CodeDialog
-import java.io.FileNotFoundException
-import java.io.FileReader
 import java.io.Reader
-import java.lang.Exception
 
 
 object OmuretuRunner {
@@ -24,13 +23,17 @@ object OmuretuRunner {
         val typeEnvironment = TypeEnvironmentImpl()
         val variableEnvironment = NativeFunctionEnvironmentFactory.createBasedOn(GlobalVariableEnvironment(), typeEnvironment)
 
+        val idNameLocationVisitor = IdNameLocationVisitor()
+        val checkTypeVisitor = CheckTypeVisitor()
+        val evaluateVisitor = EvaluateVisitor()
+
         val lexer = OmuretuLexer(reader)
         while (lexer.readTokenAt(0) !== Token.EOF) {
             val t = parser.parse(lexer)
             if (t !is NullStatement) {
-                t.lookupIdNamesLocation(variableEnvironment.idNameLocationMap)
-                val type = t.checkType(typeEnvironment)
-                val result = t.evaluate(variableEnvironment)
+                t.accept(idNameLocationVisitor,  variableEnvironment.idNameLocationMap)
+                val type = t.accept(checkTypeVisitor, typeEnvironment)
+                val result = t.accept(evaluateVisitor, variableEnvironment)
             }
         }
     }

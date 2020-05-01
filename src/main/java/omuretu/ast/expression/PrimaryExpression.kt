@@ -1,14 +1,17 @@
 package omuretu.ast.expression
 
-import omuretu.environment.base.VariableEnvironment
 import omuretu.ast.postfix.Postfix
 import omuretu.environment.base.TypeEnvironment
+import omuretu.environment.base.VariableEnvironment
 import omuretu.typechecker.Type
 import omuretu.vertualmachine.ByteCodeStore
+import omuretu.visitor.CheckTypeVisitor
+import omuretu.visitor.CompileVisitor
+import omuretu.visitor.EvaluateVisitor
 import parser.ast.ASTList
 import parser.ast.ASTTree
 
-class PrimaryExpression(
+data class PrimaryExpression(
         val literal: ASTTree,
         val postFixes: List<Postfix>
 ) : ASTList(listOf(literal) + postFixes) {
@@ -30,34 +33,25 @@ class PrimaryExpression(
     val firstPostFix: Postfix
         get() = postFixes.first()
 
-    override fun checkType(typeEnvironment: TypeEnvironment): Type {
-        var result = literal.checkType(typeEnvironment)
-        postFixes.forEach {
-            result = it.checkType(typeEnvironment, result)
-        }
-        return result
-    }
-
-    override fun compile(byteCodeStore: ByteCodeStore) {
-        literal.compile(byteCodeStore)
-        postFixes.forEach {
-            it.compile(byteCodeStore)
-        }
-    }
-
-    override fun evaluate(variableEnvironment: VariableEnvironment): Any {
-        var result: Any = literal.evaluate(variableEnvironment)
-        postFixes.forEach {
-            result = it.evaluate(variableEnvironment, result)
-        }
-        return result
-    }
-
-    fun obtainObject(variableEnvironment: VariableEnvironment): Any {
-        var result: Any = literal.evaluate(variableEnvironment)
+    fun obtainObject(evaluateVisitor: EvaluateVisitor, variableEnvironment: VariableEnvironment): Any {
+        var result: Any = literal.accept(evaluateVisitor, variableEnvironment)
         postFixes.subList(0, (postFixes.size - 1)).forEach {
-            result = it.evaluate(variableEnvironment, result)
+            result = it.accept(evaluateVisitor, variableEnvironment, result)
         }
         return result
+    }
+
+    override fun toString() = "$literal $postFixes"
+
+    override fun accept(checkTypeVisitor: CheckTypeVisitor, typeEnvironment: TypeEnvironment): Type {
+        return checkTypeVisitor.visit(this, typeEnvironment)
+    }
+
+    override fun accept(compileVisitor: CompileVisitor, byteCodeStore: ByteCodeStore) {
+        compileVisitor.visit(this, byteCodeStore)
+    }
+
+    override fun accept(evaluateVisitor: EvaluateVisitor, variableEnvironment: VariableEnvironment): Any {
+        return evaluateVisitor.visit(this, variableEnvironment)
     }
 }

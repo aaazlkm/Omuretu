@@ -1,7 +1,10 @@
 package omuretu.ast.statement
 
-import omuretu.OMURETU_DEFAULT_RETURN_VALUE
+import omuretu.environment.base.TypeEnvironment
 import omuretu.environment.base.VariableEnvironment
+import omuretu.typechecker.Type
+import omuretu.visitor.CheckTypeVisitor
+import omuretu.visitor.EvaluateVisitor
 import parser.ast.ASTList
 import parser.ast.ASTTree
 
@@ -14,7 +17,11 @@ class NullStatement(astTrees: List<ASTTree>) : ASTList(astTrees) {
         }
     }
 
-    override fun evaluate(variableEnvironment: VariableEnvironment): Any {
-        return OMURETU_DEFAULT_RETURN_VALUE
+    override fun toString() = "null"
+
+    override fun accept(checkTypeVisitor: CheckTypeVisitor, typeEnvironment: TypeEnvironment): Type = Type.Defined.Any // nullにした方がいいかも
+
+    override fun accept(evaluateVisitor: EvaluateVisitor, variableEnvironment: VariableEnvironment): Any {
+        return evaluateVisitor.visit(this, variableEnvironment)
     }
 }

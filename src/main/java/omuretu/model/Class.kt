@@ -1,25 +1,26 @@
 package omuretu.model
 
-import omuretu.environment.Location
-import omuretu.environment.NestedIdNameLocationMap
-import omuretu.environment.base.VariableEnvironment
-import omuretu.environment.NestedVariableEnvironment
 import omuretu.ast.statement.ClassBodyStatement
 import omuretu.ast.statement.ClassStatement
-import omuretu.environment.base.EnvironmentKey
 import omuretu.environment.GlobalVariableEnvironment
+import omuretu.environment.IdNameLocationMap
+import omuretu.environment.Location
+import omuretu.environment.NestedVariableEnvironment
+import omuretu.environment.base.EnvironmentKey
+import omuretu.environment.base.VariableEnvironment
 import omuretu.exception.OmuretuException
+import omuretu.visitor.EvaluateVisitor
 
 data class Class(
         val classStmnt: ClassStatement,
         private val environment: GlobalVariableEnvironment,
-        private val classMemberLocationMap: NestedIdNameLocationMap,
+        private val classMemberLocationMap: IdNameLocationMap,
         private val thisLocation: Location
 ) {
     val superClass: Class?
 
     val body: ClassBodyStatement
-        get() = classStmnt.bodyStmnt
+        get() = classStmnt.bodyStatement
 
     init {
         when (val superClassInfo = classStmnt.superClassName?.let { environment.getValueByIdName(it) }) {
@@ -34,7 +35,7 @@ data class Class(
     }
 
     fun copyThisMembersTo(
-            classMemberLocationMap: NestedIdNameLocationMap
+            classMemberLocationMap: IdNameLocationMap
     ) {
         classMemberLocationMap.copyFrom(this.classMemberLocationMap)
     }
@@ -43,10 +44,10 @@ data class Class(
         return classMemberLocationMap.getLocationFromOnlyThisMap(idName)
     }
 
-    fun createClassEnvironment(objectt: Object): NestedVariableEnvironment {
+    fun createClassEnvironment(objectt: Object, evaluateVisitor: EvaluateVisitor): NestedVariableEnvironment {
         val environment = NestedVariableEnvironment(classMemberLocationMap.idNamesSize, environment as? NestedVariableEnvironment)
         addThisKeyWordToEnvironment(environment, objectt)
-        crateSuperClassEnvironment(this, environment)
+        crateSuperClassEnvironment(this, evaluateVisitor, environment)
         return environment
     }
 
@@ -54,8 +55,8 @@ data class Class(
         variableEnvironment.put(thisLocation.let { EnvironmentKey(it.ancestorAt, it.indexInIdNames) }, objectt)
     }
 
-    private fun crateSuperClassEnvironment(classs: Class, variableEnvironment: VariableEnvironment) {
-        if (classs.superClass != null) crateSuperClassEnvironment(classs.superClass, variableEnvironment)
-        classs.body.evaluate(variableEnvironment)
+    private fun crateSuperClassEnvironment(classs: Class, evaluateVisitor: EvaluateVisitor, variableEnvironment: VariableEnvironment) {
+        if (classs.superClass != null) crateSuperClassEnvironment(classs.superClass, evaluateVisitor, variableEnvironment)
+        classs.body.accept(evaluateVisitor, variableEnvironment)
     }
 }

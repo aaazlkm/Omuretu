@@ -1,22 +1,22 @@
 package omuretu.ast.statement
 
-import omuretu.environment.NestedIdNameLocationMap
-import omuretu.ast.TypeTag
 import omuretu.ast.listeral.IdNameLiteral
-import omuretu.environment.base.VariableEnvironment
+import omuretu.environment.IdNameLocationMap
 import omuretu.environment.base.EnvironmentKey
 import omuretu.environment.base.TypeEnvironment
-import omuretu.exception.OmuretuException
+import omuretu.environment.base.VariableEnvironment
 import omuretu.typechecker.Type
-import omuretu.typechecker.TypeCheckHelper
+import omuretu.visitor.CheckTypeVisitor
+import omuretu.visitor.EvaluateVisitor
+import omuretu.visitor.IdNameLocationVisitor
 import parser.ast.ASTList
 import parser.ast.ASTTree
 
-class VarStatement(
-        private val idNameLiteral: IdNameLiteral,
-        private val typeTag: TypeTag,
-        private val initializer: ASTTree
-) : ASTList(listOf(idNameLiteral, typeTag, initializer)) {
+data class VarStatement(
+        val idNameLiteral: IdNameLiteral,
+        val typeStatement: TypeStatement,
+        val initializer: ASTTree
+) : ASTList(listOf(idNameLiteral, typeStatement, initializer)) {
     companion object Factory : FactoryMethod {
         const val KEYWORD_VAR = "var"
         const val KEYWORD_EQUAL = "="
@@ -25,7 +25,7 @@ class VarStatement(
         override fun newInstance(argument: List<ASTTree>): ASTTree? {
             if (argument.size != 3) return null
             val idNameLiteral = argument[0] as? IdNameLiteral ?: return null
-            val typeTag = argument[1] as? TypeTag ?: return null
+            val typeTag = argument[1] as? TypeStatement ?: return null
             val initializer = argument[2] as? ASTTree ?: return null
             return VarStatement(idNameLiteral, typeTag, initializer)
         }
@@ -36,29 +36,17 @@ class VarStatement(
 
     var environmentKey: EnvironmentKey? = null
 
-    override fun toString() = "$KEYWORD_VAR $idNameLiteral $typeTag $KEYWORD_EQUAL $initializer"
+    override fun toString() = "$KEYWORD_VAR $idNameLiteral $typeStatement $KEYWORD_EQUAL $initializer"
 
-    override fun lookupIdNamesLocation(idNameLocationMap: NestedIdNameLocationMap) {
-        idNameLocationMap.putAndReturnLocation(name).let {
-            environmentKey = EnvironmentKey(it.ancestorAt, it.indexInIdNames)
-        }
-        initializer.lookupIdNamesLocation(idNameLocationMap)
+    override fun accept(idNameLocationVisitor: IdNameLocationVisitor, idNameLocationMap: IdNameLocationMap) {
+        idNameLocationVisitor.visit(this, idNameLocationMap)
     }
 
-    override fun checkType(typeEnvironment: TypeEnvironment): Type {
-        val environmentKey = environmentKey ?: throw OmuretuException("undefined", this)
-        if (typeEnvironment.get(environmentKey) != null) throw OmuretuException("duplicate variable ${idNameLiteral.name}", this)
-        val varType = typeTag.type ?: throw OmuretuException("undefined type: ${typeTag.type}", this)
-        val initializerType = initializer.checkType(typeEnvironment)
-        TypeCheckHelper.checkSubTypeOrThrow(varType, initializerType, this, typeEnvironment)
-        typeEnvironment.put(environmentKey, initializerType)
-        return varType
+    override fun accept(checkTypeVisitor: CheckTypeVisitor, typeEnvironment: TypeEnvironment): Type {
+        return checkTypeVisitor.visit(this, typeEnvironment)
     }
 
-    override fun evaluate(variableEnvironment: VariableEnvironment): Any {
-        val environmentKey = environmentKey ?: throw OmuretuException("undefined", this)
-        val value = initializer.evaluate(variableEnvironment)
-        variableEnvironment.put(environmentKey, value)
-        return value
+    override fun accept(evaluateVisitor: EvaluateVisitor, variableEnvironment: VariableEnvironment): Any {
+        return evaluateVisitor.visit(this, variableEnvironment)
     }
 }
