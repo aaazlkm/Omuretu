@@ -33,7 +33,7 @@ object TypeCheckHelper {
         return subType.typeInferred?.let {
             checkSubTypeOrThrow(superType, it, where)
         } ?: run {
-            environment.deifneEquatationType(subType, superType)
+            environment.defineEquationType(subType, superType)
             checkSubTypeOrThrow(superType, superType, where)
         }
     }
@@ -42,7 +42,7 @@ object TypeCheckHelper {
         return superType.typeInferred?.let {
             checkSubTypeOrThrow(it, subType, where)
         } ?: run {
-            environment.deifneEquatationType(superType, subType)
+            environment.defineEquationType(superType, subType)
             checkSubTypeOrThrow(subType, subType, where)
         }
     }
@@ -77,9 +77,9 @@ object TypeCheckHelper {
 
     private fun plus(typeDefined1: Type.Defined, typeDefined2: Type.Defined): Type {
         return when {
-            match(typeDefined1, Type.Defined.Int) && match(typeDefined2, Type.Defined.Int) -> Type.Defined.Int
-            match(typeDefined1, Type.Defined.String) || match(typeDefined2, Type.Defined.String) -> Type.Defined.String
-            else -> Type.Defined.Any
+            match(typeDefined1, Type.Defined.Int()) && match(typeDefined2, Type.Defined.Int()) -> Type.Defined.Int()
+            match(typeDefined1, Type.Defined.String()) || match(typeDefined2, Type.Defined.String()) -> Type.Defined.String()
+            else -> Type.Defined.Any()
         }
     }
 
@@ -88,7 +88,7 @@ object TypeCheckHelper {
             plus(it, typeDefined)
         } ?: run {
             // environment更新処理下記を実行する
-            environment.deifneEquatationType(typeInference, typeDefined)
+            environment.defineEquationType(typeInference, typeDefined)
             plus(typeDefined, typeDefined)
         }
     }
@@ -123,7 +123,7 @@ object TypeCheckHelper {
         return if (match(typeDefined1, typeDefined2)) {
             typeDefined1
         } else {
-            Type.Defined.Any
+            Type.Defined.Any()
         }
     }
 
@@ -132,7 +132,7 @@ object TypeCheckHelper {
             union(it, typeDefined)
         } ?: run {
             // environmentに保存してある型を更新
-            environment.deifneEquatationType(typeInference, typeDefined)
+            environment.defineEquationType(typeInference, typeDefined)
             union(typeDefined, typeDefined)
         }
     }
@@ -162,11 +162,11 @@ object TypeCheckHelper {
                 type1.parameterTypes.zip(type2.parameterTypes).filter { !match(it.first, it.second) }.let { if (it.isNotEmpty()) return false }
                 return match(type1.returnType, type2.returnType)
             }
-            else -> type1 == type2
+            else -> type1::class == type2::class
         }
     }
 
     private fun checkSubTypeOf(superType: Type.Defined, subType: Type.Defined): Boolean {
-        return superType == subType || superType == Type.Defined.Any
+        return superType::class == subType::class || superType::class == Type.Defined.Any::class
     }
 }

@@ -5,5 +5,5 @@ import java.io.IOException
 
 class OmuretuException : Exception {
     constructor(e: IOException) : super(e)
-    constructor(msg: String, astTree: ASTTree? = null) : super("$msg  astTree$astTree")
+    constructor(msg: String, astTree: ASTTree? = null) : super("$msg astTree: $astTree")
 }

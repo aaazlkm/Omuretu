@@ -5,7 +5,7 @@ import omuretu.ast.statement.ClassStatement
 import omuretu.environment.GlobalVariableEnvironment
 import omuretu.environment.IdNameLocationMap
 import omuretu.environment.Location
-import omuretu.environment.NestedVariableEnvironment
+import omuretu.environment.VariableEnvironmentImpl
 import omuretu.environment.base.EnvironmentKey
 import omuretu.environment.base.VariableEnvironment
 import omuretu.exception.OmuretuException
@@ -44,8 +44,8 @@ data class Class(
         return classMemberLocationMap.getLocationFromOnlyThisMap(idName)
     }
 
-    fun createClassEnvironment(objectt: Object, evaluateVisitor: EvaluateVisitor): NestedVariableEnvironment {
-        val environment = NestedVariableEnvironment(classMemberLocationMap.idNamesSize, environment as? NestedVariableEnvironment)
+    fun createClassEnvironment(objectt: Object, evaluateVisitor: EvaluateVisitor): VariableEnvironmentImpl {
+        val environment = VariableEnvironmentImpl(classMemberLocationMap.idNamesSize, environment as? VariableEnvironmentImpl)
         addThisKeyWordToEnvironment(environment, objectt)
         crateSuperClassEnvironment(this, evaluateVisitor, environment)
         return environment

@@ -19,7 +19,7 @@ class NullStatement(astTrees: List<ASTTree>) : ASTList(astTrees) {
 
     override fun toString() = "null"
 
-    override fun accept(checkTypeVisitor: CheckTypeVisitor, typeEnvironment: TypeEnvironment): Type = Type.Defined.Any // nullにした方がいいかも
+    override fun accept(checkTypeVisitor: CheckTypeVisitor, typeEnvironment: TypeEnvironment): Type = Type.Defined.Any() // nullにした方がいいかも
 
     override fun accept(evaluateVisitor: EvaluateVisitor, variableEnvironment: VariableEnvironment): Any {
         return evaluateVisitor.visit(this, variableEnvironment)

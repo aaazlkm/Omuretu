@@ -39,15 +39,15 @@ class CheckTypeVisitor : Visitor {
         val rightType = right.accept(this, typeEnvironment)
         return when (operatorToken.id) {
             OperatorDefinition.EQUAL.rawOperator -> {
-                Type.Defined.Int
+                Type.Defined.Int()
             }
             OperatorDefinition.PLUS.rawOperator -> {
                 TypeCheckHelper.plus(leftType, rightType, typeEnvironment)
             }
             else -> {
-                TypeCheckHelper.checkSubTypeOrThrow(Type.Defined.Int, leftType, binaryExpression, typeEnvironment)
-                TypeCheckHelper.checkSubTypeOrThrow(Type.Defined.Int, rightType, binaryExpression, typeEnvironment)
-                Type.Defined.Int
+                TypeCheckHelper.checkSubTypeOrThrow(Type.Defined.Int(), leftType, binaryExpression, typeEnvironment)
+                TypeCheckHelper.checkSubTypeOrThrow(Type.Defined.Int(), rightType, binaryExpression, typeEnvironment)
+                Type.Defined.Int()
             }
         }
     }
@@ -55,7 +55,7 @@ class CheckTypeVisitor : Visitor {
     fun visit(negativeExpression: NegativeExpression, typeEnvironment: TypeEnvironment): Type {
         val operand = negativeExpression.operand
         val type = operand.accept(this, typeEnvironment)
-        TypeCheckHelper.checkSubTypeOrThrow(Type.Defined.Int, type, negativeExpression, typeEnvironment)
+        TypeCheckHelper.checkSubTypeOrThrow(Type.Defined.Int(), type, negativeExpression, typeEnvironment)
         return type
     }
 
@@ -75,7 +75,7 @@ class CheckTypeVisitor : Visitor {
 
     fun visit(arrayLiteral: ArrayLiteral, typeEnvironment: TypeEnvironment): Type {
         // TODO 配列型を返すようにする
-        return Type.Defined.Any
+        return Type.Defined.Any()
     }
 
     fun visit(idNameLiteral: IdNameLiteral, typeEnvironment: TypeEnvironment): Type {
@@ -83,11 +83,11 @@ class CheckTypeVisitor : Visitor {
     }
 
     fun visit(numberLiteral: NumberLiteral, typeEnvironment: TypeEnvironment): Type {
-        return Type.Defined.Int
+        return Type.Defined.Int()
     }
 
     fun visit(stringLiteral: StringLiteral, typeEnvironment: TypeEnvironment): Type {
-        return Type.Defined.String
+        return Type.Defined.String()
     }
 
     //endregion
@@ -105,12 +105,12 @@ class CheckTypeVisitor : Visitor {
     }
 
     fun visit(arrayPostfix: ArrayPostfix, typeEnvironment: TypeEnvironment, leftType: Type): Type {
-        return Type.Defined.Any
+        return Type.Defined.Any()
     }
 
     fun visit(dotPostfix: DotPostfix, typeEnvironment: TypeEnvironment, leftType: Type): Type {
         // TODO クラスのプロパティの型を見るようにする
-        return Type.Defined.Any
+        return Type.Defined.Class()
     }
 
     //endregion
@@ -119,23 +119,23 @@ class CheckTypeVisitor : Visitor {
 
     fun visit(blockStatement: BlockStatement, typeEnvironment: TypeEnvironment): Type {
         val astTrees = blockStatement.astTrees
-        return astTrees.map { it.accept(this, typeEnvironment) }.lastOrNull() ?: Type.Defined.Int
+        return astTrees.map { it.accept(this, typeEnvironment) }.lastOrNull() ?: Type.Defined.Int()
     }
 
     fun visit(classBodyStatement: ClassBodyStatement, typeEnvironment: TypeEnvironment): Type {
         // TODO クラス型を用意する
-        return Type.Defined.Any
+        return Type.Defined.Any()
     }
 
     fun visit(classStatement: ClassStatement, typeEnvironment: TypeEnvironment): Type {
         // TODO クラス型を用意する
-        return Type.Defined.Any
+        return Type.Defined.Any()
     }
 
     fun visit(defStatement: DefStatement, typeEnvironment: TypeEnvironment): Type {
         val (idNameLiteral,parameters, typeTag, blockStatement) = defStatement
         val environmentKey = defStatement.environmentKey ?: throw OmuretuException("donot defined $this")
-        val returnType = typeTag.type as? Type.Defined ?: Type.Defined.Unit
+        val returnType = typeTag.type as? Type.Defined ?: Type.Defined.Unit()
         val parameterTypes = parameters.types
         if (parameters.parameterNames.size != parameterTypes.size) throw OmuretuException("failed to convert parameter type :from ${parameters.parameterNames} to $parameterTypes")
         val functionType = Type.Defined.Function(returnType, parameterTypes)
@@ -149,7 +149,7 @@ class CheckTypeVisitor : Visitor {
     fun visit(ifStatement: IfStatement, typeEnvironment: TypeEnvironment): Type {
         val (condition, thenBlock, elseBlock) = ifStatement
         val conditionType = condition.accept(this, typeEnvironment)
-        TypeCheckHelper.checkSubTypeOrThrow(conditionType, Type.Defined.Int, ifStatement, typeEnvironment)
+        TypeCheckHelper.checkSubTypeOrThrow(conditionType, Type.Defined.Int(), ifStatement, typeEnvironment)
         val thenBlockType = thenBlock.accept(this, typeEnvironment)
         val elseBlockType = elseBlock?.accept(this, typeEnvironment)
         return if (elseBlockType == null) {
@@ -164,30 +164,40 @@ class CheckTypeVisitor : Visitor {
         val parameterEnvironmentKeys = parametersStatement.parameterEnvironmentKeys ?: throw OmuretuException("")
         if (parameters.size != parameterEnvironmentKeys.size) throw OmuretuException("")
         parameterEnvironmentKeys.zip(parameters).forEach { typeEnvironment.put(it.first, it.second.accept(this, typeEnvironment)) }
-        return Type.Defined.Any // パラメータの型はなんでもいい
+        return Type.Defined.Any() // パラメータ全体の型はなんでもいい
     }
 
     fun visit(parameterStatement: ParameterStatement, typeEnvironment: TypeEnvironment): Type {
-        return parameterStatement.typeStatement.type ?: throw OmuretuException("undefined type name:", parameterStatement)
+        return parameterStatement.type
+    }
+
+    fun visit(valStatement: ValStatement, typeEnvironment: TypeEnvironment): Type {
+        val (idNameLiteral, typeTag, initializer) = valStatement
+        val environmentKey = valStatement.environmentKey ?: throw OmuretuException("undefined", valStatement)
+        if (typeEnvironment.get(environmentKey) != null) throw OmuretuException("duplicate variable ${idNameLiteral.name}", valStatement)
+        val initializerType = initializer.accept(this, typeEnvironment)
+        typeTag.type?.let { TypeCheckHelper.checkSubTypeOrThrow(it, initializerType, valStatement, typeEnvironment) }
+        typeEnvironment.put(environmentKey, initializerType)
+        return initializerType
     }
 
     fun visit(varStatement: VarStatement, typeEnvironment: TypeEnvironment): Type {
         val (idNameLiteral, typeTag, initializer) = varStatement
         val environmentKey = varStatement.environmentKey ?: throw OmuretuException("undefined", varStatement)
         if (typeEnvironment.get(environmentKey) != null) throw OmuretuException("duplicate variable ${idNameLiteral.name}", varStatement)
-        val varType = typeTag.type ?: throw OmuretuException("undefined type: ${typeTag.type}", varStatement)
         val initializerType = initializer.accept(this, typeEnvironment)
-        TypeCheckHelper.checkSubTypeOrThrow(varType, initializerType, varStatement, typeEnvironment)
+        initializerType.readOnly = false
+        typeTag.type?.let { TypeCheckHelper.checkSubTypeOrThrow(it, initializerType, varStatement, typeEnvironment) }
         typeEnvironment.put(environmentKey, initializerType)
-        return varType
+        return initializerType
     }
 
     fun visit(whileStatement: WhileStatement, typeEnvironment: TypeEnvironment): Type {
         val (condition, body) = whileStatement
         val conditionType = condition.accept(this, typeEnvironment)
         val bodyType = body.accept(this, typeEnvironment)
-        TypeCheckHelper.checkSubTypeOrThrow(conditionType, Type.Defined.Int, whileStatement, typeEnvironment)
-        return TypeCheckHelper.union(bodyType, Type.Defined.Int, typeEnvironment) // whileのbodyが一度も実行されない場合Intを返すためunion(Type.Int)している
+        TypeCheckHelper.checkSubTypeOrThrow(conditionType, Type.Defined.Int(), whileStatement, typeEnvironment)
+        return TypeCheckHelper.union(bodyType, Type.Defined.Int(), typeEnvironment) // whileのbodyが一度も実行されない場合Intを返すためunion(Type.Int)している
     }
 
     //endregion

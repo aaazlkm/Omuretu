@@ -1,0 +1,6 @@
+1 100
+val a = 1
+print(a)
+
+val b = 100
+print(100)

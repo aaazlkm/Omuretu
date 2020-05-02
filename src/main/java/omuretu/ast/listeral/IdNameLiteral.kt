@@ -56,12 +56,6 @@ data class IdNameLiteral(
         return evaluateVisitor.visit(this, variableEnvironment)
     }
 
-    fun lookupIdNamesForAssign(idNameLocationMap: IdNameLocationMap) {
-        idNameLocationMap.putAndReturnLocation(name).let {
-            environmentKey = EnvironmentKey(it.ancestorAt, it.indexInIdNames)
-        }
-    }
-
     fun checkTypeForAssign(typeEnvironment: TypeEnvironment, newType: Type): Type {
         val environmentKey = environmentKey ?: throw OmuretuException("undefined name: $name")
         val type = typeEnvironment.get(environmentKey)
@@ -69,6 +63,7 @@ data class IdNameLiteral(
             typeEnvironment.put(environmentKey, newType)
         } else {
             TypeCheckHelper.checkSubTypeOrThrow(type, newType, this, typeEnvironment)
+            if(type.readOnly) throw OmuretuException("$name is readOnly", this)
         }
         return type ?: newType
     }
@@ -88,9 +83,5 @@ data class IdNameLiteral(
                 throw OmuretuException("undefined name: $name")
             }
         }
-    }
-
-    fun evaluateForAssign(variableEnvironment: VariableEnvironment, value: Any) {
-        environmentKey?.let { variableEnvironment.put(it, value) } ?: throw OmuretuException("undefined name: ${token.id}", this)
     }
 }
