@@ -12,13 +12,13 @@ import omuretu.visitor.IdNameLocationVisitor
 import parser.ast.ASTList
 import parser.ast.ASTTree
 
-data class VarStatement(
+data class ValStatement(
         val idNameLiteral: IdNameLiteral,
         val typeStatement: TypeStatement,
         val initializer: ASTTree
 ) : ASTList(listOf(idNameLiteral, typeStatement, initializer)) {
     companion object Factory : FactoryMethod {
-        const val KEYWORD_VAR = "var"
+        const val KEYWORD_VAL = "val"
         const val KEYWORD_EQUAL = "="
 
         @JvmStatic
@@ -27,7 +27,7 @@ data class VarStatement(
             val idNameLiteral = argument[0] as? IdNameLiteral ?: return null
             val typeTag = argument[1] as? TypeStatement ?: return null
             val initializer = argument[2] as? ASTTree ?: return null
-            return VarStatement(idNameLiteral, typeTag, initializer)
+            return ValStatement(idNameLiteral, typeTag, initializer)
         }
     }
 
@@ -39,7 +39,7 @@ data class VarStatement(
 
     var environmentKey: EnvironmentKey? = null
 
-    override fun toString() = "$KEYWORD_VAR $idNameLiteral $typeStatement $KEYWORD_EQUAL $initializer"
+    override fun toString() = "$KEYWORD_VAL $idNameLiteral $typeStatement $KEYWORD_EQUAL $initializer"
 
     override fun accept(idNameLocationVisitor: IdNameLocationVisitor, idNameLocationMap: IdNameLocationMap) {
         idNameLocationVisitor.visit(this, idNameLocationMap)

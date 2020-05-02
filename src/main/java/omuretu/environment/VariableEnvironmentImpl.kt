@@ -6,14 +6,14 @@ import omuretu.exception.OmuretuException
 import omuretu.vertualmachine.ByteCodeStore
 import omuretu.vertualmachine.HeapMemory
 
-open class NestedVariableEnvironment(
+open class VariableEnvironmentImpl(
         numberOfIdNames: Int,
-        private val outEnvironment: NestedVariableEnvironment? = null
+        private val outEnvironmentImpl: VariableEnvironmentImpl? = null
 ) : VariableEnvironment, HeapMemory {
     protected var values = arrayOfNulls<Any>(numberOfIdNames)
 
     open val byteCodeStore: ByteCodeStore?
-        get() = outEnvironment?.byteCodeStore
+        get() = outEnvironmentImpl?.byteCodeStore
 
     //region Environment
 
@@ -22,7 +22,7 @@ open class NestedVariableEnvironment(
         if (key.ancestorAt == 0) {
             values[key.index] = value
         } else {
-            outEnvironment?.put(EnvironmentKey(key.ancestorAt - 1, key.index), value) ?: run {
+            outEnvironmentImpl?.put(EnvironmentKey(key.ancestorAt - 1, key.index), value) ?: run {
                 throw OmuretuException("illegal ancestorAt: ${key.ancestorAt}")
             }
         }
@@ -33,7 +33,7 @@ open class NestedVariableEnvironment(
         return if (key.ancestorAt == 0) {
             values[key.index]
         } else {
-            outEnvironment?.get(EnvironmentKey(key.ancestorAt - 1, key.index))
+            outEnvironmentImpl?.get(EnvironmentKey(key.ancestorAt - 1, key.index))
         }
     }
 

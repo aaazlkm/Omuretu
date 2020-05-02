@@ -2,7 +2,6 @@ package omuretu.visitor
 
 import lexer.token.IdToken
 import omuretu.ast.expression.binaryexpression.BinaryExpression
-import omuretu.ast.expression.binaryexpression.operator.base.OperatorDefinition
 import omuretu.ast.listeral.IdNameLiteral
 import omuretu.ast.statement.*
 import omuretu.environment.IdNameLocationMap
@@ -15,16 +14,8 @@ class IdNameLocationVisitor: Visitor {
     fun visit(binaryExpression: BinaryExpression, idNameLocationMap: IdNameLocationMap) {
         val (left, operator, right) = binaryExpression
         val operatorToken = operator.token as? IdToken ?: throw OmuretuException("cannnot evaluate:", binaryExpression)
-        when {
-            operatorToken.id == OperatorDefinition.ASSIGNMENT.rawOperator && left is IdNameLiteral -> { // FIXME うまくない気がする
-                left.lookupIdNamesForAssign(idNameLocationMap)
-                right.accept(this, idNameLocationMap)
-            }
-            else -> {
-                left.accept(this, idNameLocationMap)
-                right.accept(this, idNameLocationMap)
-            }
-        }
+        left.accept(this, idNameLocationMap)
+        right.accept(this, idNameLocationMap)
     }
 
     //endregion
@@ -55,7 +46,6 @@ class IdNameLocationVisitor: Visitor {
         val blockStatement = defStatement.blockStatement
         val location = idNameLocationMap.putAndReturnLocation(name)
         defStatement.environmentKey = EnvironmentKey(location.ancestorAt, location.indexInIdNames)
-
         val nestIdNameLocationMap = IdNameLocationMap(idNameLocationMap)
         parameters.accept(this, nestIdNameLocationMap)
         blockStatement.accept(this, nestIdNameLocationMap)
@@ -72,12 +62,20 @@ class IdNameLocationVisitor: Visitor {
         parametersStatement.parameterEnvironmentKeys = parameterLocation.mapNotNull { it }.toTypedArray()
     }
 
+    fun visit(valStatement: ValStatement, idNameLocationMap: IdNameLocationMap) {
+        idNameLocationMap.putAndReturnLocation(valStatement.name).let {
+            valStatement.environmentKey = EnvironmentKey(it.ancestorAt, it.indexInIdNames)
+        }
+        valStatement.initializer.accept(this, idNameLocationMap)
+    }
+
     fun visit(varStatement: VarStatement, idNameLocationMap: IdNameLocationMap) {
         idNameLocationMap.putAndReturnLocation(varStatement.name).let {
             varStatement.environmentKey = EnvironmentKey(it.ancestorAt, it.indexInIdNames)
         }
         varStatement.initializer.accept(this, idNameLocationMap)
     }
+    
     //endregion
 
 }

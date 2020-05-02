@@ -19,7 +19,7 @@ import omuretu.ast.postfix.DotPostfix
 import omuretu.ast.statement.*
 import omuretu.environment.GlobalVariableEnvironment
 import omuretu.environment.IdNameLocationMap
-import omuretu.environment.NestedVariableEnvironment
+import omuretu.environment.VariableEnvironmentImpl
 import omuretu.environment.base.VariableEnvironment
 import omuretu.exception.OmuretuException
 import omuretu.model.Class
@@ -225,7 +225,7 @@ class EvaluateVisitor : Visitor {
         val name = defStatement.name
         val parameters = defStatement.parameters
         val blockStatement = defStatement.blockStatement
-        val nestedEnvironment = variableEnvironment as? NestedVariableEnvironment
+        val nestedEnvironment = variableEnvironment as? VariableEnvironmentImpl
                 ?: throw OmuretuException("function can only be defined in global scode")
         val environmentKey = defStatement.environmentKey ?: throw OmuretuException("donot defined def name $name")
         val idNamesSize = defStatement.idNamesInDefSize ?: throw OmuretuException("cannnot get idNamesSize $name")
@@ -248,6 +248,13 @@ class EvaluateVisitor : Visitor {
 
     fun visit(nullStatement: NullStatement, variableEnvironment: VariableEnvironment): Any {
         return OMURETU_DEFAULT_RETURN_VALUE
+    }
+
+    fun visit(valStatement: ValStatement, variableEnvironment: VariableEnvironment): Any {
+        val environmentKey = valStatement.environmentKey ?: throw OmuretuException("undefined", valStatement)
+        val value = valStatement.initializer.accept(this, variableEnvironment)
+        variableEnvironment.put(environmentKey, value)
+        return value
     }
 
     fun visit(varStatement: VarStatement, variableEnvironment: VariableEnvironment): Any {

@@ -9,5 +9,5 @@ interface TypeEnvironment: Environment {
 
     fun addEquation(typeNeedInference1: Type.NeedInference, typeNeedInference2: Type.NeedInference)
 
-    fun deifneEquatationType(target: Type.NeedInference, typeDefined: Type.Defined)
+    fun defineEquationType(target: Type.NeedInference, typeDefined: Type.Defined)
 }

@@ -17,7 +17,7 @@ import omuretu.ast.statement.*
 import parser.Parser
 import parser.ast.ASTTree
 import parser.element.Expression
-import java.util.HashSet
+import java.util.*
 
 class OmuretuParser {
     private var program = Parser.rule()
@@ -40,7 +40,8 @@ class OmuretuParser {
     private var statement = Parser.rule()
 
     // variable の定義
-    private var variable = Parser.rule(VarStatement::class.java)
+    private var variableVal = Parser.rule(ValStatement::class.java)
+    private var variableVar = Parser.rule(VarStatement::class.java)
     private var typeTag = Parser.rule(TypeStatement::class.java)
 
     // array の定義
@@ -78,7 +79,8 @@ class OmuretuParser {
                 .sep(ClassBodyStatement.KEYWORD_BRACES_END)
         member.or(
                 def,
-                variable
+                variableVal,
+                variableVar
         )
 
         // def の定義
@@ -97,12 +99,14 @@ class OmuretuParser {
         statement.or(
                 Parser.rule(IfStatement::class.java).sep(IfStatement.KEYWORD_IF).ast(expression).ast(block).option(Parser.rule().sep(IfStatement.KEYWORD_ELSE).ast(block)),
                 Parser.rule(WhileStatement::class.java).sep(WhileStatement.KEYWORD_WHILE).ast(expression).ast(block),
-                variable,
+                variableVal,
+                variableVar,
                 expression
         )
 
         // variable の定義
-        variable.sep(VarStatement.KEYWORD_VAR).identifier(reserved, IdNameLiteral::class.java).maybe(typeTag).sep(VarStatement.KEYWORD_EQUAL).ast(expression)
+        variableVal.sep(ValStatement.KEYWORD_VAL).identifier(reserved, IdNameLiteral::class.java).maybe(typeTag).sep(ValStatement.KEYWORD_EQUAL).ast(expression)
+        variableVar.sep(VarStatement.KEYWORD_VAR).identifier(reserved, IdNameLiteral::class.java).maybe(typeTag).sep(VarStatement.KEYWORD_EQUAL).ast(expression)
         typeTag.sep(TypeStatement.KEYWORD_COLON).identifier(reserved, IdNameLiteral::class.java)
 
         // arrayの定義

@@ -1,3 +1,6 @@
-1
+1 199
 var a = 1
+print(a)
+
+a = 199
 print(a)

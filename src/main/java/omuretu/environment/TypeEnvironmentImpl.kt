@@ -63,7 +63,7 @@ class TypeEnvironmentImpl(
         typeEquations.add(TypeEquation(typeNeedInference1, typeNeedInference2))
     }
 
-    override fun deifneEquatationType(target: Type.NeedInference, typeDefined: Type.Defined) {
+    override fun defineEquationType(target: Type.NeedInference, typeDefined: Type.Defined) {
         val targets = typeEquations.filter { it.type1 == target || it.type2 == target }
         targets.forEach {
             it.type1.typeInferred = typeDefined

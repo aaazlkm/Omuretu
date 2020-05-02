@@ -38,7 +38,7 @@ class TypeStatement(
 
     override fun toString() = "$KEYWORD_COLON $typeName"
 
-    override fun accept(checkTypeVisitor: CheckTypeVisitor, typeEnvironment: TypeEnvironment): Type = type ?: Type.Defined.Any
+    override fun accept(checkTypeVisitor: CheckTypeVisitor, typeEnvironment: TypeEnvironment): Type = type ?: Type.Defined.Any()
 
     override fun accept(evaluateVisitor: EvaluateVisitor, variableEnvironment: VariableEnvironment): Any = OMURETU_DEFAULT_RETURN_VALUE
 }

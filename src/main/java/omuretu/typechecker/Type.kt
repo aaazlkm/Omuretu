@@ -4,9 +4,9 @@ sealed class Type {
     companion object {
         fun from(typeName: String): Type? {
             return when (typeName) {
-                Defined.Any.NAME -> Defined.Any
-                Defined.Int.NAME -> Defined.Int
-                Defined.String.NAME -> Defined.String
+                Defined.Any.NAME -> Defined.Any()
+                Defined.Int.NAME -> Defined.Int()
+                Defined.String.NAME -> Defined.String()
                 NeedInference.NAME -> NeedInference()
                 else -> null
             }
@@ -14,23 +14,51 @@ sealed class Type {
     }
 
     sealed class Defined : Type() {
-        object Any : Defined() {
-            const val NAME = "Any"
+
+        class Any(override var readOnly: Boolean = true) : Defined() {
+            companion object {
+                const val NAME = "Any"
+            }
         }
 
-        object Int : Defined() {
-            const val NAME = "Int"
+        class Int(override var readOnly: Boolean = true) : Defined() {
+            companion object {
+                const val NAME = "Int"
+            }
         }
 
-        object String : Defined() {
-            const val NAME = "String"
+        class String(override var readOnly: Boolean = true) : Defined() {
+            companion object {
+                const val NAME = "String"
+            }
         }
 
-        object Unit : Defined() {
-            const val NAME = "Unit"
+        class Unit(override var readOnly: Boolean = true) : Defined() {
+            companion object {
+                const val NAME = "Unit"
+            }
         }
 
-        data class Function(val returnType: Defined, val parameterTypes: List<Defined> = listOf()) : Defined()
+        class Class(override var readOnly: Boolean = true) : Defined() {
+            companion object {
+                const val NAME = "Class"
+            }
+        }
+
+        class Function(val returnType: Defined, val parameterTypes: List<Defined> = listOf()) : Defined() {
+            companion object {
+                const val NAME = "Function"
+            }
+        }
+
+        override fun toString(): kotlin.String = when(this) {
+            is Any -> Any.NAME
+            is Int -> Int.NAME
+            is String -> String.NAME
+            is Unit -> Unit.NAME
+            is Class -> Class.NAME
+            is Function -> Function.NAME
+        }
     }
 
     /**
@@ -45,5 +73,9 @@ sealed class Type {
         }
 
         var typeInferred = typeInferred
+
+        override var readOnly: Boolean = true
     }
+
+    open var readOnly: Boolean = true
 }

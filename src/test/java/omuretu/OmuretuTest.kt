@@ -1,9 +1,14 @@
 package omuretu
 
+import omuretu.exception.OmuretuException
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import java.io.*
+import org.junit.jupiter.api.assertThrows
+import java.io.BufferedReader
+import java.io.ByteArrayOutputStream
+import java.io.FileReader
+import java.io.PrintStream
 
 internal class OmuretuTest {
     private val pathToTestCaseDir = "${System.getProperty("user.dir")}/src/test/resources"
@@ -28,7 +33,21 @@ internal class OmuretuTest {
 
     @Test
     fun testVal() {
-        // TODO 実装すること
+        val path = "$pathToTestCaseDir/val/test_val"
+        val reader = BufferedReader(FileReader(path))
+        val expected = reader.readLine().split(" ")
+        OmuretuRunner.run(reader)
+        val result = out.toString().split("\n").filter { it.isNotEmpty() }
+        assertEquals(expected, result)
+    }
+
+    @Test
+    fun testValError() {
+        val path = "$pathToTestCaseDir/val/test_val_error"
+        val reader = BufferedReader(FileReader(path))
+        assertThrows<OmuretuException> {
+            OmuretuRunner.run(reader)
+        }
     }
 
     @Test

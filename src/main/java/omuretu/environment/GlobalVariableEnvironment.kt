@@ -5,7 +5,7 @@ import omuretu.vertualmachine.ByteCodeStore
 import omuretu.vertualmachine.HeapMemory
 import omuretu.vertualmachine.OmuretuVirtualMachine
 
-class GlobalVariableEnvironment : NestedVariableEnvironment(10), HeapMemory {
+class GlobalVariableEnvironment : VariableEnvironmentImpl(10), HeapMemory {
     val idNameLocationMap = IdNameLocationMap()
 
     val omuretuVirtualMachine = OmuretuVirtualMachine(
