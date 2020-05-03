@@ -1,10 +1,10 @@
-package omuretu.vertualmachine
+package omuretu.virtualmachine
 
-import omuretu.exception.OmuretuException
 import kotlin.experimental.and
+import omuretu.exception.OmuretuException
 
 class OmuretuVirtualMachine(
-        configuration: Configuration
+    configuration: Configuration
 ) {
     companion object {
         const val DEFAULT_CODE_SIZE = 100000
@@ -56,20 +56,20 @@ class OmuretuVirtualMachine(
     }
 
     class Configuration(
-            val stackSize: Int = DEFAULT_STACK_SIZE,
-            val heapMemory: HeapMemory
+        val stackSize: Int = DEFAULT_STACK_SIZE,
+        val heapMemory: HeapMemory
     )
 
     class Status(
-            var code: ByteArray,
-            var stack: Array<Any?>,
-            var heapMemory: HeapMemory,
-            var strings: Array<String>,
-            var programCounter: Int,
-            var framePointer: Int,
-            var stackPointer: Int,
-            var returnPointer: Int,
-            var registers: Array<Any?>
+        var code: ByteArray,
+        var stack: Array<Any?>,
+        var heapMemory: HeapMemory,
+        var strings: Array<String>,
+        var programCounter: Int,
+        var framePointer: Int,
+        var stackPointer: Int,
+        var returnPointer: Int,
+        var registers: Array<Any?>
     )
 
     private lateinit var status: Status
@@ -98,7 +98,7 @@ class OmuretuVirtualMachine(
 
     private fun runMainLoop() {
         val opecodeByte = status.code[status.programCounter]
-        val opecode =  OpecodeDefinition.form(opecodeByte) ?: throw OmuretuException("undefined opecode ${status.code[status.programCounter]}")
+        val opecode = OpecodeDefinition.form(opecodeByte) ?: throw OmuretuException("undefined opecode ${status.code[status.programCounter]}")
         val opecodeRunner = opecode.createRunner(status)
         opecodeRunner.run()
     }

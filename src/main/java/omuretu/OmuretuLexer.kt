@@ -1,19 +1,19 @@
 package omuretu
 
-import parser.exception.ParseException
+import java.io.LineNumberReader
+import java.io.Reader
 import lexer.Lexer
 import lexer.token.IdToken
 import lexer.token.NumberToken
 import lexer.token.StringToken
 import lexer.token.Token
-import java.io.LineNumberReader
-import java.io.Reader
+import parser.exception.ParseException
 
 /**
  * FIXME 日本語入力できない
  */
 class OmuretuLexer(
-        reader: Reader
+    reader: Reader
 ) : Lexer {
     companion object {
         private const val KEY_SPACE = "space"

@@ -16,7 +16,15 @@ import omuretu.ast.listeral.StringLiteral
 import omuretu.ast.postfix.ArgumentPostfix
 import omuretu.ast.postfix.ArrayPostfix
 import omuretu.ast.postfix.DotPostfix
-import omuretu.ast.statement.*
+import omuretu.ast.statement.BlockStatement
+import omuretu.ast.statement.ClassBodyStatement
+import omuretu.ast.statement.ClassStatement
+import omuretu.ast.statement.DefStatement
+import omuretu.ast.statement.IfStatement
+import omuretu.ast.statement.NullStatement
+import omuretu.ast.statement.ValStatement
+import omuretu.ast.statement.VarStatement
+import omuretu.ast.statement.WhileStatement
 import omuretu.environment.GlobalVariableEnvironment
 import omuretu.environment.IdNameLocationMap
 import omuretu.environment.VariableEnvironmentImpl
@@ -26,7 +34,6 @@ import omuretu.model.Class
 import omuretu.model.Function
 import omuretu.model.InlineCache
 import omuretu.model.Object
-import omuretu.vertualmachine.HeapMemory
 
 class EvaluateVisitor : Visitor {
     //region expression
@@ -115,24 +122,17 @@ class EvaluateVisitor : Visitor {
 
     private fun visitWhenOmuretuFunction(function: Function.OmuretuFunction, argumentPostfix: ArgumentPostfix, variableEnvironment: VariableEnvironment): Any {
         val astTrees = argumentPostfix.astTrees
-        val globalEnvironment = variableEnvironment as? GlobalVariableEnvironment
-                ?: throw OmuretuException("functioni only call in global scope", argumentPostfix)
-        if (astTrees.size != function.parameters.parameterNames.size) throw OmuretuException("bad number of argument", argumentPostfix)
-        // パラメータの値をenvironmentに追加
+        if (astTrees.size != function.parameters.parameterNames.size) throw OmuretuException("bad number odf argument", argumentPostfix)
+        val nestedEnvironment = VariableEnvironmentImpl(
+                function.numberOfIdName,
+                function.variableEnvironment as? VariableEnvironmentImpl
+        )
+
         function.parameters.parameterEnvironmentKeys?.forEachIndexed { index, environmentKey ->
-            val value = astTrees[index].accept(this, globalEnvironment)
-            val offset = environmentKey.index
-            variableEnvironment.omuretuVirtualMachine.stack[offset] = value
+            nestedEnvironment.put(environmentKey, astTrees[index].accept(this, variableEnvironment))
         } ?: throw OmuretuException("cannnot find parameter location", argumentPostfix)
 
-        globalEnvironment.omuretuVirtualMachine.heapMemory = function.variableEnvironment as HeapMemory
-
-        val byteCodeStore = globalEnvironment.byteCodeStore
-        globalEnvironment.omuretuVirtualMachine.run(byteCodeStore, function.entry)
-
-        globalEnvironment.omuretuVirtualMachine.heapMemory = variableEnvironment
-
-        return variableEnvironment.omuretuVirtualMachine.stack[0] ?: -1
+        return function.blockStatement.accept(this, nestedEnvironment)
     }
 
     private fun visitWhenNativeFunction(function: Function.NativeFunction, argumentPostfix: ArgumentPostfix, variableEnvironment: VariableEnvironment): Any {
@@ -222,17 +222,10 @@ class EvaluateVisitor : Visitor {
     }
 
     fun visit(defStatement: DefStatement, variableEnvironment: VariableEnvironment): Any {
-        val name = defStatement.name
-        val parameters = defStatement.parameters
-        val blockStatement = defStatement.blockStatement
-        val nestedEnvironment = variableEnvironment as? VariableEnvironmentImpl
-                ?: throw OmuretuException("function can only be defined in global scode")
+        val (name, parameters, typeStatement, blockStatement) = defStatement
         val environmentKey = defStatement.environmentKey ?: throw OmuretuException("donot defined def name $name")
         val idNamesSize = defStatement.idNamesInDefSize ?: throw OmuretuException("cannnot get idNamesSize $name")
-        val byteCodeStore = nestedEnvironment.byteCodeStore ?: throw OmuretuException("cannnot find bytecode")
-        val entry = byteCodeStore.codePosition
-        defStatement.accept(CompileVisitor(), byteCodeStore)
-        variableEnvironment.put(environmentKey, Function.OmuretuFunction(parameters, blockStatement, variableEnvironment, idNamesSize, entry))
+        variableEnvironment.put(environmentKey, Function.OmuretuFunction(parameters, blockStatement, variableEnvironment, idNamesSize))
         return name
     }
 
@@ -240,9 +233,11 @@ class EvaluateVisitor : Visitor {
         val (condition, thenBlock, elseBlock) = ifStatement
         val conditionResult = condition.accept(this, variableEnvironment)
         return if (conditionResult is Int && conditionResult != OMURETU_FALSE) {
-            thenBlock.accept(this, variableEnvironment)
+            val nestedVariableEnvironment = VariableEnvironmentImpl(ifStatement.idNameSizeInThen, variableEnvironment as? VariableEnvironmentImpl)
+            thenBlock.accept(this, nestedVariableEnvironment)
         } else {
-            elseBlock?.accept(this, variableEnvironment) ?: OMURETU_DEFAULT_RETURN_VALUE
+            val nestedVariableEnvironment = VariableEnvironmentImpl(ifStatement.idNameSizeInElse, variableEnvironment as? VariableEnvironmentImpl)
+            elseBlock?.accept(this, nestedVariableEnvironment) ?: OMURETU_DEFAULT_RETURN_VALUE
         }
     }
 
@@ -270,7 +265,8 @@ class EvaluateVisitor : Visitor {
         while (true) {
             val conditionResult = condition.accept(this, variableEnvironment)
             if (conditionResult is Int && conditionResult != OMURETU_FALSE) {
-                bodyResult = body.accept(this, variableEnvironment)
+                val nestedVariableEnvironment = VariableEnvironmentImpl(whileStatement.idNameSize, variableEnvironment as? VariableEnvironmentImpl)
+                bodyResult = body.accept(this, nestedVariableEnvironment)
             } else {
                 return bodyResult
             }

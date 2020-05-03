@@ -51,7 +51,7 @@ sealed class Type {
             }
         }
 
-        override fun toString(): kotlin.String = when(this) {
+        override fun toString(): kotlin.String = when (this) {
             is Any -> Any.NAME
             is Int -> Int.NAME
             is String -> String.NAME

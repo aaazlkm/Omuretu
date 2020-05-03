@@ -1,6 +1,6 @@
 package lexer.token
 open class Token(
-         val lineNumber: Int
+    val lineNumber: Int
 ) {
     companion object {
         // TODO こいつ用に新しいTokenを定義してあげたほうがいいかも

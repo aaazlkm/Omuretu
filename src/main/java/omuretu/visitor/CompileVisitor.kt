@@ -14,13 +14,24 @@ import omuretu.ast.statement.DefStatement
 import omuretu.ast.statement.IfStatement
 import omuretu.ast.statement.WhileStatement
 import omuretu.exception.OmuretuException
-import omuretu.vertualmachine.ByteCodeStore
-import omuretu.vertualmachine.OmuretuVirtualMachine
-import omuretu.vertualmachine.opecode.*
-import omuretu.vertualmachine.opecode.base.ComputeOpecode
+import omuretu.virtualmachine.ByteCodeStore
+import omuretu.virtualmachine.OmuretuVirtualMachine
+import omuretu.virtualmachine.opecode.BConstOpecode
+import omuretu.virtualmachine.opecode.CallOpecode
+import omuretu.virtualmachine.opecode.GmoveOpecode
+import omuretu.virtualmachine.opecode.GotoOpecode
+import omuretu.virtualmachine.opecode.IConstOpecode
+import omuretu.virtualmachine.opecode.IfZeroOpecode
+import omuretu.virtualmachine.opecode.MoveOpecode
+import omuretu.virtualmachine.opecode.NegOpecode
+import omuretu.virtualmachine.opecode.RestoreOpecode
+import omuretu.virtualmachine.opecode.ReturnOpecode
+import omuretu.virtualmachine.opecode.SConstOpecode
+import omuretu.virtualmachine.opecode.SaveOpecode
+import omuretu.virtualmachine.opecode.base.ComputeOpecode
 import util.ex.sliceByByte
 
-class CompileVisitor: Visitor {
+class CompileVisitor : Visitor {
     //region expression
 
     fun visit(binaryExpression: BinaryExpression, byteCodeStore: ByteCodeStore) {

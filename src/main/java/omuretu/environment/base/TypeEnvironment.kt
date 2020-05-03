@@ -2,7 +2,7 @@ package omuretu.environment.base
 
 import omuretu.typechecker.Type
 
-interface TypeEnvironment: Environment {
+interface TypeEnvironment : Environment {
     fun put(key: EnvironmentKey, type: Type)
 
     fun get(key: EnvironmentKey): Type?

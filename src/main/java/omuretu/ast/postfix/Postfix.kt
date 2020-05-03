@@ -9,7 +9,7 @@ import omuretu.visitor.EvaluateVisitor
 import parser.ast.ASTList
 import parser.ast.ASTTree
 
-abstract class Postfix(children: List<ASTTree>): ASTList(children) {
+abstract class Postfix(children: List<ASTTree>) : ASTList(children) {
     override fun accept(checkTypeVisitor: CheckTypeVisitor, typeEnvironment: TypeEnvironment): Type {
         throw OmuretuException("must be called `checkType(typeEnvironment: TypeEnvironment): Type` instead of this method", this)
     }
@@ -18,7 +18,7 @@ abstract class Postfix(children: List<ASTTree>): ASTList(children) {
         throw OmuretuException("must be called `evaluate(environment: Environment, value: Any)` instead of this method", this)
     }
 
-    abstract fun accept(checkTypeVisitor: CheckTypeVisitor,typeEnvironment: TypeEnvironment, leftType: Type): Type
+    abstract fun accept(checkTypeVisitor: CheckTypeVisitor, typeEnvironment: TypeEnvironment, leftType: Type): Type
 
     abstract fun accept(evaluateVisitor: EvaluateVisitor, variableEnvironment: VariableEnvironment, leftValue: Any): Any
 }

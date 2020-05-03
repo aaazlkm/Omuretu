@@ -1,9 +1,9 @@
 package parser.element
 
-import parser.exception.ParseException
 import lexer.Lexer
 import parser.Parser
 import parser.ast.ASTTree
+import parser.exception.ParseException
 
 /**
  * pat1 | pat2

@@ -11,7 +11,7 @@ import parser.ast.ASTList
 import parser.ast.ASTTree
 
 class TypeStatement(
-        private val typeName: IdNameLiteral? = null
+    private val typeName: IdNameLiteral? = null
 ) : ASTList(typeName?.let { listOf(it) } ?: listOf()) {
     companion object Factory : FactoryMethod {
         const val KEYWORD_COLON = ":"
@@ -19,7 +19,7 @@ class TypeStatement(
         @JvmStatic
         override fun newInstance(argument: List<ASTTree>): ASTTree? {
             if (argument.size !in 0..1) return null
-            return when(argument.size) {
+            return when (argument.size) {
                 0 -> TypeStatement()
                 1 -> {
                     val typeName = argument[0] as? IdNameLiteral ?: return null

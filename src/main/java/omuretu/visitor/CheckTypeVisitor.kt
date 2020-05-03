@@ -12,13 +12,21 @@ import omuretu.ast.listeral.StringLiteral
 import omuretu.ast.postfix.ArgumentPostfix
 import omuretu.ast.postfix.ArrayPostfix
 import omuretu.ast.postfix.DotPostfix
-import omuretu.ast.statement.*
+import omuretu.ast.statement.BlockStatement
+import omuretu.ast.statement.ClassBodyStatement
+import omuretu.ast.statement.ClassStatement
+import omuretu.ast.statement.DefStatement
+import omuretu.ast.statement.IfStatement
+import omuretu.ast.statement.ParameterStatement
+import omuretu.ast.statement.ParametersStatement
+import omuretu.ast.statement.ValStatement
+import omuretu.ast.statement.VarStatement
+import omuretu.ast.statement.WhileStatement
 import omuretu.environment.TypeEnvironmentImpl
 import omuretu.environment.base.TypeEnvironment
 import omuretu.exception.OmuretuException
 import omuretu.typechecker.Type
 import omuretu.typechecker.TypeCheckHelper
-
 
 class CheckTypeVisitor : Visitor {
     //region expression
@@ -133,7 +141,7 @@ class CheckTypeVisitor : Visitor {
     }
 
     fun visit(defStatement: DefStatement, typeEnvironment: TypeEnvironment): Type {
-        val (idNameLiteral,parameters, typeTag, blockStatement) = defStatement
+        val (idNameLiteral, parameters, typeTag, blockStatement) = defStatement
         val environmentKey = defStatement.environmentKey ?: throw OmuretuException("donot defined $this")
         val returnType = typeTag.type as? Type.Defined ?: Type.Defined.Unit()
         val parameterTypes = parameters.types
@@ -150,8 +158,13 @@ class CheckTypeVisitor : Visitor {
         val (condition, thenBlock, elseBlock) = ifStatement
         val conditionType = condition.accept(this, typeEnvironment)
         TypeCheckHelper.checkSubTypeOrThrow(conditionType, Type.Defined.Int(), ifStatement, typeEnvironment)
-        val thenBlockType = thenBlock.accept(this, typeEnvironment)
-        val elseBlockType = elseBlock?.accept(this, typeEnvironment)
+
+        val typeEnvironmentForThen = TypeEnvironmentImpl(typeEnvironment)
+        val thenBlockType = thenBlock.accept(this, typeEnvironmentForThen)
+
+        val typeEnvironmentForElse = TypeEnvironmentImpl(typeEnvironment)
+        val elseBlockType = elseBlock?.accept(this, typeEnvironmentForElse)
+
         return if (elseBlockType == null) {
             thenBlockType
         } else {
@@ -195,9 +208,10 @@ class CheckTypeVisitor : Visitor {
     fun visit(whileStatement: WhileStatement, typeEnvironment: TypeEnvironment): Type {
         val (condition, body) = whileStatement
         val conditionType = condition.accept(this, typeEnvironment)
-        val bodyType = body.accept(this, typeEnvironment)
-        TypeCheckHelper.checkSubTypeOrThrow(conditionType, Type.Defined.Int(), whileStatement, typeEnvironment)
-        return TypeCheckHelper.union(bodyType, Type.Defined.Int(), typeEnvironment) // whileのbodyが一度も実行されない場合Intを返すためunion(Type.Int)している
+        val nestedTypeEnvironment = TypeEnvironmentImpl(typeEnvironment)
+        val bodyType = body.accept(this, nestedTypeEnvironment)
+        TypeCheckHelper.checkSubTypeOrThrow(conditionType, Type.Defined.Int(), whileStatement, nestedTypeEnvironment)
+        return TypeCheckHelper.union(bodyType, Type.Defined.Int(), nestedTypeEnvironment) // whileのbodyが一度も実行されない場合Intを返すためunion(Type.Int)している
     }
 
     //endregion

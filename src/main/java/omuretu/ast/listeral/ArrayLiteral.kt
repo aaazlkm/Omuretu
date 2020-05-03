@@ -9,13 +9,12 @@ import parser.ast.ASTList
 import parser.ast.ASTTree
 
 class ArrayLiteral(
-        val elements: List<ASTTree>
+    val elements: List<ASTTree>
 ) : ASTList(elements) {
     companion object Factory : FactoryMethod {
         const val KEYWORD_BRACKETS_START = "["
         const val KEYWORD_BRACKETS_END = "]"
         const val KEYWORD_PARAMETER_BREAK = ","
-
 
         @JvmStatic
         override fun newInstance(argument: List<ASTTree>): ASTTree? {

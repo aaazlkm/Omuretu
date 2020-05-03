@@ -7,7 +7,7 @@ import omuretu.exception.TypeException
 import omuretu.typechecker.Type
 
 class TypeEnvironmentImpl(
-        private val outEnvironment: TypeEnvironment? = null
+    private val outEnvironment: TypeEnvironment? = null
 ) : TypeEnvironment {
     data class TypeEquation(val type1: Type.NeedInference, val type2: Type.NeedInference)
 

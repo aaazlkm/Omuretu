@@ -1,16 +1,47 @@
 package omuretu
 
-import omuretu.exception.OmuretuException
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
 import java.io.BufferedReader
 import java.io.ByteArrayOutputStream
 import java.io.FileReader
 import java.io.PrintStream
+import java.io.Reader
+import lexer.token.Token
+import omuretu.ast.statement.NullStatement
+import omuretu.environment.GlobalVariableEnvironment
+import omuretu.environment.TypeEnvironmentImpl
+import omuretu.exception.OmuretuException
+import omuretu.native.NativeFunctionEnvironmentFactory
+import omuretu.visitor.CheckTypeVisitor
+import omuretu.visitor.EvaluateVisitor
+import omuretu.visitor.IdNameLocationVisitor
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 
 internal class OmuretuTest {
+    companion object {
+        fun runForTest(reader: Reader) {
+            val parser = OmuretuParser()
+            val typeEnvironment = TypeEnvironmentImpl()
+            val variableEnvironment = NativeFunctionEnvironmentFactory.createBasedOn(GlobalVariableEnvironment(), typeEnvironment)
+
+            val idNameLocationVisitor = IdNameLocationVisitor()
+            val checkTypeVisitor = CheckTypeVisitor()
+            val evaluateVisitor = EvaluateVisitor()
+
+            val lexer = OmuretuLexer(reader)
+            while (lexer.readTokenAt(0) !== Token.EOF) {
+                val t = parser.parse(lexer)
+                if (t !is NullStatement) {
+                    t.accept(idNameLocationVisitor, variableEnvironment.idNameLocationMap)
+                    val type = t.accept(checkTypeVisitor, typeEnvironment)
+                    val result = t.accept(evaluateVisitor, variableEnvironment)
+                }
+            }
+        }
+    }
+
     private val pathToTestCaseDir = "${System.getProperty("user.dir")}/src/test/resources"
 
     private lateinit var out: ByteArrayOutputStream
@@ -26,7 +57,7 @@ internal class OmuretuTest {
         val path = "$pathToTestCaseDir/test_var"
         val reader = BufferedReader(FileReader(path))
         val expected = reader.readLine().split(" ")
-        OmuretuRunner.run(reader)
+        runForTest(reader)
         val result = out.toString().split("\n").filter { it.isNotEmpty() }
         assertEquals(expected, result)
     }
@@ -36,7 +67,7 @@ internal class OmuretuTest {
         val path = "$pathToTestCaseDir/val/test_val"
         val reader = BufferedReader(FileReader(path))
         val expected = reader.readLine().split(" ")
-        OmuretuRunner.run(reader)
+        runForTest(reader)
         val result = out.toString().split("\n").filter { it.isNotEmpty() }
         assertEquals(expected, result)
     }
@@ -46,7 +77,7 @@ internal class OmuretuTest {
         val path = "$pathToTestCaseDir/val/test_val_error"
         val reader = BufferedReader(FileReader(path))
         assertThrows<OmuretuException> {
-            OmuretuRunner.run(reader)
+            runForTest(reader)
         }
     }
 
@@ -55,7 +86,7 @@ internal class OmuretuTest {
         val path = "$pathToTestCaseDir/test_operator"
         val reader = BufferedReader(FileReader(path))
         val expected = reader.readLine().split(" ")
-        OmuretuRunner.run(reader)
+        runForTest(reader)
         val result = out.toString().split("\n").filter { it.isNotEmpty() }
         assertEquals(expected, result)
     }
@@ -67,22 +98,40 @@ internal class OmuretuTest {
 
     @Test
     fun testIf() {
-        val path = "$pathToTestCaseDir/test_if"
+        val path = "$pathToTestCaseDir/if/test_if"
         val reader = BufferedReader(FileReader(path))
         val expected = reader.readLine().split(" ")
-        OmuretuRunner.run(reader)
+        runForTest(reader)
         val result = out.toString().split("\n").filter { it.isNotEmpty() }
         assertEquals(expected, result)
     }
 
     @Test
+    fun testIfError() {
+        val path = "$pathToTestCaseDir/if/test_if_error"
+        val reader = BufferedReader(FileReader(path))
+        assertThrows<OmuretuException> {
+            runForTest(reader)
+        }
+    }
+
+    @Test
     fun testWhile() {
-        val path = "$pathToTestCaseDir/test_while"
+        val path = "$pathToTestCaseDir/while/test_while"
         val reader = BufferedReader(FileReader(path))
         val expected = reader.readLine().split(" ")
-        OmuretuRunner.run(reader)
+        runForTest(reader)
         val result = out.toString().split("\n").filter { it.isNotEmpty() }
         assertEquals(expected, result)
+    }
+
+    @Test
+    fun testWhileError() {
+        val path = "$pathToTestCaseDir/while/test_while_error"
+        val reader = BufferedReader(FileReader(path))
+        assertThrows<OmuretuException> {
+            runForTest(reader)
+        }
     }
 
     @Test
@@ -95,7 +144,7 @@ internal class OmuretuTest {
         val path = "$pathToTestCaseDir/test_def"
         val reader = BufferedReader(FileReader(path))
         val expected = reader.readLine().split(" ")
-        OmuretuRunner.run(reader)
+        runForTest(reader)
         val result = out.toString().split("\n").filter { it.isNotEmpty() }
         assertEquals(expected, result)
     }

@@ -5,7 +5,7 @@ import omuretu.environment.base.TypeEnvironment
 import omuretu.environment.base.VariableEnvironment
 import omuretu.model.InlineCache
 import omuretu.typechecker.Type
-import omuretu.vertualmachine.ByteCodeStore
+import omuretu.virtualmachine.ByteCodeStore
 import omuretu.visitor.CheckTypeVisitor
 import omuretu.visitor.CompileVisitor
 import omuretu.visitor.EvaluateVisitor
@@ -15,9 +15,9 @@ import parser.ast.ASTList
 import parser.ast.ASTTree
 
 data class BinaryExpression(
-        val left: ASTTree,
-        val operator: ASTLeaf,
-        val right: ASTTree
+    val left: ASTTree,
+    val operator: ASTLeaf,
+    val right: ASTTree
 ) : ASTList(listOf(left, operator, right)) {
     companion object Factory : FactoryMethod {
         @JvmStatic

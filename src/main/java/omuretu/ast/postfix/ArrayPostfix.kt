@@ -8,7 +8,7 @@ import omuretu.visitor.EvaluateVisitor
 import parser.ast.ASTTree
 
 class ArrayPostfix(
-        val index: ASTTree
+    val index: ASTTree
 ) : Postfix(listOf(index)) {
     companion object Factory : FactoryMethod {
         const val KEYWORD_BRACKETS_START = "["

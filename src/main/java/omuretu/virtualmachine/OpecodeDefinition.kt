@@ -1,8 +1,26 @@
-package omuretu.vertualmachine
+package omuretu.virtualmachine
 
-import omuretu.vertualmachine.opecode.*
-import omuretu.vertualmachine.opecode.base.Opecode
-
+import omuretu.virtualmachine.opecode.BConstOpecode
+import omuretu.virtualmachine.opecode.CallOpecode
+import omuretu.virtualmachine.opecode.DivOpecode
+import omuretu.virtualmachine.opecode.EqualOpecode
+import omuretu.virtualmachine.opecode.GmoveOpecode
+import omuretu.virtualmachine.opecode.GotoOpecode
+import omuretu.virtualmachine.opecode.IConstOpecode
+import omuretu.virtualmachine.opecode.IfZeroOpecode
+import omuretu.virtualmachine.opecode.LessOpecode
+import omuretu.virtualmachine.opecode.MoreOpecode
+import omuretu.virtualmachine.opecode.MoveOpecode
+import omuretu.virtualmachine.opecode.MulOpecode
+import omuretu.virtualmachine.opecode.NegOpecode
+import omuretu.virtualmachine.opecode.PlusOpecode
+import omuretu.virtualmachine.opecode.RemOpecode
+import omuretu.virtualmachine.opecode.RestoreOpecode
+import omuretu.virtualmachine.opecode.ReturnOpecode
+import omuretu.virtualmachine.opecode.SConstOpecode
+import omuretu.virtualmachine.opecode.SaveOpecode
+import omuretu.virtualmachine.opecode.SubOpecode
+import omuretu.virtualmachine.opecode.base.Opecode
 
 enum class OpecodeDefinition {
     /** load an integer */
@@ -77,7 +95,7 @@ enum class OpecodeDefinition {
         }
 
     fun createRunner(virtualMachineStatus: OmuretuVirtualMachine.Status): Opecode {
-        return when(this) {
+        return when (this) {
             ICONST -> IConstOpecode(virtualMachineStatus)
             BCONST -> BConstOpecode(virtualMachineStatus)
             SCONST -> SConstOpecode(virtualMachineStatus)

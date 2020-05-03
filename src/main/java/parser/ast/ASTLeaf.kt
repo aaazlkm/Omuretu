@@ -1,12 +1,12 @@
 package parser.ast
 
 import lexer.token.Token
-import omuretu.environment.base.VariableEnvironment
 import omuretu.environment.IdNameLocationMap
 import omuretu.environment.base.TypeEnvironment
+import omuretu.environment.base.VariableEnvironment
 import omuretu.exception.OmuretuException
 import omuretu.typechecker.Type
-import omuretu.vertualmachine.ByteCodeStore
+import omuretu.virtualmachine.ByteCodeStore
 import omuretu.visitor.CheckTypeVisitor
 import omuretu.visitor.CompileVisitor
 import omuretu.visitor.EvaluateVisitor
@@ -17,7 +17,7 @@ open class ASTLeaf(open val token: Token) : ASTTree {
         fun newInstance(argument: Token): ASTTree?
     }
 
-    companion object Factory: FactoryMethod {
+    companion object Factory : FactoryMethod {
         val argumentType = Token::class.java
 
         @JvmStatic

@@ -1,16 +1,16 @@
-package omuretu.vertualmachine.opecode
+package omuretu.virtualmachine.opecode
 
-import omuretu.vertualmachine.OmuretuVirtualMachine
-import omuretu.vertualmachine.OpecodeDefinition
-import omuretu.vertualmachine.opecode.base.Opecode
+import omuretu.virtualmachine.OmuretuVirtualMachine
+import omuretu.virtualmachine.OpecodeDefinition
+import omuretu.virtualmachine.opecode.base.Opecode
 
 /**
  * restore int8 (関数で使用する引数と局所変数の数)
  *
  * @property virtualMachineStatus
  */
-class RestoreOpecode (
-        override val virtualMachineStatus: OmuretuVirtualMachine.Status
+class RestoreOpecode(
+    override val virtualMachineStatus: OmuretuVirtualMachine.Status
 ) : Opecode() {
     companion object {
         const val SIZE_OF_VARIABLES_IN_FUNCTION_AT = 1

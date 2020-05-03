@@ -1,7 +1,7 @@
 package parser.exception
 
-import lexer.token.Token
 import java.io.IOException
+import lexer.token.Token
 
 class ParseException : Exception {
     constructor(e: IOException) : super(e) {}

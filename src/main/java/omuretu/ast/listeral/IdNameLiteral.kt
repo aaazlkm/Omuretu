@@ -9,10 +9,10 @@ import omuretu.environment.base.VariableEnvironment
 import omuretu.exception.OmuretuException
 import omuretu.typechecker.Type
 import omuretu.typechecker.TypeCheckHelper
-import omuretu.vertualmachine.ByteCodeStore
-import omuretu.vertualmachine.OmuretuVirtualMachine
-import omuretu.vertualmachine.opecode.GmoveOpecode
-import omuretu.vertualmachine.opecode.MoveOpecode
+import omuretu.virtualmachine.ByteCodeStore
+import omuretu.virtualmachine.OmuretuVirtualMachine
+import omuretu.virtualmachine.opecode.GmoveOpecode
+import omuretu.virtualmachine.opecode.MoveOpecode
 import omuretu.visitor.CheckTypeVisitor
 import omuretu.visitor.CompileVisitor
 import omuretu.visitor.EvaluateVisitor
@@ -20,7 +20,7 @@ import omuretu.visitor.IdNameLocationVisitor
 import parser.ast.ASTLeaf
 
 data class IdNameLiteral(
-        override val token: IdToken
+    override val token: IdToken
 ) : ASTLeaf(token) {
     companion object Factory : FactoryMethod {
         @JvmStatic
@@ -63,7 +63,7 @@ data class IdNameLiteral(
             typeEnvironment.put(environmentKey, newType)
         } else {
             TypeCheckHelper.checkSubTypeOrThrow(type, newType, this, typeEnvironment)
-            if(type.readOnly) throw OmuretuException("$name is readOnly", this)
+            if (type.readOnly) throw OmuretuException("$name is readOnly", this)
         }
         return type ?: newType
     }

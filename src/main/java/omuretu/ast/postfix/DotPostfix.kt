@@ -10,7 +10,7 @@ import omuretu.visitor.EvaluateVisitor
 import parser.ast.ASTTree
 
 class DotPostfix(
-        private val idNameLiteral: IdNameLiteral
+    private val idNameLiteral: IdNameLiteral
 ) : Postfix(listOf(idNameLiteral)) {
     companion object Factory : FactoryMethod {
         const val KEYWORD_DOT = "."

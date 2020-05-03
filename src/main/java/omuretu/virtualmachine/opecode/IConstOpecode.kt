@@ -1,9 +1,9 @@
-package omuretu.vertualmachine.opecode
+package omuretu.virtualmachine.opecode
 
 import omuretu.exception.OmuretuException
-import omuretu.vertualmachine.OmuretuVirtualMachine
-import omuretu.vertualmachine.OpecodeDefinition
-import omuretu.vertualmachine.opecode.base.Opecode
+import omuretu.virtualmachine.OmuretuVirtualMachine
+import omuretu.virtualmachine.OpecodeDefinition
+import omuretu.virtualmachine.opecode.base.Opecode
 import util.ex.sliceByByte
 
 /**
@@ -12,7 +12,7 @@ import util.ex.sliceByByte
  * @property virtualMachineStatus
  */
 class IConstOpecode(
-        override val virtualMachineStatus: OmuretuVirtualMachine.Status
+    override val virtualMachineStatus: OmuretuVirtualMachine.Status
 ) : Opecode() {
     companion object {
         const val INT_START = 1

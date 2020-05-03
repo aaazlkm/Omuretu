@@ -16,8 +16,7 @@ internal class TypeCheckHelperTest {
         val dummyASTTree = ASTList(listOf())
         val dummyEnvironment = TypeEnvironmentImpl()
         if (needError) {
-            org.junit.jupiter.api.assertThrows<TypeException>("superType: $superType subType: $subType needError: $needError ")
-            { TypeCheckHelper.checkSubTypeOrThrow(superType, subType, dummyASTTree, dummyEnvironment) }
+            org.junit.jupiter.api.assertThrows<TypeException>("superType: $superType subType: $subType needError: $needError ") { TypeCheckHelper.checkSubTypeOrThrow(superType, subType, dummyASTTree, dummyEnvironment) }
         } else {
             assertDoesNotThrow { TypeCheckHelper.checkSubTypeOrThrow(superType, subType, dummyASTTree, dummyEnvironment) }
         }

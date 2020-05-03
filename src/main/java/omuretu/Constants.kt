@@ -10,4 +10,3 @@ const val OMURETU_TRUE = 1
 const val OMURETU_FALSE = 0
 
 //endregion
-
