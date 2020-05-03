@@ -13,10 +13,10 @@ import omuretu.visitor.EvaluateVisitor
 import parser.ast.ASTTree
 
 class AssignmentOperator(
-        override val leftTree: ASTTree,
-        override val rightTree: ASTTree,
-        override val evaluateVisitor: EvaluateVisitor,
-        override val variableEnvironment: VariableEnvironment
+    override val leftTree: ASTTree,
+    override val rightTree: ASTTree,
+    override val evaluateVisitor: EvaluateVisitor,
+    override val variableEnvironment: VariableEnvironment
 ) : LeftValueOperator {
 
     override fun calculate(inlineCache: InlineCache?, doOnSaveInlineCache: ((InlineCache) -> Unit)?): Any {
@@ -28,9 +28,9 @@ class AssignmentOperator(
     }
 
     private fun calculateWhenPrimaryExpression(
-            primaryExpression: PrimaryExpression,
-            inlineCache: InlineCache?,
-            doOnSaveInlineCache: ((InlineCache) -> Unit)?
+        primaryExpression: PrimaryExpression,
+        inlineCache: InlineCache?,
+        doOnSaveInlineCache: ((InlineCache) -> Unit)?
     ): Any {
         when (val firstPostFix = primaryExpression.firstPostFix) {
             is DotPostfix -> {

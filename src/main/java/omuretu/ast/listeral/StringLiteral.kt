@@ -6,7 +6,7 @@ import omuretu.environment.IdNameLocationMap
 import omuretu.environment.base.TypeEnvironment
 import omuretu.environment.base.VariableEnvironment
 import omuretu.typechecker.Type
-import omuretu.vertualmachine.ByteCodeStore
+import omuretu.virtualmachine.ByteCodeStore
 import omuretu.visitor.CheckTypeVisitor
 import omuretu.visitor.CompileVisitor
 import omuretu.visitor.EvaluateVisitor
@@ -15,9 +15,9 @@ import parser.ast.ASTLeaf
 import parser.ast.ASTTree
 
 class StringLiteral(
-        override val token: StringToken
+    override val token: StringToken
 ) : ASTLeaf(token) {
-    companion object Factory: FactoryMethod {
+    companion object Factory : FactoryMethod {
         @JvmStatic
         override fun newInstance(argument: Token): ASTTree? {
             return if (argument is StringToken) {

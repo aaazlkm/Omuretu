@@ -1,5 +1,6 @@
 package omuretu
 
+import java.io.Reader
 import lexer.token.Token
 import omuretu.ast.statement.NullStatement
 import omuretu.environment.GlobalVariableEnvironment
@@ -9,8 +10,6 @@ import omuretu.visitor.CheckTypeVisitor
 import omuretu.visitor.EvaluateVisitor
 import omuretu.visitor.IdNameLocationVisitor
 import util.utility.CodeDialog
-import java.io.Reader
-
 
 object OmuretuRunner {
     @JvmStatic
@@ -31,7 +30,7 @@ object OmuretuRunner {
         while (lexer.readTokenAt(0) !== Token.EOF) {
             val t = parser.parse(lexer)
             if (t !is NullStatement) {
-                t.accept(idNameLocationVisitor,  variableEnvironment.idNameLocationMap)
+                t.accept(idNameLocationVisitor, variableEnvironment.idNameLocationMap)
                 val type = t.accept(checkTypeVisitor, typeEnvironment)
                 val result = t.accept(evaluateVisitor, variableEnvironment)
             }

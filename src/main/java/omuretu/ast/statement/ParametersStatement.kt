@@ -13,7 +13,7 @@ import parser.ast.ASTList
 import parser.ast.ASTTree
 
 data class ParametersStatement(
-        val parameters: List<ParameterStatement>
+    val parameters: List<ParameterStatement>
 ) : ASTList(parameters) {
     companion object Factory : FactoryMethod {
         const val KEYWORD_PARAMETER_BREAK = ","

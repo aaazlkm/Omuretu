@@ -1,8 +1,8 @@
-package omuretu.vertualmachine.opecode
+package omuretu.virtualmachine.opecode
 
-import omuretu.vertualmachine.OmuretuVirtualMachine
-import omuretu.vertualmachine.OpecodeDefinition
-import omuretu.vertualmachine.opecode.base.Opecode
+import omuretu.virtualmachine.OmuretuVirtualMachine
+import omuretu.virtualmachine.OpecodeDefinition
+import omuretu.virtualmachine.opecode.base.Opecode
 
 /**
  * bconst int8 reg
@@ -10,7 +10,7 @@ import omuretu.vertualmachine.opecode.base.Opecode
  * @property virtualMachineStatus
  */
 class BConstOpecode(
-        override val virtualMachineStatus: OmuretuVirtualMachine.Status
+    override val virtualMachineStatus: OmuretuVirtualMachine.Status
 ) : Opecode() {
     companion object {
         const val INT_AT = 1

@@ -1,9 +1,9 @@
 package omuretu.environment
 
 import omuretu.environment.base.EnvironmentKey
-import omuretu.vertualmachine.ByteCodeStore
-import omuretu.vertualmachine.HeapMemory
-import omuretu.vertualmachine.OmuretuVirtualMachine
+import omuretu.virtualmachine.ByteCodeStore
+import omuretu.virtualmachine.HeapMemory
+import omuretu.virtualmachine.OmuretuVirtualMachine
 
 class GlobalVariableEnvironment : VariableEnvironmentImpl(10), HeapMemory {
     val idNameLocationMap = IdNameLocationMap()

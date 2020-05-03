@@ -1,11 +1,21 @@
 package parser
 
+import java.util.HashSet
 import lexer.Lexer
 import parser.ast.ASTLeaf
 import parser.ast.ASTList
 import parser.ast.ASTTree
-import parser.element.*
-import java.util.HashSet
+import parser.element.Element
+import parser.element.Expression
+import parser.element.IdSymbol
+import parser.element.NumberSymbol
+import parser.element.Option
+import parser.element.OrTree
+import parser.element.Repeat
+import parser.element.Skip
+import parser.element.StringSymbol
+import parser.element.Token
+import parser.element.Tree
 
 /**
  * BNF文法を全て構文解析できるわけではなく、

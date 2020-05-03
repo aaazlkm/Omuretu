@@ -1,7 +1,7 @@
-package omuretu.vertualmachine.opecode.base
+package omuretu.virtualmachine.opecode.base
 
-import omuretu.vertualmachine.HeapMemory
-import omuretu.vertualmachine.OmuretuVirtualMachine
+import omuretu.virtualmachine.HeapMemory
+import omuretu.virtualmachine.OmuretuVirtualMachine
 
 abstract class Opecode {
     /**
@@ -63,5 +63,3 @@ abstract class Opecode {
 
     abstract fun run()
 }
-
-

@@ -4,7 +4,7 @@ import omuretu.ast.postfix.Postfix
 import omuretu.environment.base.TypeEnvironment
 import omuretu.environment.base.VariableEnvironment
 import omuretu.typechecker.Type
-import omuretu.vertualmachine.ByteCodeStore
+import omuretu.virtualmachine.ByteCodeStore
 import omuretu.visitor.CheckTypeVisitor
 import omuretu.visitor.CompileVisitor
 import omuretu.visitor.EvaluateVisitor
@@ -12,8 +12,8 @@ import parser.ast.ASTList
 import parser.ast.ASTTree
 
 data class PrimaryExpression(
-        val literal: ASTTree,
-        val postFixes: List<Postfix>
+    val literal: ASTTree,
+    val postFixes: List<Postfix>
 ) : ASTList(listOf(literal) + postFixes) {
     companion object Factory : FactoryMethod {
         @JvmStatic

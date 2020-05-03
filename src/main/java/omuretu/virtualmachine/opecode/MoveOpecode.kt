@@ -1,17 +1,17 @@
-package omuretu.vertualmachine.opecode
+package omuretu.virtualmachine.opecode
 
 import omuretu.exception.OmuretuException
-import omuretu.vertualmachine.OmuretuVirtualMachine
-import omuretu.vertualmachine.OpecodeDefinition
-import omuretu.vertualmachine.opecode.base.Opecode
+import omuretu.virtualmachine.OmuretuVirtualMachine
+import omuretu.virtualmachine.OpecodeDefinition
+import omuretu.virtualmachine.opecode.base.Opecode
 
 /**
  * move src dest
  *
  * @property virtualMachineStatus
  */
-class MoveOpecode (
-        override val virtualMachineStatus: OmuretuVirtualMachine.Status
+class MoveOpecode(
+    override val virtualMachineStatus: OmuretuVirtualMachine.Status
 ) : Opecode() {
     companion object {
         const val SRC_AT = 1

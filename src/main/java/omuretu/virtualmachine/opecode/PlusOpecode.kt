@@ -1,7 +1,7 @@
-package omuretu.vertualmachine.opecode
+package omuretu.virtualmachine.opecode
 
-import omuretu.vertualmachine.OmuretuVirtualMachine
-import omuretu.vertualmachine.opecode.base.ComputeOpecode
+import omuretu.virtualmachine.OmuretuVirtualMachine
+import omuretu.virtualmachine.opecode.base.ComputeOpecode
 
 /**
  * add reg1 reg2
@@ -9,7 +9,7 @@ import omuretu.vertualmachine.opecode.base.ComputeOpecode
  * @property virtualMachineStatus
  */
 class PlusOpecode(
-        override val virtualMachineStatus: OmuretuVirtualMachine.Status
+    override val virtualMachineStatus: OmuretuVirtualMachine.Status
 ) : ComputeOpecode() {
     override fun run() {
         val leftValue = leftValue

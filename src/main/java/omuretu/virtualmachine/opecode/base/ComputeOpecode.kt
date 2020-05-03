@@ -1,8 +1,8 @@
-package omuretu.vertualmachine.opecode.base
+package omuretu.virtualmachine.opecode.base
 
 import omuretu.exception.OmuretuException
-import omuretu.vertualmachine.OmuretuVirtualMachine
-import omuretu.vertualmachine.OpecodeDefinition
+import omuretu.virtualmachine.OmuretuVirtualMachine
+import omuretu.virtualmachine.OpecodeDefinition
 
 abstract class ComputeOpecode : Opecode() {
     companion object {

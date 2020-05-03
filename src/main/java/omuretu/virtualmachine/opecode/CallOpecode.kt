@@ -1,10 +1,10 @@
-package omuretu.vertualmachine.opecode
+package omuretu.virtualmachine.opecode
 
 import omuretu.exception.OmuretuException
 import omuretu.model.Function
-import omuretu.vertualmachine.OmuretuVirtualMachine
-import omuretu.vertualmachine.OpecodeDefinition
-import omuretu.vertualmachine.opecode.base.Opecode
+import omuretu.virtualmachine.OmuretuVirtualMachine
+import omuretu.virtualmachine.OpecodeDefinition
+import omuretu.virtualmachine.opecode.base.Opecode
 
 /**
  * call reg int8
@@ -12,7 +12,7 @@ import omuretu.vertualmachine.opecode.base.Opecode
  * @property virtualMachineStatus
  */
 class CallOpecode(
-        override val virtualMachineStatus: OmuretuVirtualMachine.Status
+    override val virtualMachineStatus: OmuretuVirtualMachine.Status
 ) : Opecode() {
     companion object {
         const val REGISTER_AT = 1
@@ -38,7 +38,9 @@ class CallOpecode(
             is Function.OmuretuFunction -> {
                 if (value.numberOfParameter != numberOfArguments) throw OmuretuException("does not match number of parameters")
                 returnPointer = programCounter + PROGRAM_LENGTH
-                programCounter = value.entry
+                // TODO 現在バーチャルマシンでの実行をやめている
+                // 再びVirtualMachineで実行することになったら下記のコメントアウトする
+//                programCounter = value.entry
             }
             is Function.NativeFunction -> {
                 if (value.numberOfParameter != numberOfArguments) throw OmuretuException("does not match number of parameters")

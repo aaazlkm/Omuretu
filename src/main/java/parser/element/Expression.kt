@@ -1,5 +1,7 @@
 package parser.element
 
+import java.util.ArrayList
+import java.util.HashMap
 import lexer.Lexer
 import lexer.token.IdToken
 import parser.ASTTreeFactory
@@ -7,13 +9,11 @@ import parser.Parser
 import parser.ast.ASTLeaf
 import parser.ast.ASTList
 import parser.ast.ASTTree
-import java.util.ArrayList
-import java.util.HashMap
 
 class Expression constructor(
-        clazz: Class<out ASTTree>?,
-        var parser: Parser,
-        var operators: Operators
+    clazz: Class<out ASTTree>?,
+    var parser: Parser,
+    var operators: Operators
 ) : Element {
     class Operators : HashMap<String, Precedence>() {
         fun add(name: String, precedence: Int, assoc: Precedence.Assoc) {

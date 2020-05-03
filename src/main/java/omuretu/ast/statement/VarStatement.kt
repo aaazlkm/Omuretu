@@ -13,9 +13,9 @@ import parser.ast.ASTList
 import parser.ast.ASTTree
 
 data class VarStatement(
-        val idNameLiteral: IdNameLiteral,
-        val typeStatement: TypeStatement,
-        val initializer: ASTTree
+    val idNameLiteral: IdNameLiteral,
+    val typeStatement: TypeStatement,
+    val initializer: ASTTree
 ) : ASTList(listOf(idNameLiteral, typeStatement, initializer)) {
     companion object Factory : FactoryMethod {
         const val KEYWORD_VAR = "var"

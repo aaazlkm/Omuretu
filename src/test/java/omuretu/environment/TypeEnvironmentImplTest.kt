@@ -118,5 +118,4 @@ internal class TypeEnvironmentImplTest {
             assertEquals(3, typeEquations.size)
         }
     }
-
 }

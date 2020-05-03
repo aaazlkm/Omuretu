@@ -1,5 +1,6 @@
 package omuretu
 
+import java.util.HashSet
 import lexer.Lexer
 import lexer.token.IdToken
 import omuretu.ast.expression.NegativeExpression
@@ -13,13 +14,24 @@ import omuretu.ast.listeral.StringLiteral
 import omuretu.ast.postfix.ArgumentPostfix
 import omuretu.ast.postfix.ArrayPostfix
 import omuretu.ast.postfix.DotPostfix
-import omuretu.ast.statement.*
+import omuretu.ast.statement.BlockStatement
+import omuretu.ast.statement.ClassBodyStatement
+import omuretu.ast.statement.ClassStatement
+import omuretu.ast.statement.DefStatement
+import omuretu.ast.statement.IfStatement
+import omuretu.ast.statement.NullStatement
+import omuretu.ast.statement.ParameterStatement
+import omuretu.ast.statement.ParametersStatement
+import omuretu.ast.statement.TypeStatement
+import omuretu.ast.statement.ValStatement
+import omuretu.ast.statement.VarStatement
+import omuretu.ast.statement.WhileStatement
 import parser.Parser
 import parser.ast.ASTTree
 import parser.element.Expression
-import java.util.*
 
 class OmuretuParser {
+    // proguramの定義
     private var program = Parser.rule()
 
     // classの定義
@@ -32,6 +44,12 @@ class OmuretuParser {
     private var paramList = Parser.rule()
     private var params = Parser.rule(ParametersStatement::class.java)
     private var param = Parser.rule(ParameterStatement::class.java)
+
+    // ifの定義
+    private var ifStatement = Parser.rule(IfStatement::class.java)
+
+    // whileの定義
+    private var whileStatement = Parser.rule(WhileStatement::class.java)
 
     // block の定義
     private var block = Parser.rule(BlockStatement::class.java)
@@ -61,6 +79,7 @@ class OmuretuParser {
     private var operators = Expression.Operators()
 
     init {
+        // proguramの定義
         program.or(
                 klass,
                 def,
@@ -89,6 +108,10 @@ class OmuretuParser {
         params.ast(param).repeat(Parser.rule().sep(ParametersStatement.KEYWORD_PARAMETER_BREAK).ast(param))
         param.identifier(reserved, IdNameLiteral::class.java).ast(typeTag)
 
+        ifStatement.sep(IfStatement.KEYWORD_IF).ast(expression).ast(block).option(Parser.rule().sep(IfStatement.KEYWORD_ELSE).ast(block))
+
+        whileStatement.sep(WhileStatement.KEYWORD_WHILE).ast(expression).ast(block)
+
         // blockの定義
         block.sep(BlockStatement.BLOCK_START)
                 .option(statement)
@@ -97,8 +120,8 @@ class OmuretuParser {
 
         // statement の定義
         statement.or(
-                Parser.rule(IfStatement::class.java).sep(IfStatement.KEYWORD_IF).ast(expression).ast(block).option(Parser.rule().sep(IfStatement.KEYWORD_ELSE).ast(block)),
-                Parser.rule(WhileStatement::class.java).sep(WhileStatement.KEYWORD_WHILE).ast(expression).ast(block),
+                ifStatement,
+                whileStatement,
                 variableVal,
                 variableVar,
                 expression

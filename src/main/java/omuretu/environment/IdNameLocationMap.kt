@@ -1,11 +1,10 @@
 package omuretu.environment
 
-
 /**
  * 出てきた変数名関数名を登録して、変数名が出現する位置(nest, index)を返す
  */
 class IdNameLocationMap(
-        private val idNameLocationMapParent: IdNameLocationMap? = null
+    private val idNameLocationMapParent: IdNameLocationMap? = null
 ) {
     private val idNameToIndex = hashMapOf<String, Int>()
 

@@ -3,14 +3,14 @@ package omuretu.ast.postfix
 import omuretu.environment.base.TypeEnvironment
 import omuretu.environment.base.VariableEnvironment
 import omuretu.typechecker.Type
-import omuretu.vertualmachine.ByteCodeStore
+import omuretu.virtualmachine.ByteCodeStore
 import omuretu.visitor.CheckTypeVisitor
 import omuretu.visitor.CompileVisitor
 import omuretu.visitor.EvaluateVisitor
 import parser.ast.ASTTree
 
 data class ArgumentPostfix(
-        val astTrees: List<ASTTree>
+    val astTrees: List<ASTTree>
 ) : Postfix(astTrees) {
     companion object Factory : FactoryMethod {
         const val KEYWORD_PARENTHESIS_START = "("

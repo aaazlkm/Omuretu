@@ -3,12 +3,12 @@ package omuretu.environment
 import omuretu.environment.base.EnvironmentKey
 import omuretu.environment.base.VariableEnvironment
 import omuretu.exception.OmuretuException
-import omuretu.vertualmachine.ByteCodeStore
-import omuretu.vertualmachine.HeapMemory
+import omuretu.virtualmachine.ByteCodeStore
+import omuretu.virtualmachine.HeapMemory
 
 open class VariableEnvironmentImpl(
-        numberOfIdNames: Int,
-        private val outEnvironmentImpl: VariableEnvironmentImpl? = null
+    numberOfIdNames: Int,
+    private val outEnvironmentImpl: VariableEnvironmentImpl? = null
 ) : VariableEnvironment, HeapMemory {
     protected var values = arrayOfNulls<Any>(numberOfIdNames)
 

@@ -12,10 +12,10 @@ import omuretu.exception.OmuretuException
 import omuretu.visitor.EvaluateVisitor
 
 data class Class(
-        val classStmnt: ClassStatement,
-        private val environment: GlobalVariableEnvironment,
-        private val classMemberLocationMap: IdNameLocationMap,
-        private val thisLocation: Location
+    val classStmnt: ClassStatement,
+    private val environment: GlobalVariableEnvironment,
+    private val classMemberLocationMap: IdNameLocationMap,
+    private val thisLocation: Location
 ) {
     val superClass: Class?
 
@@ -35,7 +35,7 @@ data class Class(
     }
 
     fun copyThisMembersTo(
-            classMemberLocationMap: IdNameLocationMap
+        classMemberLocationMap: IdNameLocationMap
     ) {
         classMemberLocationMap.copyFrom(this.classMemberLocationMap)
     }

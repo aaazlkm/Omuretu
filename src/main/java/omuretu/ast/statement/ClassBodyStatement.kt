@@ -4,7 +4,7 @@ import omuretu.environment.IdNameLocationMap
 import omuretu.environment.base.TypeEnvironment
 import omuretu.environment.base.VariableEnvironment
 import omuretu.typechecker.Type
-import omuretu.vertualmachine.ByteCodeStore
+import omuretu.virtualmachine.ByteCodeStore
 import omuretu.visitor.CheckTypeVisitor
 import omuretu.visitor.CompileVisitor
 import omuretu.visitor.EvaluateVisitor
@@ -13,7 +13,7 @@ import parser.ast.ASTList
 import parser.ast.ASTTree
 
 class ClassBodyStatement(
-        val members: List<ASTTree>
+    val members: List<ASTTree>
 ) : ASTList(members) {
     companion object Factory : FactoryMethod {
         const val KEYWORD_BRACES_START = "{"

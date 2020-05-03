@@ -1,8 +1,8 @@
-package omuretu.vertualmachine
+package omuretu.virtualmachine
 
 class ByteCodeStore(
-        codeSize: Int = OmuretuVirtualMachine.DEFAULT_CODE_SIZE,
-        stringSize: Int = OmuretuVirtualMachine.DEFAULT_STRINGS_SIZE
+    codeSize: Int = OmuretuVirtualMachine.DEFAULT_CODE_SIZE,
+    stringSize: Int = OmuretuVirtualMachine.DEFAULT_STRINGS_SIZE
 ) {
     val byteCode = ByteArray(codeSize) { -100 }
     val strings = Array(stringSize) { "" }

@@ -1,24 +1,21 @@
 package omuretu.ast.listeral
 
-import parser.ast.ASTLeaf
 import lexer.token.NumberToken
 import lexer.token.Token
 import omuretu.environment.IdNameLocationMap
 import omuretu.environment.base.TypeEnvironment
 import omuretu.environment.base.VariableEnvironment
 import omuretu.typechecker.Type
-import omuretu.vertualmachine.ByteCodeStore
-import omuretu.vertualmachine.OmuretuVirtualMachine
-import omuretu.vertualmachine.opecode.BConstOpecode
-import omuretu.vertualmachine.opecode.IConstOpecode
+import omuretu.virtualmachine.ByteCodeStore
 import omuretu.visitor.CheckTypeVisitor
 import omuretu.visitor.CompileVisitor
 import omuretu.visitor.EvaluateVisitor
 import omuretu.visitor.IdNameLocationVisitor
+import parser.ast.ASTLeaf
 import parser.ast.ASTTree
 
 class NumberLiteral(
-        override val token: NumberToken
+    override val token: NumberToken
 ) : ASTLeaf(token) {
     companion object Factory : FactoryMethod {
         @JvmStatic

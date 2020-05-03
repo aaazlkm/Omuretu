@@ -1,6 +1,10 @@
 package util.utility
 
-import java.io.*
+import java.io.BufferedReader
+import java.io.FileNotFoundException
+import java.io.FileReader
+import java.io.IOException
+import java.io.Reader
 import javax.swing.JFileChooser
 import javax.swing.JOptionPane
 import javax.swing.JScrollPane
@@ -32,7 +36,7 @@ class CodeDialog : Reader() {
         return size
     }
 
-     fun print(s: String) {
+    fun print(s: String) {
         println(s)
     }
 
@@ -40,7 +44,7 @@ class CodeDialog : Reader() {
     override fun close() {
     }
 
-     fun showDialog(): String? {
+    fun showDialog(): String? {
         val area = JTextArea(20, 40)
         val pane = JScrollPane(area)
         val result = JOptionPane.showOptionDialog(null, pane, "Input",

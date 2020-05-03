@@ -11,8 +11,8 @@ import parser.ast.ASTList
 import parser.ast.ASTTree
 
 data class ParameterStatement(
-        val idNameLiteral: IdNameLiteral,
-        val typeStatement: TypeStatement
+    val idNameLiteral: IdNameLiteral,
+    val typeStatement: TypeStatement
 ) : ASTList(listOf(idNameLiteral, typeStatement)) {
     companion object Factory : FactoryMethod {
         @JvmStatic

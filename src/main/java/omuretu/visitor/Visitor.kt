@@ -1,7 +1,3 @@
 package omuretu.visitor
 
-interface Visitor {
-}
-
-
-
+interface Visitor

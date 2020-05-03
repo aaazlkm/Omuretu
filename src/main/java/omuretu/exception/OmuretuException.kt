@@ -1,7 +1,7 @@
 package omuretu.exception
 
-import parser.ast.ASTTree
 import java.io.IOException
+import parser.ast.ASTTree
 
 class OmuretuException : Exception {
     constructor(e: IOException) : super(e)
