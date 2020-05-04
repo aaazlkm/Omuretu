@@ -33,6 +33,7 @@ object OmuretuRunner {
                 t.accept(idNameLocationVisitor, variableEnvironment.idNameLocationMap)
                 val type = t.accept(checkTypeVisitor, typeEnvironment)
                 val result = t.accept(evaluateVisitor, variableEnvironment)
+                println("$result: $type")
             }
         }
     }

@@ -173,35 +173,36 @@ class CompileVisitor : Visitor {
     }
 
     fun visit(ifStatement: IfStatement, byteCodeStore: ByteCodeStore) {
-        val (condition, thenBlock, elseBlock) = ifStatement
-        condition.accept(this, byteCodeStore)
-        // elseが始まる位置を格納しているCodePosition
-        val codePositionStartIfZero = byteCodeStore.codePosition
-        val codePositionSavingStartElseBlock = codePositionStartIfZero + IfZeroOpecode.SHORT_START
-        val registerAt = OmuretuVirtualMachine.encodeRegisterIndex(byteCodeStore.prevRegister())
-        IfZeroOpecode.createByteCode(registerAt, 0).forEach { byteCodeStore.addByteCode(it) } // 0を渡しているがあとでelse文が始まる位置を渡す
-
-        val registerPosition = byteCodeStore.registerPosition
-        thenBlock.accept(this, byteCodeStore)
-
-        val codePositionStartGoto = byteCodeStore.codePosition
-        val codePositionSavingEndElseBlock = byteCodeStore.codePosition + GotoOpecode.SHORT_START
-        GotoOpecode.createByteCode(0).forEach { byteCodeStore.addByteCode(it) } // 0を渡しているがあとでelse文が終わる位置を渡す
-
-        (byteCodeStore.codePosition - codePositionStartIfZero).toShort().sliceByByte().forEachIndexed { index, byte ->
-            byteCodeStore.setByteCode(codePositionSavingStartElseBlock + index, byte)
-        }
-
-        byteCodeStore.registerPosition = registerPosition
-        elseBlock?.accept(this, byteCodeStore) ?: run {
-            // TODO 何をしているのか調査
-            val registerAt = OmuretuVirtualMachine.encodeRegisterIndex(byteCodeStore.nextRegister())
-            BConstOpecode.createByteCode(0, registerAt).forEach { byteCodeStore.addByteCode(it) }
-        }
-
-        (byteCodeStore.codePosition - codePositionStartGoto).toShort().sliceByByte().forEachIndexed { index, byte ->
-            byteCodeStore.setByteCode(codePositionSavingEndElseBlock + index, byte)
-        }
+        TODO("virtual machine実装する際にここをコメントアウトして実装する")
+//        val (condition, thenBlock, elseBlock) = ifStatement
+//        condition.accept(this, byteCodeStore)
+//        // elseが始まる位置を格納しているCodePosition
+//        val codePositionStartIfZero = byteCodeStore.codePosition
+//        val codePositionSavingStartElseBlock = codePositionStartIfZero + IfZeroOpecode.SHORT_START
+//        val registerAt = OmuretuVirtualMachine.encodeRegisterIndex(byteCodeStore.prevRegister())
+//        IfZeroOpecode.createByteCode(registerAt, 0).forEach { byteCodeStore.addByteCode(it) } // 0を渡しているがあとでelse文が始まる位置を渡す
+//
+//        val registerPosition = byteCodeStore.registerPosition
+//        thenBlock.accept(this, byteCodeStore)
+//
+//        val codePositionStartGoto = byteCodeStore.codePosition
+//        val codePositionSavingEndElseBlock = byteCodeStore.codePosition + GotoOpecode.SHORT_START
+//        GotoOpecode.createByteCode(0).forEach { byteCodeStore.addByteCode(it) } // 0を渡しているがあとでelse文が終わる位置を渡す
+//
+//        (byteCodeStore.codePosition - codePositionStartIfZero).toShort().sliceByByte().forEachIndexed { index, byte ->
+//            byteCodeStore.setByteCode(codePositionSavingStartElseBlock + index, byte)
+//        }
+//
+//        byteCodeStore.registerPosition = registerPosition
+//        elseBlock?.accept(this, byteCodeStore) ?: run {
+//            // TODO 何をしているのか調査
+//            val registerAt = OmuretuVirtualMachine.encodeRegisterIndex(byteCodeStore.nextRegister())
+//            BConstOpecode.createByteCode(0, registerAt).forEach { byteCodeStore.addByteCode(it) }
+//        }
+//
+//        (byteCodeStore.codePosition - codePositionStartGoto).toShort().sliceByByte().forEachIndexed { index, byte ->
+//            byteCodeStore.setByteCode(codePositionSavingEndElseBlock + index, byte)
+//        }
     }
 
     fun visit(whileStatement: WhileStatement, byteCodeStore: ByteCodeStore) {

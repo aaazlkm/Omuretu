@@ -98,7 +98,7 @@ internal class OmuretuTest {
     }
 
     @Nested
-    class For() {
+    class For {
         private val pathToTestCaseDir = "${System.getProperty("user.dir")}/src/test/resources"
 
         private lateinit var out: ByteArrayOutputStream
@@ -149,22 +149,55 @@ internal class OmuretuTest {
         }
     }
 
-    @Test
-    fun testIf() {
-        val path = "$pathToTestCaseDir/if/test_if"
-        val reader = BufferedReader(FileReader(path))
-        val expected = reader.readLine().split(" ")
-        runForTest(reader)
-        val result = out.toString().split("\n").filter { it.isNotEmpty() }
-        assertEquals(expected, result)
-    }
+    @Nested
+    class If {
+        private val pathToTestCaseDir = "${System.getProperty("user.dir")}/src/test/resources"
 
-    @Test
-    fun testIfError() {
-        val path = "$pathToTestCaseDir/if/test_if_error"
-        val reader = BufferedReader(FileReader(path))
-        assertThrows<OmuretuException> {
+        private lateinit var out: ByteArrayOutputStream
+
+        @BeforeEach
+        fun setup() {
+            out = ByteArrayOutputStream()
+            System.setOut(PrintStream(out))
+        }
+
+        @Test
+        fun testIf() {
+            val path = "$pathToTestCaseDir/if/test_if"
+            val reader = BufferedReader(FileReader(path))
+            val expected = reader.readLine().split(" ")
             runForTest(reader)
+            val result = out.toString().split("\n").filter { it.isNotEmpty() }
+            assertEquals(expected, result)
+        }
+
+        @Test
+        fun testIfError() {
+            val path = "$pathToTestCaseDir/if/test_if_error"
+            val reader = BufferedReader(FileReader(path))
+            assertThrows<OmuretuException> {
+                runForTest(reader)
+            }
+        }
+
+        @Test
+        fun testElseIf() {
+            val path = "$pathToTestCaseDir/if/test_elseif"
+            val reader = BufferedReader(FileReader(path))
+            val expected = reader.readLine().split(" ")
+            runForTest(reader)
+            val result = out.toString().split("\n").filter { it.isNotEmpty() }
+            assertEquals(expected, result)
+        }
+
+        @Test
+        fun testElseIfWhenFizzBuzz() {
+            val path = "$pathToTestCaseDir/if/test_elif_fizz_buzz"
+            val reader = BufferedReader(FileReader(path))
+            val expected = reader.readLine().split(" ")
+            runForTest(reader)
+            val result = out.toString().split("\n").filter { it.isNotEmpty() }
+            assertEquals(expected, result)
         }
     }
 

@@ -5,6 +5,7 @@ import omuretu.ast.expression.binaryexpression.BinaryExpression
 import omuretu.ast.listeral.IdNameLiteral
 import omuretu.ast.statement.ClassBodyStatement
 import omuretu.ast.statement.ClassStatement
+import omuretu.ast.statement.ConditionBlockStatement
 import omuretu.ast.statement.DefStatement
 import omuretu.ast.statement.ForStatement
 import omuretu.ast.statement.IfStatement
@@ -49,6 +50,14 @@ class IdNameLocationVisitor : Visitor {
         // スーパークラスを持つ場合環境がないとスーパークラスの定義を取得することができないためここでは何もしない
     }
 
+    fun visit(conditionBlockStatement: ConditionBlockStatement, idNameLocationMap: IdNameLocationMap) {
+        val (condition, block) = conditionBlockStatement
+        condition.accept(this, idNameLocationMap)
+        val nestedIdNameLocationMap = IdNameLocationMap(idNameLocationMap)
+        block.accept(this, nestedIdNameLocationMap)
+        conditionBlockStatement.idNameSizeInBlock = nestedIdNameLocationMap.idNamesSize
+    }
+
     fun visit(defStatement: DefStatement, idNameLocationMap: IdNameLocationMap) {
         val name = defStatement.name
         val parameters = defStatement.parameters
@@ -74,16 +83,14 @@ class IdNameLocationVisitor : Visitor {
     }
 
     fun visit(ifStatement: IfStatement, idNameLocationMap: IdNameLocationMap) {
-        val (condition, thenBlock, elseBlock) = ifStatement
-        condition.accept(this, idNameLocationMap)
+        val (conditionBlocks, elseBlock) = ifStatement
+        conditionBlocks.forEach { it.accept(this, idNameLocationMap) }
 
-        val idNameLocationMapForThen = IdNameLocationMap(idNameLocationMap)
-        thenBlock.accept(this, idNameLocationMapForThen)
-        ifStatement.idNameSizeInThen = idNameLocationMapForThen.idNamesSize
-
-        val idNameLocationMapForElse = IdNameLocationMap(idNameLocationMap)
-        elseBlock?.accept(this, idNameLocationMapForElse)
-        ifStatement.idNameSizeInElse = idNameLocationMapForElse.idNamesSize
+        elseBlock?.let {
+            val idNameLocationMapForElse = IdNameLocationMap(idNameLocationMap)
+            elseBlock.accept(this, idNameLocationMapForElse)
+            ifStatement.idNameSizeInElse = idNameLocationMapForElse.idNamesSize
+        }
     }
 
     fun visit(parametersStatement: ParametersStatement, idNameLocationMap: IdNameLocationMap) {

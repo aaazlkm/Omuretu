@@ -15,6 +15,7 @@ import omuretu.ast.postfix.DotPostfix
 import omuretu.ast.statement.BlockStatement
 import omuretu.ast.statement.ClassBodyStatement
 import omuretu.ast.statement.ClassStatement
+import omuretu.ast.statement.ConditionBlockStatement
 import omuretu.ast.statement.DefStatement
 import omuretu.ast.statement.ForStatement
 import omuretu.ast.statement.IfStatement
@@ -141,6 +142,15 @@ class CheckTypeVisitor : Visitor {
         return Type.Defined.Any()
     }
 
+    fun visit(conditionBlockStatement: ConditionBlockStatement, typeEnvironment: TypeEnvironment): Type {
+        val (condition, block) = conditionBlockStatement
+        val conditionType = condition.accept(this, typeEnvironment)
+        TypeCheckHelper.checkSubTypeOrThrow(conditionType, Type.Defined.Int(), conditionBlockStatement, typeEnvironment)
+
+        val nestedTypeEnvironment = TypeEnvironmentImpl(typeEnvironment)
+        return block.accept(this, nestedTypeEnvironment)
+    }
+
     fun visit(defStatement: DefStatement, typeEnvironment: TypeEnvironment): Type {
         val (idNameLiteral, parameters, typeTag, blockStatement) = defStatement
         val environmentKey = defStatement.environmentKey ?: throw OmuretuException("donot defined $this")
@@ -159,24 +169,23 @@ class CheckTypeVisitor : Visitor {
         val indexEnvironmentKey = forStatement.index.environmentKey ?: throw OmuretuException("undefined ${forStatement.index.name}")
         val nestedTypeEnvironment = TypeEnvironmentImpl(typeEnvironment)
         nestedTypeEnvironment.put(indexEnvironmentKey, Type.Defined.Int())
-        return Type.Defined.Unit()
+        return forStatement.blockStatement.accept(this, nestedTypeEnvironment)
     }
 
     fun visit(ifStatement: IfStatement, typeEnvironment: TypeEnvironment): Type {
-        val (condition, thenBlock, elseBlock) = ifStatement
-        val conditionType = condition.accept(this, typeEnvironment)
-        TypeCheckHelper.checkSubTypeOrThrow(conditionType, Type.Defined.Int(), ifStatement, typeEnvironment)
+        val (conditionBlocks, elseBlock) = ifStatement
+        val blockTypes = conditionBlocks.map { it.accept(this, typeEnvironment) }
 
-        val typeEnvironmentForThen = TypeEnvironmentImpl(typeEnvironment)
-        val thenBlockType = thenBlock.accept(this, typeEnvironmentForThen)
-
-        val typeEnvironmentForElse = TypeEnvironmentImpl(typeEnvironment)
-        val elseBlockType = elseBlock?.accept(this, typeEnvironmentForElse)
+        val elseBlockType = elseBlock?.let {
+            val typeEnvironmentForElse = TypeEnvironmentImpl(typeEnvironment)
+            it.accept(this, typeEnvironmentForElse)
+        }
 
         return if (elseBlockType == null) {
-            thenBlockType
+            blockTypes.reduce { acc, now -> TypeCheckHelper.union(acc, now, typeEnvironment) }
         } else {
-            TypeCheckHelper.union(thenBlockType, elseBlockType, typeEnvironment)
+            val blockType = blockTypes.reduce { acc, now -> TypeCheckHelper.union(acc, now, typeEnvironment) }
+            TypeCheckHelper.union(blockType, elseBlockType, typeEnvironment)
         }
     }
 
