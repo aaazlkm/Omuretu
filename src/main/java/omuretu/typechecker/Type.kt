@@ -33,6 +33,12 @@ sealed class Type {
             }
         }
 
+        class Range(override var readOnly: Boolean = true) : Defined() {
+            companion object {
+                const val NAME = "RANGE"
+            }
+        }
+
         class Unit(override var readOnly: Boolean = true) : Defined() {
             companion object {
                 const val NAME = "Unit"
@@ -55,6 +61,7 @@ sealed class Type {
             is Any -> Any.NAME
             is Int -> Int.NAME
             is String -> String.NAME
+            is Range -> Range.NAME
             is Unit -> Unit.NAME
             is Class -> Class.NAME
             is Function -> Function.NAME
