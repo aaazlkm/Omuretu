@@ -20,8 +20,10 @@ import omuretu.ast.statement.BlockStatement
 import omuretu.ast.statement.ClassBodyStatement
 import omuretu.ast.statement.ClassStatement
 import omuretu.ast.statement.DefStatement
+import omuretu.ast.statement.ForStatement
 import omuretu.ast.statement.IfStatement
 import omuretu.ast.statement.NullStatement
+import omuretu.ast.statement.RangeStatement
 import omuretu.ast.statement.ValStatement
 import omuretu.ast.statement.VarStatement
 import omuretu.ast.statement.WhileStatement
@@ -229,6 +231,27 @@ class EvaluateVisitor : Visitor {
         return name
     }
 
+    fun visit(forStatement: ForStatement, variableEnvironment: VariableEnvironment): Any {
+        val (index, rangeStatement, blockStatement) = forStatement
+        val nestedVariableEnvironment = VariableEnvironmentImpl(forStatement.idNameSize, variableEnvironment as? VariableEnvironmentImpl)
+        val (from, to, step) = rangeStatement.accept(this, nestedVariableEnvironment) as RangeStatement.EvaluatedValue
+        val indexEnvironmentKey = index.environmentKey ?: throw OmuretuException("undefined", forStatement)
+
+        nestedVariableEnvironment.put(indexEnvironmentKey, from)
+        if (from <= to) {
+            for (i in from..to step step) {
+                nestedVariableEnvironment.put(indexEnvironmentKey, i)
+                blockStatement.accept(this, nestedVariableEnvironment)
+            }
+        } else {
+            for (i in from downTo to step step) {
+                nestedVariableEnvironment.put(indexEnvironmentKey, i)
+                blockStatement.accept(this, nestedVariableEnvironment)
+            }
+        }
+        return OMURETU_DEFAULT_RETURN_VALUE
+    }
+
     fun visit(ifStatement: IfStatement, variableEnvironment: VariableEnvironment): Any {
         val (condition, thenBlock, elseBlock) = ifStatement
         val conditionResult = condition.accept(this, variableEnvironment)
@@ -243,6 +266,19 @@ class EvaluateVisitor : Visitor {
 
     fun visit(nullStatement: NullStatement, variableEnvironment: VariableEnvironment): Any {
         return OMURETU_DEFAULT_RETURN_VALUE
+    }
+
+    fun visit(rangeStatement: RangeStatement, variableEnvironment: VariableEnvironment): Any {
+        val (from, to, step) = rangeStatement
+        val fromValue = from.accept(this, variableEnvironment) as? Int ?: throw OmuretuException("range from should be number", rangeStatement)
+        val toValue = to.accept(this, variableEnvironment) as? Int ?: throw OmuretuException("range to should be number", rangeStatement)
+        val stepValue = step?.accept(this, variableEnvironment) as? Int ?: 1
+        if (stepValue <= 0) throw OmuretuException("step value should be positibe value", rangeStatement)
+        return RangeStatement.EvaluatedValue(
+                fromValue,
+                toValue,
+                stepValue
+        )
     }
 
     fun visit(valStatement: ValStatement, variableEnvironment: VariableEnvironment): Any {

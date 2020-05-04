@@ -18,10 +18,12 @@ import omuretu.ast.statement.BlockStatement
 import omuretu.ast.statement.ClassBodyStatement
 import omuretu.ast.statement.ClassStatement
 import omuretu.ast.statement.DefStatement
+import omuretu.ast.statement.ForStatement
 import omuretu.ast.statement.IfStatement
 import omuretu.ast.statement.NullStatement
 import omuretu.ast.statement.ParameterStatement
 import omuretu.ast.statement.ParametersStatement
+import omuretu.ast.statement.RangeStatement
 import omuretu.ast.statement.TypeStatement
 import omuretu.ast.statement.ValStatement
 import omuretu.ast.statement.VarStatement
@@ -45,6 +47,9 @@ class OmuretuParser {
     private var params = Parser.rule(ParametersStatement::class.java)
     private var param = Parser.rule(ParameterStatement::class.java)
 
+    // forの定義
+    private var forStatement = Parser.rule(ForStatement::class.java)
+
     // ifの定義
     private var ifStatement = Parser.rule(IfStatement::class.java)
 
@@ -60,6 +65,11 @@ class OmuretuParser {
     // variable の定義
     private var variableVal = Parser.rule(ValStatement::class.java)
     private var variableVar = Parser.rule(VarStatement::class.java)
+
+    // rangeの定義
+    private var range = Parser.rule(RangeStatement::class.java)
+
+    // typeの定義
     private var typeTag = Parser.rule(TypeStatement::class.java)
 
     // array の定義
@@ -108,8 +118,29 @@ class OmuretuParser {
         params.ast(param).repeat(Parser.rule().sep(ParametersStatement.KEYWORD_PARAMETER_BREAK).ast(param))
         param.identifier(reserved, IdNameLiteral::class.java).ast(typeTag)
 
+        // statement の定義
+        statement.or(
+                forStatement,
+                ifStatement,
+                whileStatement,
+                variableVal,
+                variableVar,
+                expression
+        )
+
+        // forの定義
+        forStatement.sep(ForStatement.KEYWORD_FOR)
+                .sep(ForStatement.KEYWORD_PARENTHESIS_START)
+                .identifier(reserved, IdNameLiteral::class.java)
+                .sep(ForStatement.KEYWORD_IN)
+                .ast(range)
+                .sep(ForStatement.KEYWORD_PARENTHESIS_END)
+                .ast(block)
+
+        // ifの定義
         ifStatement.sep(IfStatement.KEYWORD_IF).ast(expression).ast(block).option(Parser.rule().sep(IfStatement.KEYWORD_ELSE).ast(block))
 
+        // whileの定義
         whileStatement.sep(WhileStatement.KEYWORD_WHILE).ast(expression).ast(block)
 
         // blockの定義
@@ -118,18 +149,14 @@ class OmuretuParser {
                 .repeat(Parser.rule().sep(";", IdToken.EOL).option(statement))
                 .sep(BlockStatement.BLOCK_END)
 
-        // statement の定義
-        statement.or(
-                ifStatement,
-                whileStatement,
-                variableVal,
-                variableVar,
-                expression
-        )
-
         // variable の定義
         variableVal.sep(ValStatement.KEYWORD_VAL).identifier(reserved, IdNameLiteral::class.java).maybe(typeTag).sep(ValStatement.KEYWORD_EQUAL).ast(expression)
         variableVar.sep(VarStatement.KEYWORD_VAR).identifier(reserved, IdNameLiteral::class.java).maybe(typeTag).sep(VarStatement.KEYWORD_EQUAL).ast(expression)
+
+        // range の定義
+        range.ast(expression).sep(RangeStatement.KEYWORD_RANGE).ast(expression).option(Parser.rule().sep(RangeStatement.KEYWORD_STEP).ast(expression))
+
+        // type の定義
         typeTag.sep(TypeStatement.KEYWORD_COLON).identifier(reserved, IdNameLiteral::class.java)
 
         // arrayの定義

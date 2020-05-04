@@ -16,6 +16,7 @@ import omuretu.visitor.EvaluateVisitor
 import omuretu.visitor.IdNameLocationVisitor
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 
@@ -96,6 +97,58 @@ internal class OmuretuTest {
         // TODO 実装すること
     }
 
+    @Nested
+    class For() {
+        private val pathToTestCaseDir = "${System.getProperty("user.dir")}/src/test/resources"
+
+        private lateinit var out: ByteArrayOutputStream
+
+        @BeforeEach
+        fun setup() {
+            out = ByteArrayOutputStream()
+            System.setOut(PrintStream(out))
+        }
+
+        @Test
+        fun testFor() {
+            val path = "$pathToTestCaseDir/for/test_for"
+            val reader = BufferedReader(FileReader(path))
+            val expected = reader.readLine().split(" ")
+            runForTest(reader)
+            val result = out.toString().split("\n").filter { it.isNotEmpty() }
+            assertEquals(expected, result)
+        }
+
+        @Test
+        fun testForDown() {
+            val path = "$pathToTestCaseDir/for/test_for_down"
+            val reader = BufferedReader(FileReader(path))
+            val expected = reader.readLine().split(" ")
+            runForTest(reader)
+            val result = out.toString().split("\n").filter { it.isNotEmpty() }
+            assertEquals(expected, result)
+        }
+
+        @Test
+        fun testForStep() {
+            val path = "$pathToTestCaseDir/for/test_for_step"
+            val reader = BufferedReader(FileReader(path))
+            val expected = reader.readLine().split(" ")
+            runForTest(reader)
+            val result = out.toString().split("\n").filter { it.isNotEmpty() }
+            assertEquals(expected, result)
+        }
+
+        @Test
+        fun testForStepError() {
+            val path = "$pathToTestCaseDir/for/test_for_step_error"
+            val reader = BufferedReader(FileReader(path))
+            assertThrows<OmuretuException> {
+                runForTest(reader)
+            }
+        }
+    }
+
     @Test
     fun testIf() {
         val path = "$pathToTestCaseDir/if/test_if"
@@ -132,11 +185,6 @@ internal class OmuretuTest {
         assertThrows<OmuretuException> {
             runForTest(reader)
         }
-    }
-
-    @Test
-    fun testFor() {
-        // TODO 実装すること
     }
 
     @Test

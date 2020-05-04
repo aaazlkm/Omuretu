@@ -16,6 +16,7 @@ import omuretu.ast.statement.BlockStatement
 import omuretu.ast.statement.ClassBodyStatement
 import omuretu.ast.statement.ClassStatement
 import omuretu.ast.statement.DefStatement
+import omuretu.ast.statement.ForStatement
 import omuretu.ast.statement.IfStatement
 import omuretu.ast.statement.ParameterStatement
 import omuretu.ast.statement.ParametersStatement
@@ -152,6 +153,13 @@ class CheckTypeVisitor : Visitor {
         parameters.accept(this, bodyTypeEnvironment)
         blockStatement.accept(this, bodyTypeEnvironment)
         return functionType
+    }
+
+    fun visit(forStatement: ForStatement, typeEnvironment: TypeEnvironment): Type {
+        val indexEnvironmentKey = forStatement.index.environmentKey ?: throw OmuretuException("undefined ${forStatement.index.name}")
+        val nestedTypeEnvironment = TypeEnvironmentImpl(typeEnvironment)
+        nestedTypeEnvironment.put(indexEnvironmentKey, Type.Defined.Int())
+        return Type.Defined.Unit()
     }
 
     fun visit(ifStatement: IfStatement, typeEnvironment: TypeEnvironment): Type {

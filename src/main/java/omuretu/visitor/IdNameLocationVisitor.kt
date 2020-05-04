@@ -6,8 +6,10 @@ import omuretu.ast.listeral.IdNameLiteral
 import omuretu.ast.statement.ClassBodyStatement
 import omuretu.ast.statement.ClassStatement
 import omuretu.ast.statement.DefStatement
+import omuretu.ast.statement.ForStatement
 import omuretu.ast.statement.IfStatement
 import omuretu.ast.statement.ParametersStatement
+import omuretu.ast.statement.RangeStatement
 import omuretu.ast.statement.ValStatement
 import omuretu.ast.statement.VarStatement
 import omuretu.ast.statement.WhileStatement
@@ -59,6 +61,18 @@ class IdNameLocationVisitor : Visitor {
         defStatement.idNamesInDefSize = nestIdNameLocationMap.idNamesSize
     }
 
+    fun visit(forStatement: ForStatement, idNameLocationMap: IdNameLocationMap) {
+        val (index, rangeStatement, blockStatement) = forStatement
+        val nestedIdNameLocationMap = IdNameLocationMap(idNameLocationMap)
+
+        nestedIdNameLocationMap.putAndReturnLocation(index.name).let {
+            index.environmentKey = EnvironmentKey(it.ancestorAt, it.indexInIdNames)
+        }
+        rangeStatement.accept(this, nestedIdNameLocationMap)
+        blockStatement.accept(this, nestedIdNameLocationMap)
+        forStatement.idNameSize = nestedIdNameLocationMap.idNamesSize
+    }
+
     fun visit(ifStatement: IfStatement, idNameLocationMap: IdNameLocationMap) {
         val (condition, thenBlock, elseBlock) = ifStatement
         condition.accept(this, idNameLocationMap)
@@ -80,6 +94,12 @@ class IdNameLocationVisitor : Visitor {
             parameterLocation[index] = EnvironmentKey(location.ancestorAt, location.indexInIdNames)
         }
         parametersStatement.parameterEnvironmentKeys = parameterLocation.mapNotNull { it }.toTypedArray()
+    }
+
+    fun visit(rangeStatement: RangeStatement, idNameLocationMap: IdNameLocationMap) {
+        val (from, to) = rangeStatement
+        from.accept(this, idNameLocationMap)
+        to.accept(this, idNameLocationMap)
     }
 
     fun visit(valStatement: ValStatement, idNameLocationMap: IdNameLocationMap) {
