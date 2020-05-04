@@ -253,15 +253,19 @@ class EvaluateVisitor : Visitor {
     }
 
     fun visit(ifStatement: IfStatement, variableEnvironment: VariableEnvironment): Any {
-        val (condition, thenBlock, elseBlock) = ifStatement
-        val conditionResult = condition.accept(this, variableEnvironment)
-        return if (conditionResult is Int && conditionResult != OMURETU_FALSE) {
-            val nestedVariableEnvironment = VariableEnvironmentImpl(ifStatement.idNameSizeInThen, variableEnvironment as? VariableEnvironmentImpl)
-            thenBlock.accept(this, nestedVariableEnvironment)
-        } else {
-            val nestedVariableEnvironment = VariableEnvironmentImpl(ifStatement.idNameSizeInElse, variableEnvironment as? VariableEnvironmentImpl)
-            elseBlock?.accept(this, nestedVariableEnvironment) ?: OMURETU_DEFAULT_RETURN_VALUE
+        val (conditionBlocks, elseBlock) = ifStatement
+        conditionBlocks.forEach {
+            val (condition, block) = it
+            val conditionResult = condition.accept(this, variableEnvironment)
+            if (conditionResult != OMURETU_FALSE) {
+                val nestedVariableEnvironment = VariableEnvironmentImpl(it.idNameSizeInBlock, variableEnvironment as? VariableEnvironmentImpl)
+                return block.accept(this, nestedVariableEnvironment)
+            }
         }
+        return elseBlock?.let {
+            val nestedVariableEnvironment = VariableEnvironmentImpl(ifStatement.idNameSizeInElse, variableEnvironment as? VariableEnvironmentImpl)
+            it.accept(this, nestedVariableEnvironment)
+        } ?: OMURETU_DEFAULT_RETURN_VALUE
     }
 
     fun visit(nullStatement: NullStatement, variableEnvironment: VariableEnvironment): Any {

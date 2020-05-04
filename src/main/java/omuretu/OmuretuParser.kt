@@ -17,6 +17,7 @@ import omuretu.ast.postfix.DotPostfix
 import omuretu.ast.statement.BlockStatement
 import omuretu.ast.statement.ClassBodyStatement
 import omuretu.ast.statement.ClassStatement
+import omuretu.ast.statement.ConditionBlockStatement
 import omuretu.ast.statement.DefStatement
 import omuretu.ast.statement.ForStatement
 import omuretu.ast.statement.IfStatement
@@ -55,6 +56,8 @@ class OmuretuParser {
 
     // whileの定義
     private var whileStatement = Parser.rule(WhileStatement::class.java)
+
+    private var conditionBlock = Parser.rule(ConditionBlockStatement::class.java)
 
     // block の定義
     private var block = Parser.rule(BlockStatement::class.java)
@@ -138,10 +141,16 @@ class OmuretuParser {
                 .ast(block)
 
         // ifの定義
-        ifStatement.sep(IfStatement.KEYWORD_IF).ast(expression).ast(block).option(Parser.rule().sep(IfStatement.KEYWORD_ELSE).ast(block))
+        ifStatement.sep(IfStatement.KEYWORD_IF).ast(conditionBlock)
+                .repeat(Parser.rule().sep(IfStatement.KEYWORD_ELSEIF).ast(conditionBlock))
+                .option(
+                        Parser.rule().sep(IfStatement.KEYWORD_ELSE).ast(block)
+                )
 
         // whileの定義
         whileStatement.sep(WhileStatement.KEYWORD_WHILE).ast(expression).ast(block)
+
+        conditionBlock.sep(ConditionBlockStatement.KEYWORD_PARENTHESIS_START).ast(expression).sep(ConditionBlockStatement.KEYWORD_PARENTHESIS_END).ast(block)
 
         // blockの定義
         block.sep(BlockStatement.BLOCK_START)

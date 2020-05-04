@@ -13,34 +13,31 @@ import parser.ast.ASTList
 import parser.ast.ASTTree
 
 data class IfStatement(
-    val condition: ASTTree,
-    val thenBlock: BlockStatement,
+    val conditionBlockStatements: List<ConditionBlockStatement>,
     val elseBlock: BlockStatement? = null
-) : ASTList(elseBlock?.let { listOf(condition, thenBlock, it) } ?: listOf(condition, thenBlock)) {
+) : ASTList(elseBlock?.let { conditionBlockStatements.toMutableList<ASTList>().apply { add(it) } } ?: conditionBlockStatements) {
     companion object Factory : FactoryMethod {
         const val KEYWORD_IF = "if"
         const val KEYWORD_ELSE = "else"
+        const val KEYWORD_ELSEIF = "elseif"
 
         @JvmStatic
         override fun newInstance(argument: List<ASTTree>): ASTTree? {
-            if (argument.size !in 2..3) return null
-            val thenBlock = argument[1] as? BlockStatement ?: return null
-            return when (argument.size) {
-                2 -> IfStatement(argument[0], thenBlock)
-                3 -> {
-                    val elseBlock = argument[2] as? BlockStatement ?: return null
-                    IfStatement(argument[0], thenBlock, elseBlock)
+            if (argument.isEmpty()) return null
+            return when (val last = argument.last()) {
+                is BlockStatement -> {
+                    IfStatement(argument.dropLast(1).map { it as ConditionBlockStatement }, last)
                 }
-                else -> null
+                else -> {
+                    IfStatement(argument.map { it as ConditionBlockStatement })
+                }
             }
         }
     }
 
-    var idNameSizeInThen: Int = 0
-
     var idNameSizeInElse: Int = 0
 
-    override fun toString() = "($KEYWORD_IF $condition $thenBlock $KEYWORD_ELSE $elseBlock)"
+    override fun toString() = "($KEYWORD_IF ${conditionBlockStatements.first()} $KEYWORD_ELSEIF ${conditionBlockStatements.drop(1)} $KEYWORD_ELSE $elseBlock)"
 
     override fun accept(idNameLocationVisitor: IdNameLocationVisitor, idNameLocationMap: IdNameLocationMap) {
         idNameLocationVisitor.visit(this, idNameLocationMap)
