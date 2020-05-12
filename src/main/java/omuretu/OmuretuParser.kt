@@ -193,8 +193,8 @@ class OmuretuParser {
                 Parser.rule().sep(ArgumentPostfix.KEYWORD_PARENTHESIS_START).maybe(args).sep(ArgumentPostfix.KEYWORD_PARENTHESIS_END),
                 Parser.rule(ArrayPostfix::class.java).sep(ArrayPostfix.KEYWORD_BRACKETS_START).ast(expression).sep(ArrayPostfix.KEYWORD_BRACKETS_END)
         )
-        args.ast(expression).repeat(Parser.rule().sep(ArgumentPostfix.KEYWORD_ARGUMENT_BREAK).ast(expression))
         dot.sep(DotPostfix.KEYWORD_DOT).identifier(reserved, IdNameLiteral::class.java)
+        args.ast(expression).repeat(Parser.rule().sep(ArgumentPostfix.KEYWORD_ARGUMENT_BREAK).ast(expression))
 
         reserved.add(":")
         reserved.add(";")

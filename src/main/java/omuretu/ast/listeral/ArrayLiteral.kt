@@ -22,7 +22,7 @@ class ArrayLiteral(
         }
     }
 
-    override fun toString() = "$KEYWORD_BRACKETS_START ${elements.fold(""){ acc, s -> "$acc$s" }} $KEYWORD_BRACKETS_END"
+    override fun toString() = "$KEYWORD_BRACKETS_START ${elements.fold("") { acc, s -> "$acc$s" }} $KEYWORD_BRACKETS_END"
 
     override fun accept(checkTypeVisitor: CheckTypeVisitor, typeEnvironment: TypeEnvironment): Type {
         return checkTypeVisitor.visit(this, typeEnvironment)

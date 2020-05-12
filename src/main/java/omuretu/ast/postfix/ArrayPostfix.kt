@@ -21,6 +21,8 @@ class ArrayPostfix(
         }
     }
 
+    override fun toString() = "$KEYWORD_BRACKETS_START $index $KEYWORD_BRACKETS_END"
+
     override fun accept(checkTypeVisitor: CheckTypeVisitor, typeEnvironment: TypeEnvironment, leftType: Type): Type {
         return checkTypeVisitor.visit(this, typeEnvironment, leftType)
     }

@@ -9,8 +9,6 @@ import omuretu.ast.expression.binaryexpression.operator.MultiOperator
 import omuretu.ast.expression.binaryexpression.operator.PlusOperator
 import omuretu.ast.expression.binaryexpression.operator.QuotientOperator
 import omuretu.ast.expression.binaryexpression.operator.SurplusOperator
-import omuretu.environment.base.VariableEnvironment
-import omuretu.visitor.EvaluateVisitor
 import parser.ast.ASTTree
 import parser.element.Expression
 
@@ -76,17 +74,17 @@ enum class OperatorDefinition {
             }
         }
 
-    fun createOperator(leftTree: ASTTree, rightTree: ASTTree, evaluateVisitor: EvaluateVisitor, variableEnvironment: VariableEnvironment): Operator {
+    fun createOperator(leftTree: ASTTree, rightTree: ASTTree): Operator {
         return when (this) {
-            ASSIGNMENT -> AssignmentOperator(leftTree, rightTree, evaluateVisitor, variableEnvironment)
-            EQUAL -> EqualOperator(leftTree, rightTree, evaluateVisitor, variableEnvironment)
-            LESS -> LessOperator(leftTree, rightTree, evaluateVisitor, variableEnvironment)
-            MINUS -> MinusOperator(leftTree, rightTree, evaluateVisitor, variableEnvironment)
-            MORE -> MoreOperator(leftTree, rightTree, evaluateVisitor, variableEnvironment)
-            MULTI -> MultiOperator(leftTree, rightTree, evaluateVisitor, variableEnvironment)
-            PLUS -> PlusOperator(leftTree, rightTree, evaluateVisitor, variableEnvironment)
-            QUOTIENT -> QuotientOperator(leftTree, rightTree, evaluateVisitor, variableEnvironment)
-            SURPLUS -> SurplusOperator(leftTree, rightTree, evaluateVisitor, variableEnvironment)
+            ASSIGNMENT -> AssignmentOperator(leftTree, rightTree)
+            EQUAL -> EqualOperator(leftTree, rightTree)
+            LESS -> LessOperator(leftTree, rightTree)
+            MINUS -> MinusOperator(leftTree, rightTree)
+            MORE -> MoreOperator(leftTree, rightTree)
+            MULTI -> MultiOperator(leftTree, rightTree)
+            PLUS -> PlusOperator(leftTree, rightTree)
+            QUOTIENT -> QuotientOperator(leftTree, rightTree)
+            SURPLUS -> SurplusOperator(leftTree, rightTree)
         }
     }
 }

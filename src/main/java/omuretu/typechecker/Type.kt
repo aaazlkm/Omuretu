@@ -14,7 +14,6 @@ sealed class Type {
     }
 
     sealed class Defined : Type() {
-
         class Any(override var readOnly: Boolean = true) : Defined() {
             companion object {
                 const val NAME = "Any"
@@ -33,9 +32,18 @@ sealed class Type {
             }
         }
 
+        class Array(
+            val type: Defined,
+            override var readOnly: Boolean = true
+        ) : Defined() {
+            companion object {
+                const val NAME = "Array"
+            }
+        }
+
         class Range(override var readOnly: Boolean = true) : Defined() {
             companion object {
-                const val NAME = "RANGE"
+                const val NAME = "Range"
             }
         }
 
@@ -61,6 +69,7 @@ sealed class Type {
             is Any -> Any.NAME
             is Int -> Int.NAME
             is String -> String.NAME
+            is Array -> Array.NAME
             is Range -> Range.NAME
             is Unit -> Unit.NAME
             is Class -> Class.NAME
@@ -74,12 +83,10 @@ sealed class Type {
      *
      * @property typeInferred
      */
-    class NeedInference(typeInferred: Defined? = null) : Type() {
+    class NeedInference(var typeInferred: Defined? = null) : Type() {
         companion object {
             const val NAME = "NeedInference"
         }
-
-        var typeInferred = typeInferred
 
         override var readOnly: Boolean = true
     }
