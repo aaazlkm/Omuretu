@@ -36,30 +36,10 @@ class CheckTypeVisitor : Visitor {
     fun visit(binaryExpression: BinaryExpression, typeEnvironment: TypeEnvironment): Type {
         val left = binaryExpression.left
         val right = binaryExpression.right
-        val operator = binaryExpression.operator
-        val operatorToken = operator.token as? IdToken ?: throw OmuretuException("cannnot evaluate:", binaryExpression)
-
-        if (operatorToken.id == OperatorDefinition.ASSIGNMENT.rawOperator) {
-            val rightType = right.accept(this, typeEnvironment)
-            val leftIdName = left as? IdNameLiteral ?: throw OmuretuException("cannnot compile:", binaryExpression)
-            return leftIdName.checkTypeForAssign(typeEnvironment, rightType)
-        }
-
-        val leftType = left.accept(this, typeEnvironment)
-        val rightType = right.accept(this, typeEnvironment)
-        return when (operatorToken.id) {
-            OperatorDefinition.EQUAL.rawOperator -> {
-                Type.Defined.Int()
-            }
-            OperatorDefinition.PLUS.rawOperator -> {
-                TypeCheckHelper.plus(leftType, rightType, typeEnvironment)
-            }
-            else -> {
-                TypeCheckHelper.checkSubTypeOrThrow(Type.Defined.Int(), leftType, binaryExpression, typeEnvironment)
-                TypeCheckHelper.checkSubTypeOrThrow(Type.Defined.Int(), rightType, binaryExpression, typeEnvironment)
-                Type.Defined.Int()
-            }
-        }
+        val operatorToken = binaryExpression.operator.token as? IdToken ?: throw OmuretuException("cannnot check type:", binaryExpression)
+        val operator = OperatorDefinition.from(operatorToken.id)?.createOperator(left, right)
+                ?: throw OmuretuException("cannnot cehck type:", binaryExpression)
+        return operator.checkType(this, typeEnvironment)
     }
 
     fun visit(negativeExpression: NegativeExpression, typeEnvironment: TypeEnvironment): Type {
@@ -84,8 +64,19 @@ class CheckTypeVisitor : Visitor {
     //region literal
 
     fun visit(arrayLiteral: ArrayLiteral, typeEnvironment: TypeEnvironment): Type {
-        // TODO 配列型を返すようにする
-        return Type.Defined.Any()
+        val arrayType = arrayLiteral.elements
+                .map { it.accept(this, typeEnvironment) }
+                .fold(Type.NeedInference() as Type) { acc, now -> TypeCheckHelper.union(acc, now, typeEnvironment) }
+
+        return when (arrayType) {
+            is Type.NeedInference -> {
+                // TODO 要素が存在しない場合は、型を指定するようにする
+                Type.Defined.Array(Type.Defined.Any())
+            }
+            is Type.Defined -> {
+                Type.Defined.Array(arrayType)
+            }
+        }
     }
 
     fun visit(idNameLiteral: IdNameLiteral, typeEnvironment: TypeEnvironment): Type {
@@ -115,7 +106,8 @@ class CheckTypeVisitor : Visitor {
     }
 
     fun visit(arrayPostfix: ArrayPostfix, typeEnvironment: TypeEnvironment, leftType: Type): Type {
-        return Type.Defined.Any()
+        val arrayType = leftType as? Type.Defined.Array ?: throw OmuretuException("leftType $leftType should be array type", arrayPostfix)
+        return arrayType.type
     }
 
     fun visit(dotPostfix: DotPostfix, typeEnvironment: TypeEnvironment, leftType: Type): Type {

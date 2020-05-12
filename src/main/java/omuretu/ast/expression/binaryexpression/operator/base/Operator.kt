@@ -1,8 +1,8 @@
 package omuretu.ast.expression.binaryexpression.operator.base
 
-import omuretu.environment.base.VariableEnvironment
-import omuretu.model.InlineCache
-import omuretu.visitor.EvaluateVisitor
+import omuretu.environment.base.TypeEnvironment
+import omuretu.typechecker.Type
+import omuretu.visitor.CheckTypeVisitor
 import parser.ast.ASTTree
 
 /**
@@ -17,37 +17,5 @@ interface Operator {
 
     val rightTree: ASTTree
 
-    val evaluateVisitor: EvaluateVisitor
-
-    val variableEnvironment: VariableEnvironment
-}
-
-/**
- * 左辺値オペレーター
- */
-interface LeftValueOperator : Operator {
-    /**
-     * TODO
-     *
-     * @param key
-     * @param value
-     * @param environment
-     * @return
-     */
-    fun calculate(inlineCache: InlineCache? = null, doOnSaveInlineCache: ((InlineCache) -> Unit)? = null): Any
-}
-
-/**
- * 右辺値オペレーター
- */
-interface RightValueOperator : Operator {
-    /**
-     * TODO
-     *
-     * @param key
-     * @param value
-     * @param environment
-     * @return
-     */
-    fun calculate(): Any
+    fun checkType(checkTypeVisitor: CheckTypeVisitor, typeEnvironment: TypeEnvironment): Type
 }

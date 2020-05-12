@@ -10,6 +10,7 @@ import omuretu.ast.statement.NullStatement
 import omuretu.environment.GlobalVariableEnvironment
 import omuretu.environment.TypeEnvironmentImpl
 import omuretu.exception.OmuretuException
+import omuretu.exception.TypeException
 import omuretu.native.NativeFunctionEnvironmentFactory
 import omuretu.visitor.CheckTypeVisitor
 import omuretu.visitor.EvaluateVisitor
@@ -22,6 +23,8 @@ import org.junit.jupiter.api.assertThrows
 
 internal class OmuretuTest {
     companion object {
+        private val pathToTestCaseDir = "${System.getProperty("user.dir")}/src/test/resources"
+
         fun runForTest(reader: Reader) {
             val parser = OmuretuParser()
             val typeEnvironment = TypeEnvironmentImpl()
@@ -42,8 +45,6 @@ internal class OmuretuTest {
             }
         }
     }
-
-    private val pathToTestCaseDir = "${System.getProperty("user.dir")}/src/test/resources"
 
     private lateinit var out: ByteArrayOutputStream
 
@@ -92,15 +93,66 @@ internal class OmuretuTest {
         assertEquals(expected, result)
     }
 
-    @Test
-    fun testArray() {
-        // TODO 実装すること
+    @Nested
+    class Array {
+        private lateinit var out: ByteArrayOutputStream
+
+        @BeforeEach
+        fun setup() {
+            out = ByteArrayOutputStream()
+            System.setOut(PrintStream(out))
+        }
+
+        @Test
+        fun testArray() {
+            val path = "$pathToTestCaseDir/array/test_array"
+            val reader = BufferedReader(FileReader(path))
+            val expected = reader.readLine().split(" ")
+            runForTest(reader)
+            val result = out.toString().split("\n").filter { it.isNotEmpty() }
+            assertEquals(expected, result)
+        }
+
+        @Test
+        fun testArrayAccess() {
+            val path = "$pathToTestCaseDir/array/test_array_access"
+            val reader = BufferedReader(FileReader(path))
+            val expected = reader.readLine().split(" ")
+            runForTest(reader)
+            val result = out.toString().split("\n").filter { it.isNotEmpty() }
+            assertEquals(expected, result)
+        }
+
+        @Test
+        fun testArrayIndexError() {
+            val path = "$pathToTestCaseDir/array/test_array_index_error"
+            val reader = BufferedReader(FileReader(path))
+            assertThrows<IndexOutOfBoundsException> {
+                runForTest(reader)
+            }
+        }
+
+        @Test
+        fun testArrayTypeAccessError() {
+            val path = "$pathToTestCaseDir/array/test_array_type_access_error"
+            val reader = BufferedReader(FileReader(path))
+            assertThrows<TypeException> {
+                runForTest(reader)
+            }
+        }
+
+        @Test
+        fun testArrayTypeError() {
+            val path = "$pathToTestCaseDir/array/test_array_type_error"
+            val reader = BufferedReader(FileReader(path))
+            assertThrows<TypeException> {
+                runForTest(reader)
+            }
+        }
     }
 
     @Nested
     class For {
-        private val pathToTestCaseDir = "${System.getProperty("user.dir")}/src/test/resources"
-
         private lateinit var out: ByteArrayOutputStream
 
         @BeforeEach
@@ -151,8 +203,6 @@ internal class OmuretuTest {
 
     @Nested
     class If {
-        private val pathToTestCaseDir = "${System.getProperty("user.dir")}/src/test/resources"
-
         private lateinit var out: ByteArrayOutputStream
 
         @BeforeEach

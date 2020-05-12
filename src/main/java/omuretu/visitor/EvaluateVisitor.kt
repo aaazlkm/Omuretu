@@ -44,16 +44,16 @@ class EvaluateVisitor : Visitor {
         val (left, operatorTree, right) = binaryExpression
         val inlineCache = binaryExpression.inlineCache
         val operatorToken = operatorTree.token as? IdToken ?: throw OmuretuException("cannnot evaluate:", binaryExpression)
-        val operator = OperatorDefinition.from(operatorToken.id)?.createOperator(left, right, this, variableEnvironment)
+        val operator = OperatorDefinition.from(operatorToken.id)?.createOperator(left, right)
                 ?: throw OmuretuException("cannnot evaluate:", binaryExpression)
         return when (operator) {
             is LeftValueOperator -> {
-                operator.calculate(inlineCache) {
+                operator.calculate(this, variableEnvironment, inlineCache) {
                     binaryExpression.inlineCache = it
                 }
             }
             is RightValueOperator -> {
-                operator.calculate()
+                operator.calculate(this, variableEnvironment)
             }
             else -> {
                 throw OmuretuException("undefined operator: $operator ", binaryExpression)

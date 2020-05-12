@@ -21,8 +21,7 @@ data class PrimaryExpression(
             return if (argument.size == 1) {
                 argument[0]
             } else {
-                val primaryExpressionArguments = argument.subList(1, argument.size).mapNotNull { it as? Postfix }
-                if (primaryExpressionArguments.size != (argument.size - 1)) return null
+                val primaryExpressionArguments = argument.drop(1).mapNotNull { it as? Postfix }
                 PrimaryExpression(argument[0], primaryExpressionArguments)
             }
         }

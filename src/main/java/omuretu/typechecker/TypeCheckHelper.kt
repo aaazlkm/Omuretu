@@ -166,7 +166,29 @@ object TypeCheckHelper {
         }
     }
 
+    //region check sub type
+
     private fun checkSubTypeOf(superType: Type.Defined, subType: Type.Defined): Boolean {
-        return superType::class == subType::class || superType::class == Type.Defined.Any::class
+        return when (superType) {
+            is Type.Defined.Array -> {
+                checkSubTypeOfWhenSuperTypeArray(superType, subType)
+            }
+            else -> {
+                superType::class == subType::class || superType::class == Type.Defined.Any::class
+            }
+        }
     }
+
+    private fun checkSubTypeOfWhenSuperTypeArray(superType: Type.Defined.Array, subType: Type.Defined): Boolean {
+        return when (subType) {
+            is Type.Defined.Array -> {
+                checkSubTypeOf(superType.type, subType.type)
+            }
+            else -> {
+                false
+            }
+        }
+    }
+
+    //endregion
 }

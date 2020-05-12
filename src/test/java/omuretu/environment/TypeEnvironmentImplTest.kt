@@ -106,7 +106,7 @@ internal class TypeEnvironmentImplTest {
         }
 
         @Test
-        fun deifneEquationType() {
+        fun defineEquationType() {
             val testType = Type.NeedInference()
             typeEnvironment.addEquation(Type.NeedInference(), Type.NeedInference())
             typeEnvironment.addEquation(Type.NeedInference(), Type.NeedInference())
