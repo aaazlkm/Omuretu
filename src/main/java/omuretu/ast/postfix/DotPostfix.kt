@@ -1,12 +1,14 @@
 package omuretu.ast.postfix
 
 import omuretu.ast.listeral.IdNameLiteral
+import omuretu.environment.IdNameLocationMap
 import omuretu.environment.base.TypeEnvironment
 import omuretu.environment.base.VariableEnvironment
 import omuretu.model.InlineCache
 import omuretu.typechecker.Type
 import omuretu.visitor.CheckTypeVisitor
 import omuretu.visitor.EvaluateVisitor
+import omuretu.visitor.IdNameLocationVisitor
 import parser.ast.ASTTree
 
 class DotPostfix(
@@ -27,6 +29,10 @@ class DotPostfix(
         get() = idNameLiteral.name
 
     var objectInlineCache: InlineCache? = null
+
+    override fun accept(idNameLocationVisitor: IdNameLocationVisitor, idNameLocationMap: IdNameLocationMap) {
+        // クラス内のプロパティに対してアクセスするためここでは何もしなくていい
+    }
 
     override fun accept(checkTypeVisitor: CheckTypeVisitor, typeEnvironment: TypeEnvironment, leftType: Type): Type {
         return checkTypeVisitor.visit(this, typeEnvironment, leftType)

@@ -17,7 +17,7 @@ import parser.ast.ASTTree
 data class DefStatement(
     val idNameLiteral: IdNameLiteral,
     val parameters: ParametersStatement,
-    val typeStatement: TypeStatement,
+    val typeStatement: TypeStatement? = null,
     val blockStatement: BlockStatement
 ) : ASTList(listOf(idNameLiteral, parameters, blockStatement)) {
     companion object Factory : FactoryMethod {
@@ -25,12 +25,25 @@ data class DefStatement(
 
         @JvmStatic
         override fun newInstance(argument: List<ASTTree>): ASTTree? {
-            if (argument.size != 4) return null
-            val name = argument[0] as? IdNameLiteral ?: return null
-            val parameters = argument[1] as? ParametersStatement ?: return null
-            val typeTag = argument[2] as? TypeStatement ?: return null
-            val blockStmnt = argument[3] as? BlockStatement ?: return null
-            return DefStatement(name, parameters, typeTag, blockStmnt)
+            if (argument.size !in 3..4) return null
+            return when (argument.size) {
+                3 -> {
+                    val name = argument[0] as? IdNameLiteral ?: return null
+                    val parameters = argument[1] as? ParametersStatement ?: return null
+                    val blockStmnt = argument[2] as? BlockStatement ?: return null
+                    DefStatement(name, parameters, null, blockStmnt)
+                }
+                4 -> {
+                    val name = argument[0] as? IdNameLiteral ?: return null
+                    val parameters = argument[1] as? ParametersStatement ?: return null
+                    val typeTag = argument[2] as? TypeStatement ?: return null
+                    val blockStmnt = argument[3] as? BlockStatement ?: return null
+                    DefStatement(name, parameters, typeTag, blockStmnt)
+                }
+                else -> {
+                    null
+                }
+            }
         }
     }
 

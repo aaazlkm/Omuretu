@@ -1,0 +1,19 @@
+55
+class Fib {
+    val fib0 = 0
+    val fib1 = 1
+
+    def fib(n: Int): Int {
+        if (n == 0) {
+            fib0
+        } elseif (n == 1) {
+            fib1
+        } else {
+            fib(n - 1) + fib(n - 2)
+        }
+    }
+}
+
+val f = Fib()
+val result = f.fib(10)
+print (result)

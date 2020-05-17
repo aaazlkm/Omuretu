@@ -103,7 +103,6 @@ class OmuretuParser {
         // classの定義
         klass.sep(ClassStatement.KEYWORD_CLASS)
                 .identifier(reserved, IdNameLiteral::class.java)
-                .option(Parser.rule().sep(ClassStatement.KEYWORD_EXTENDS).identifier(reserved, IdNameLiteral::class.java))
                 .ast(classBody)
         classBody.sep(ClassBodyStatement.KEYWORD_BRACES_START)
                 .option(member)
@@ -116,7 +115,7 @@ class OmuretuParser {
         )
 
         // def の定義
-        def.sep(DefStatement.KEYWORD_DEF).identifier(reserved, IdNameLiteral::class.java).ast(paramList).maybe(typeTag).ast(block)
+        def.sep(DefStatement.KEYWORD_DEF).identifier(reserved, IdNameLiteral::class.java).ast(paramList).option(typeTag).ast(block)
         paramList.sep(ParametersStatement.KEYWORD_PARENTHESIS_START).maybe(params).sep(ParametersStatement.KEYWORD_PARENTHESIS_END)
         params.ast(param).repeat(Parser.rule().sep(ParametersStatement.KEYWORD_PARAMETER_BREAK).ast(param))
         param.identifier(reserved, IdNameLiteral::class.java).ast(typeTag)

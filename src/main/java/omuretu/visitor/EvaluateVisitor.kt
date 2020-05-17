@@ -29,6 +29,7 @@ import omuretu.ast.statement.VarStatement
 import omuretu.ast.statement.WhileStatement
 import omuretu.environment.GlobalVariableEnvironment
 import omuretu.environment.IdNameLocationMap
+import omuretu.environment.TypeEnvironmentImpl
 import omuretu.environment.VariableEnvironmentImpl
 import omuretu.environment.base.VariableEnvironment
 import omuretu.exception.OmuretuException
@@ -36,8 +37,9 @@ import omuretu.model.Class
 import omuretu.model.Function
 import omuretu.model.InlineCache
 import omuretu.model.Object
+import omuretu.typechecker.Type
 
-class EvaluateVisitor : Visitor {
+object EvaluateVisitor : Visitor {
     //region expression
 
     fun visit(binaryExpression: BinaryExpression, variableEnvironment: VariableEnvironment): Any {
@@ -110,6 +112,9 @@ class EvaluateVisitor : Visitor {
 
     fun visit(argumentPostfix: ArgumentPostfix, variableEnvironment: VariableEnvironment, leftValue: Any): Any {
         return when (leftValue) {
+            is Class -> {
+                visitWhenClass(leftValue, argumentPostfix, variableEnvironment)
+            }
             is Function.OmuretuFunction -> {
                 visitWhenOmuretuFunction(leftValue, argumentPostfix, variableEnvironment)
             }
@@ -120,6 +125,13 @@ class EvaluateVisitor : Visitor {
                 throw OmuretuException("bad function type", argumentPostfix)
             }
         }
+    }
+
+    private fun visitWhenClass(classs: Class, argumentPostfix: ArgumentPostfix, variableEnvironment: VariableEnvironment): Any {
+        val objectt = Object(classs)
+        val objectEnvironment = classs.createClassEnvironment(objectt, this)
+        objectt.variableEnvironment = objectEnvironment
+        return objectt
     }
 
     private fun visitWhenOmuretuFunction(function: Function.OmuretuFunction, argumentPostfix: ArgumentPostfix, variableEnvironment: VariableEnvironment): Any {
@@ -156,21 +168,8 @@ class EvaluateVisitor : Visitor {
 
     fun visit(dotPostfix: DotPostfix, variableEnvironment: VariableEnvironment, leftValue: Any): Any {
         return when (leftValue) {
-            is Class -> visitWhenCalss(leftValue, dotPostfix)
             is Object -> visitWhenObject(leftValue, dotPostfix)
             else -> throw OmuretuException("bad member access: ", dotPostfix)
-        }
-    }
-
-    private fun visitWhenCalss(classs: Class, dotPostfix: DotPostfix): Any {
-        if (dotPostfix.name == DotPostfix.KEYWORD_NEW) {
-            // インスタンス化
-            val objectt = Object(classs)
-            val objectEnvironment = classs.createClassEnvironment(objectt, this)
-            objectt.variableEnvironment = objectEnvironment
-            return objectt
-        } else {
-            throw OmuretuException("bad member access: ", dotPostfix)
         }
     }
 
@@ -208,17 +207,23 @@ class EvaluateVisitor : Visitor {
                 ?: throw OmuretuException("class can define only in global environment")
         val classMemberLocationMap = IdNameLocationMap(globalEnvironment.idNameLocationMap)
         // クラスボディのメンバー最初にthisを追加
-        val thisLocation = classMemberLocationMap.putOnlyThisMapAndReturnLocation("this")
+        val thisLocation = classMemberLocationMap.putOnlyThisMapAndReturnLocation(ClassStatement.KEYWORD_THIS)
         val classs = Class(classStatement, globalEnvironment, classMemberLocationMap, thisLocation)
 
-        // 継承先のクラスのメンバーをコピー
-        classs.superClass?.copyThisMembersTo(classMemberLocationMap)
-
         // クラスボディ内の変数の位置
-        bodyStatement.accept(IdNameLocationVisitor(), classMemberLocationMap)
+        bodyStatement.accept(IdNameLocationVisitor, classMemberLocationMap)
+
+        val environmentKey = classStatement.environmentKey ?: throw OmuretuException("undefined class ", classStatement)
+
+        // クラス型登録
+        val typeEnvironment = classStatement.typeEnvironment ?: throw OmuretuException("cannot find type environment", classStatement)
+        val nestedTypeEnvironment = TypeEnvironmentImpl(typeEnvironment)
+        bodyStatement.accept(CheckTypeVisitor, nestedTypeEnvironment)
+        val classType = Type.Defined.Class(name, nestedTypeEnvironment, classMemberLocationMap)
+        typeEnvironment.put(environmentKey, classType)
 
         // クラス名を登録
-        globalEnvironment.putValueByIdName(name, classs)
+        globalEnvironment.put(environmentKey, classs)
 
         return name
     }

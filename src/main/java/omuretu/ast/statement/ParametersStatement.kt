@@ -34,9 +34,6 @@ data class ParametersStatement(
     val parameterNames: List<String>
         get() = parameters.map { it.name }
 
-    val types: List<Type.Defined>
-        get() = parameters.map { it.type }
-
     var parameterEnvironmentKeys: Array<EnvironmentKey>? = null
 
     override fun toString() = "$KEYWORD_PARENTHESIS_START $parameters $KEYWORD_PARENTHESIS_END"

@@ -30,17 +30,13 @@ internal class OmuretuTest {
             val typeEnvironment = TypeEnvironmentImpl()
             val variableEnvironment = NativeFunctionEnvironmentFactory.createBasedOn(GlobalVariableEnvironment(), typeEnvironment)
 
-            val idNameLocationVisitor = IdNameLocationVisitor()
-            val checkTypeVisitor = CheckTypeVisitor()
-            val evaluateVisitor = EvaluateVisitor()
-
             val lexer = OmuretuLexer(reader)
             while (lexer.readTokenAt(0) !== Token.EOF) {
                 val t = parser.parse(lexer)
                 if (t !is NullStatement) {
-                    t.accept(idNameLocationVisitor, variableEnvironment.idNameLocationMap)
-                    val type = t.accept(checkTypeVisitor, typeEnvironment)
-                    val result = t.accept(evaluateVisitor, variableEnvironment)
+                    t.accept(IdNameLocationVisitor, variableEnvironment.idNameLocationMap)
+                    val type = t.accept(CheckTypeVisitor, typeEnvironment)
+                    val result = t.accept(EvaluateVisitor, variableEnvironment)
                 }
             }
         }
@@ -280,8 +276,34 @@ internal class OmuretuTest {
         assertEquals(expected, result)
     }
 
-    @Test
-    fun testClass() {
-        // TODO 実装すること
+    @Nested
+    class Class {
+        private lateinit var out: ByteArrayOutputStream
+
+        @BeforeEach
+        fun setup() {
+            out = ByteArrayOutputStream()
+            System.setOut(PrintStream(out))
+        }
+
+        @Test
+        fun testClassAccess() {
+            val path = "$pathToTestCaseDir/class/test_class_access"
+            val reader = BufferedReader(FileReader(path))
+            val expected = reader.readLine().split(" ")
+            runForTest(reader)
+            val result = out.toString().split("\n").filter { it.isNotEmpty() }
+            assertEquals(expected, result)
+        }
+
+        @Test
+        fun testClassFib() {
+            val path = "$pathToTestCaseDir/class/test_class_fib"
+            val reader = BufferedReader(FileReader(path))
+            val expected = reader.readLine().split(" ")
+            runForTest(reader)
+            val result = out.toString().split("\n").filter { it.isNotEmpty() }
+            assertEquals(expected, result)
+        }
     }
 }
