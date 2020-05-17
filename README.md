@@ -1,7 +1,7 @@
 # Omuretu Programing Language
 
 This is omuretu programing language.
-This is very beatiful and delicious language.
+Omuretu programing language is very beatiful and delicious language.
 
 ## basic grammar
 
