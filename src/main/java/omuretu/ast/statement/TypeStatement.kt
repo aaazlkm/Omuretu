@@ -2,11 +2,14 @@ package omuretu.ast.statement
 
 import omuretu.OMURETU_DEFAULT_RETURN_VALUE
 import omuretu.ast.listeral.IdNameLiteral
+import omuretu.environment.IdNameLocationMap
+import omuretu.environment.base.EnvironmentKey
 import omuretu.environment.base.TypeEnvironment
 import omuretu.environment.base.VariableEnvironment
 import omuretu.typechecker.Type
 import omuretu.visitor.CheckTypeVisitor
 import omuretu.visitor.EvaluateVisitor
+import omuretu.visitor.IdNameLocationVisitor
 import parser.ast.ASTList
 import parser.ast.ASTTree
 
@@ -30,15 +33,20 @@ class TypeStatement(
         }
     }
 
-    private val name: String
+    val name: String
         get() = typeName?.name ?: Type.NeedInference.NAME
 
-    val type: Type?
-        get() = Type.from(name)
+    var environmentKey: EnvironmentKey? = null
 
     override fun toString() = "$KEYWORD_COLON $typeName"
 
-    override fun accept(checkTypeVisitor: CheckTypeVisitor, typeEnvironment: TypeEnvironment): Type = type ?: Type.Defined.Any()
+    override fun accept(idNameLocationVisitor: IdNameLocationVisitor, idNameLocationMap: IdNameLocationMap) {
+        idNameLocationVisitor.visit(this, idNameLocationMap)
+    }
+
+    override fun accept(checkTypeVisitor: CheckTypeVisitor, typeEnvironment: TypeEnvironment): Type {
+        return checkTypeVisitor.visit(this, typeEnvironment)
+    }
 
     override fun accept(evaluateVisitor: EvaluateVisitor, variableEnvironment: VariableEnvironment): Any = OMURETU_DEFAULT_RETURN_VALUE
 }

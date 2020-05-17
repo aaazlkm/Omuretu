@@ -173,6 +173,9 @@ object TypeCheckHelper {
             is Type.Defined.Array -> {
                 checkSubTypeOfWhenSuperTypeArray(superType, subType)
             }
+            is Type.Defined.Object -> {
+                checkSubTypeOfWhenSuperTypeClass(superType, subType)
+            }
             else -> {
                 superType::class == subType::class || superType::class == Type.Defined.Any::class
             }
@@ -183,6 +186,17 @@ object TypeCheckHelper {
         return when (subType) {
             is Type.Defined.Array -> {
                 checkSubTypeOf(superType.type, subType.type)
+            }
+            else -> {
+                false
+            }
+        }
+    }
+
+    private fun checkSubTypeOfWhenSuperTypeClass(superType: Type.Defined.Object, subType: Type.Defined): Boolean {
+        return when (subType) {
+            is Type.Defined.Object -> {
+                superType.name == subType.name
             }
             else -> {
                 false

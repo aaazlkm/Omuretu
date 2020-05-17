@@ -34,9 +34,6 @@ data class VarStatement(
     val name: String
         get() = idNameLiteral.name
 
-    val type: Type?
-        get() = typeStatement.type
-
     var environmentKey: EnvironmentKey? = null
 
     override fun toString() = "$KEYWORD_VAR $idNameLiteral $typeStatement $KEYWORD_EQUAL $initializer"

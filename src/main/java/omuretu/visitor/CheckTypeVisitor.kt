@@ -21,16 +21,18 @@ import omuretu.ast.statement.ForStatement
 import omuretu.ast.statement.IfStatement
 import omuretu.ast.statement.ParameterStatement
 import omuretu.ast.statement.ParametersStatement
+import omuretu.ast.statement.TypeStatement
 import omuretu.ast.statement.ValStatement
 import omuretu.ast.statement.VarStatement
 import omuretu.ast.statement.WhileStatement
 import omuretu.environment.TypeEnvironmentImpl
 import omuretu.environment.base.TypeEnvironment
 import omuretu.exception.OmuretuException
+import omuretu.exception.TypeException
 import omuretu.typechecker.Type
 import omuretu.typechecker.TypeCheckHelper
 
-class CheckTypeVisitor : Visitor {
+object CheckTypeVisitor : Visitor {
     //region expression
 
     fun visit(binaryExpression: BinaryExpression, typeEnvironment: TypeEnvironment): Type {
@@ -97,12 +99,21 @@ class CheckTypeVisitor : Visitor {
 
     fun visit(argumentPostfix: ArgumentPostfix, typeEnvironment: TypeEnvironment, leftType: Type): Type {
         val astTrees = argumentPostfix.astTrees
-        val functionType = leftType as? Type.Defined.Function ?: throw OmuretuException("bad left type", argumentPostfix)
-        if (astTrees.size != functionType.parameterTypes.size) throw OmuretuException("bad number of argument", argumentPostfix)
-        functionType.parameterTypes
-                .zip(astTrees.map { it.accept(this, typeEnvironment) })
-                .forEach { TypeCheckHelper.checkSubTypeOrThrow(it.first, it.second, argumentPostfix, typeEnvironment) }
-        return functionType.returnType
+        return when (leftType) {
+            is Type.Defined.Class -> {
+                Type.Defined.Object(leftType)
+            }
+            is Type.Defined.Function -> {
+                if (astTrees.size != leftType.parameterTypes.size) throw OmuretuException("bad number of argument", argumentPostfix)
+                leftType.parameterTypes
+                        .zip(astTrees.map { it.accept(this, typeEnvironment) })
+                        .forEach { TypeCheckHelper.checkSubTypeOrThrow(it.first, it.second, argumentPostfix, typeEnvironment) }
+                leftType.returnType
+            }
+            else -> {
+                throw OmuretuException("bad left type", argumentPostfix)
+            }
+        }
     }
 
     fun visit(arrayPostfix: ArrayPostfix, typeEnvironment: TypeEnvironment, leftType: Type): Type {
@@ -111,8 +122,9 @@ class CheckTypeVisitor : Visitor {
     }
 
     fun visit(dotPostfix: DotPostfix, typeEnvironment: TypeEnvironment, leftType: Type): Type {
-        // TODO クラスのプロパティの型を見るようにする
-        return Type.Defined.Class()
+        val objectt = leftType as? Type.Defined.Object ?: throw OmuretuException("leftType $leftType should be object type", dotPostfix)
+        // クラス内の変数やメソッドの型を返すようにする
+        return objectt.getMemberType(dotPostfix.name) ?: throw OmuretuException("undefined name: ${dotPostfix.name}", dotPostfix)
     }
 
     //endregion
@@ -125,13 +137,17 @@ class CheckTypeVisitor : Visitor {
     }
 
     fun visit(classBodyStatement: ClassBodyStatement, typeEnvironment: TypeEnvironment): Type {
-        // TODO クラス型を用意する
-        return Type.Defined.Any()
+        classBodyStatement.members.forEach {
+            it.accept(this, typeEnvironment)
+        }
+        // クラスのBodyの型は何でもいい
+        return Type.Defined.Unit()
     }
 
     fun visit(classStatement: ClassStatement, typeEnvironment: TypeEnvironment): Type {
-        // TODO クラス型を用意する
-        return Type.Defined.Any()
+        classStatement.typeEnvironment = typeEnvironment
+        // クラスのタイプはevaluate時に決まる
+        return Type.NeedInference()
     }
 
     fun visit(conditionBlockStatement: ConditionBlockStatement, typeEnvironment: TypeEnvironment): Type {
@@ -145,13 +161,15 @@ class CheckTypeVisitor : Visitor {
 
     fun visit(defStatement: DefStatement, typeEnvironment: TypeEnvironment): Type {
         val (idNameLiteral, parameters, typeTag, blockStatement) = defStatement
-        val environmentKey = defStatement.environmentKey ?: throw OmuretuException("donot defined $this")
-        val returnType = typeTag.type as? Type.Defined ?: Type.Defined.Unit()
-        val parameterTypes = parameters.types
+        val environmentKey = defStatement.environmentKey ?: throw OmuretuException("donot defined", defStatement)
+        val returnType = typeTag?.accept(this, typeEnvironment) as? Type.Defined ?: Type.Defined.Unit()
+        val bodyTypeEnvironment = TypeEnvironmentImpl(typeEnvironment)
+        val parameterTypes = parameters.parameters.map {
+            it.accept(this, bodyTypeEnvironment) as? Type.Defined ?: throw OmuretuException("def parameter type should be defined")
+        }
         if (parameters.parameterNames.size != parameterTypes.size) throw OmuretuException("failed to convert parameter type :from ${parameters.parameterNames} to $parameterTypes")
         val functionType = Type.Defined.Function(returnType, parameterTypes)
         typeEnvironment.put(environmentKey, functionType)
-        val bodyTypeEnvironment = TypeEnvironmentImpl(typeEnvironment)
         parameters.accept(this, bodyTypeEnvironment)
         blockStatement.accept(this, bodyTypeEnvironment)
         return functionType
@@ -190,7 +208,17 @@ class CheckTypeVisitor : Visitor {
     }
 
     fun visit(parameterStatement: ParameterStatement, typeEnvironment: TypeEnvironment): Type {
-        return parameterStatement.type
+        val type = parameterStatement.typeStatement.accept(this, typeEnvironment)
+        return (type as? Type.Defined.Class)?.let { Type.Defined.Object(type) } ?: type
+    }
+
+    fun visit(typeStatement: TypeStatement, typeEnvironment: TypeEnvironment): Type {
+        val name = typeStatement.name
+        return typeStatement.environmentKey?.let {
+            (typeEnvironment.get(it) as? Type.Defined.Class)?.let { Type.Defined.Object(it) } ?: throw TypeException("type should be class", typeStatement)
+        } ?: run {
+            Type.from(name) ?: Type.NeedInference()
+        }
     }
 
     fun visit(valStatement: ValStatement, typeEnvironment: TypeEnvironment): Type {
@@ -198,7 +226,8 @@ class CheckTypeVisitor : Visitor {
         val environmentKey = valStatement.environmentKey ?: throw OmuretuException("undefined", valStatement)
         if (typeEnvironment.get(environmentKey) != null) throw OmuretuException("duplicate variable ${idNameLiteral.name}", valStatement)
         val initializerType = initializer.accept(this, typeEnvironment)
-        typeTag.type?.let { TypeCheckHelper.checkSubTypeOrThrow(it, initializerType, valStatement, typeEnvironment) }
+        val type = typeTag.accept(this, typeEnvironment)
+        TypeCheckHelper.checkSubTypeOrThrow(type, initializerType, valStatement, typeEnvironment)
         typeEnvironment.put(environmentKey, initializerType)
         return initializerType
     }
@@ -209,7 +238,8 @@ class CheckTypeVisitor : Visitor {
         if (typeEnvironment.get(environmentKey) != null) throw OmuretuException("duplicate variable ${idNameLiteral.name}", varStatement)
         val initializerType = initializer.accept(this, typeEnvironment)
         initializerType.readOnly = false
-        typeTag.type?.let { TypeCheckHelper.checkSubTypeOrThrow(it, initializerType, varStatement, typeEnvironment) }
+        val type = typeTag.accept(this, typeEnvironment)
+        TypeCheckHelper.checkSubTypeOrThrow(type, initializerType, varStatement, typeEnvironment)
         typeEnvironment.put(environmentKey, initializerType)
         return initializerType
     }

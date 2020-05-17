@@ -8,35 +8,22 @@ import omuretu.environment.Location
 import omuretu.environment.VariableEnvironmentImpl
 import omuretu.environment.base.EnvironmentKey
 import omuretu.environment.base.VariableEnvironment
-import omuretu.exception.OmuretuException
 import omuretu.visitor.EvaluateVisitor
 
 data class Class(
-    val classStmnt: ClassStatement,
-    private val environment: GlobalVariableEnvironment,
+    val classStatement: ClassStatement,
+    private val globalEnvironment: GlobalVariableEnvironment,
     private val classMemberLocationMap: IdNameLocationMap,
     private val thisLocation: Location
 ) {
-    val superClass: Class?
-
     val body: ClassBodyStatement
-        get() = classStmnt.bodyStatement
-
-    init {
-        when (val superClassInfo = classStmnt.superClassName?.let { environment.getValueByIdName(it) }) {
-            null -> this.superClass = null
-            is Class -> this.superClass = superClassInfo
-            else -> throw OmuretuException("unknown super class type $superClassInfo")
-        }
-    }
+        get() = classStatement.bodyStatement
 
     override fun toString(): String {
-        return "class: ${classStmnt.name}"
+        return "class: $classStatement"
     }
 
-    fun copyThisMembersTo(
-        classMemberLocationMap: IdNameLocationMap
-    ) {
+    fun copyThisMembersTo(classMemberLocationMap: IdNameLocationMap) {
         classMemberLocationMap.copyFrom(this.classMemberLocationMap)
     }
 
@@ -44,8 +31,10 @@ data class Class(
         return classMemberLocationMap.getLocationFromOnlyThisMap(idName)
     }
 
+    //region create class environment
+
     fun createClassEnvironment(objectt: Object, evaluateVisitor: EvaluateVisitor): VariableEnvironmentImpl {
-        val environment = VariableEnvironmentImpl(classMemberLocationMap.idNamesSize, environment as? VariableEnvironmentImpl)
+        val environment = VariableEnvironmentImpl(classMemberLocationMap.idNamesSize, globalEnvironment as? VariableEnvironmentImpl)
         addThisKeyWordToEnvironment(environment, objectt)
         crateSuperClassEnvironment(this, evaluateVisitor, environment)
         return environment
@@ -56,7 +45,8 @@ data class Class(
     }
 
     private fun crateSuperClassEnvironment(classs: Class, evaluateVisitor: EvaluateVisitor, variableEnvironment: VariableEnvironment) {
-        if (classs.superClass != null) crateSuperClassEnvironment(classs.superClass, evaluateVisitor, variableEnvironment)
         classs.body.accept(evaluateVisitor, variableEnvironment)
     }
+
+    //endregion
 }

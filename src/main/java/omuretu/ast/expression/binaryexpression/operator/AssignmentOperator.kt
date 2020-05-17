@@ -34,7 +34,10 @@ class AssignmentOperator(
     private fun checkTypeWhenPrimaryExpression(primaryExpression: PrimaryExpression, checkTypeVisitor: CheckTypeVisitor, typeEnvironment: TypeEnvironment): Type {
         return when (val firstPostFix = primaryExpression.firstPostFix) {
             is DotPostfix -> {
-                TODO("オブジェクトに関しての型を実装すること")
+                val objectType = primaryExpression.accept(checkTypeVisitor, typeEnvironment)
+                val rightType = rightTree.accept(checkTypeVisitor, typeEnvironment)
+                TypeCheckHelper.checkSubTypeOrThrow(objectType, rightType, primaryExpression, typeEnvironment)
+                return objectType
             }
             is ArrayPostfix -> {
                 firstPostFix.index.accept(checkTypeVisitor, typeEnvironment).let {

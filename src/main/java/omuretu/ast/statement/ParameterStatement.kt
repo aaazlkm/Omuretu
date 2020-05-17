@@ -27,9 +27,6 @@ data class ParameterStatement(
     val name: String
         get() = idNameLiteral.name
 
-    val type: Type.Defined
-        get() = typeStatement.type as Type.Defined // パラメータ型は事前に決まっている
-
     override fun toString() = "$idNameLiteral $typeStatement"
 
     override fun accept(checkTypeVisitor: CheckTypeVisitor, typeEnvironment: TypeEnvironment): Type {

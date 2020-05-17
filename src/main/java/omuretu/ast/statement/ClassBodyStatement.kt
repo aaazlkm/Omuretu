@@ -4,9 +4,7 @@ import omuretu.environment.IdNameLocationMap
 import omuretu.environment.base.TypeEnvironment
 import omuretu.environment.base.VariableEnvironment
 import omuretu.typechecker.Type
-import omuretu.virtualmachine.ByteCodeStore
 import omuretu.visitor.CheckTypeVisitor
-import omuretu.visitor.CompileVisitor
 import omuretu.visitor.EvaluateVisitor
 import omuretu.visitor.IdNameLocationVisitor
 import parser.ast.ASTList
@@ -34,8 +32,6 @@ class ClassBodyStatement(
     override fun accept(checkTypeVisitor: CheckTypeVisitor, typeEnvironment: TypeEnvironment): Type {
         return checkTypeVisitor.visit(this, typeEnvironment)
     }
-
-    override fun accept(compileVisitor: CompileVisitor, byteCodeStore: ByteCodeStore) {}
 
     override fun accept(evaluateVisitor: EvaluateVisitor, variableEnvironment: VariableEnvironment): Any {
         return evaluateVisitor.visit(this, variableEnvironment)

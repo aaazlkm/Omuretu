@@ -1,5 +1,9 @@
 package omuretu.typechecker
 
+import omuretu.environment.IdNameLocationMap
+import omuretu.environment.base.EnvironmentKey
+import omuretu.environment.base.TypeEnvironment
+
 sealed class Type {
     companion object {
         fun from(typeName: String): Type? {
@@ -53,9 +57,36 @@ sealed class Type {
             }
         }
 
-        class Class(override var readOnly: Boolean = true) : Defined() {
+        class Class(
+            val name: kotlin.String,
+            private val typeEnvironment: TypeEnvironment,
+            private val classMemberLocationMap: IdNameLocationMap,
+            override var readOnly: Boolean = true
+        ) : Defined() {
             companion object {
                 const val NAME = "Class"
+            }
+
+            fun getMemberTypeOf(name: kotlin.String): Type? {
+                return classMemberLocationMap.getLocationFromAllMap(name)?.let {
+                    typeEnvironment.get(EnvironmentKey(it.ancestorAt, it.indexInIdNames))
+                }
+            }
+        }
+
+        class Object(
+            val classs: Class,
+            override var readOnly: Boolean = true
+        ) : Defined() {
+            companion object {
+                const val NAME = "Object"
+            }
+
+            val name: kotlin.String
+                get() = classs.name
+
+            fun getMemberType(name: kotlin.String): Type? {
+                return classs.getMemberTypeOf(name)
             }
         }
 
@@ -73,6 +104,7 @@ sealed class Type {
             is Range -> Range.NAME
             is Unit -> Unit.NAME
             is Class -> Class.NAME
+            is Object -> Object.NAME
             is Function -> Function.NAME
         }
     }

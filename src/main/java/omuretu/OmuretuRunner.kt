@@ -22,17 +22,13 @@ object OmuretuRunner {
         val typeEnvironment = TypeEnvironmentImpl()
         val variableEnvironment = NativeFunctionEnvironmentFactory.createBasedOn(GlobalVariableEnvironment(), typeEnvironment)
 
-        val idNameLocationVisitor = IdNameLocationVisitor()
-        val checkTypeVisitor = CheckTypeVisitor()
-        val evaluateVisitor = EvaluateVisitor()
-
         val lexer = OmuretuLexer(reader)
         while (lexer.readTokenAt(0) !== Token.EOF) {
             val t = parser.parse(lexer)
             if (t !is NullStatement) {
-                t.accept(idNameLocationVisitor, variableEnvironment.idNameLocationMap)
-                val type = t.accept(checkTypeVisitor, typeEnvironment)
-                val result = t.accept(evaluateVisitor, variableEnvironment)
+                t.accept(IdNameLocationVisitor, variableEnvironment.idNameLocationMap)
+                val type = t.accept(CheckTypeVisitor, typeEnvironment)
+                val result = t.accept(EvaluateVisitor, variableEnvironment)
                 println("$result: $type")
             }
         }
