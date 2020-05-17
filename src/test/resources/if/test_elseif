@@ -1,0 +1,14 @@
+5
+var i = 7
+if(i > 100) {
+    print("100")
+} elseif (i > 50) {
+    print("50")
+} elseif (i > 10) {
+    print("10")
+} elseif (i > 5) {
+    print("5")
+} else {
+    print("0")
+}
+5

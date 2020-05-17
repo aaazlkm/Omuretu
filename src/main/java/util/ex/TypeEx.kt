@@ -3,9 +3,9 @@ package util.ex
 import omuretu.typechecker.Type
 
 fun Pair<Type, Type>.fold(
-        doOnDefineDefine: (Pair<Type.Defined, Type.Defined>) -> Type,
-        doOnDefineInfer: (Pair<Type.Defined, Type.NeedInference>) -> Type,
-        doOnInferInfer: (Pair<Type.NeedInference, Type.NeedInference>) -> Type
+    doOnDefineDefine: (Pair<Type.Defined, Type.Defined>) -> Type,
+    doOnDefineInfer: (Pair<Type.Defined, Type.NeedInference>) -> Type,
+    doOnInferInfer: (Pair<Type.NeedInference, Type.NeedInference>) -> Type
 ): Type {
     val (type1, type2) = this
     return when (type1) {

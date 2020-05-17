@@ -1,10 +1,9 @@
 package omuretu.exception
 
-import lexer.token.Token
-import parser.ast.ASTTree
 import java.io.IOException
+import parser.ast.ASTTree
 
 class OmuretuException : Exception {
-    constructor(e: IOException) : super(e) {}
-    constructor(msg: String, astTree: ASTTree? = null) : super("$msg  astTree$astTree") {}
+    constructor(e: IOException) : super(e)
+    constructor(msg: String, astTree: ASTTree? = null) : super("$msg astTree: $astTree")
 }

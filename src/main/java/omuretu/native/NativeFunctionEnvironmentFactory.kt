@@ -1,27 +1,27 @@
 package omuretu.native
 
+import java.lang.reflect.Method
+import javax.swing.JOptionPane
 import omuretu.environment.GlobalVariableEnvironment
 import omuretu.environment.base.EnvironmentKey
 import omuretu.environment.base.TypeEnvironment
 import omuretu.exception.OmuretuException
 import omuretu.model.Function
 import omuretu.typechecker.Type
-import java.lang.reflect.Method
-import javax.swing.JOptionPane
 
 object NativeFunctionEnvironmentFactory {
     private data class FunctionDefinition(
-            val name: String,
-            val functionType: Type.Defined.Function,
-            val parameterType: Array<Class<*>> = arrayOf()
+        val name: String,
+        val functionType: Type.Defined.Function,
+        val parameterType: Array<Class<*>> = arrayOf()
     )
 
     private val functionDefinitions = listOf(
-            FunctionDefinition("print", Type.Defined.Function(Type.Defined.Int, listOf(Type.Defined.Any)), arrayOf(Any::class.java)),
-            FunctionDefinition("read", Type.Defined.Function(Type.Defined.String)),
-            FunctionDefinition("length", Type.Defined.Function(Type.Defined.Int, listOf(Type.Defined.String)), arrayOf(String::class.java)),
-            FunctionDefinition("toInt", Type.Defined.Function(Type.Defined.Int, listOf(Type.Defined.Any)), arrayOf(Any::class.java)),
-            FunctionDefinition("getCurrentTimeMillis", Type.Defined.Function(Type.Defined.Int))
+            FunctionDefinition("print", Type.Defined.Function(Type.Defined.Int(), listOf(Type.Defined.Any())), arrayOf(Any::class.java)),
+            FunctionDefinition("read", Type.Defined.Function(Type.Defined.String())),
+            FunctionDefinition("length", Type.Defined.Function(Type.Defined.Int(), listOf(Type.Defined.String())), arrayOf(String::class.java)),
+            FunctionDefinition("toInt", Type.Defined.Function(Type.Defined.Int(), listOf(Type.Defined.Any())), arrayOf(Any::class.java)),
+            FunctionDefinition("getCurrentTimeMillis", Type.Defined.Function(Type.Defined.Int()))
     )
 
     fun createBasedOn(variableEnvironment: GlobalVariableEnvironment, typeEnvironment: TypeEnvironment): GlobalVariableEnvironment {

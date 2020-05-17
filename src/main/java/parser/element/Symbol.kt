@@ -1,6 +1,6 @@
 package parser.element
 
-import parser.exception.ParseException
+import java.util.HashSet
 import lexer.Lexer
 import lexer.token.IdToken
 import lexer.token.NumberToken
@@ -9,7 +9,7 @@ import lexer.token.Token
 import parser.ASTTreeFactory
 import parser.ast.ASTLeaf
 import parser.ast.ASTTree
-import java.util.HashSet
+import parser.exception.ParseException
 
 abstract class Symbol constructor(type: Class<out ASTLeaf>?) : Element {
     private val factory: ASTTreeFactory = if (type == null) {

@@ -13,9 +13,7 @@ repositories {
 }
 
 test {
-    useJUnitPlatform {
-        includeEngines 'junit-jupiter'
-    }
+    useJUnitPlatform()
 }
 
 dependencies {

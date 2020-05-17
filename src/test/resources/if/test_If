@@ -1,0 +1,23 @@
+1 0 0 1
+if (1 < 2) {
+    print(1)
+} else {
+    print(0)
+}
+
+if (1 > 2) {
+    print(1)
+} else {
+    print(0)
+}
+
+if (1 > 2) {
+    print(1)
+} else {
+    print(0)
+}
+
+var i = 1
+if (i > 0) {
+  print(i)
+}

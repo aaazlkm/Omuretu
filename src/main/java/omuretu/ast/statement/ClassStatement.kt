@@ -1,22 +1,24 @@
 package omuretu.ast.statement
 
-import omuretu.environment.base.VariableEnvironment
-import omuretu.environment.NestedIdNameLocationMap
 import omuretu.ast.listeral.IdNameLiteral
-import omuretu.environment.GlobalVariableEnvironment
-import omuretu.exception.OmuretuException
+import omuretu.environment.IdNameLocationMap
+import omuretu.environment.base.EnvironmentKey
+import omuretu.environment.base.TypeEnvironment
+import omuretu.environment.base.VariableEnvironment
+import omuretu.typechecker.Type
+import omuretu.visitor.CheckTypeVisitor
+import omuretu.visitor.EvaluateVisitor
+import omuretu.visitor.IdNameLocationVisitor
 import parser.ast.ASTList
 import parser.ast.ASTTree
-import omuretu.model.Class
 
 class ClassStatement(
-        private val idNameLiteral: IdNameLiteral,
-        private val superClassIdNameLiteral: IdNameLiteral? = null,
-        val bodyStmnt: ClassBodyStatement
-) : ASTList(if (superClassIdNameLiteral == null) listOf(idNameLiteral, bodyStmnt) else listOf(idNameLiteral, superClassIdNameLiteral, bodyStmnt)) {
+    private val idNameLiteral: IdNameLiteral,
+    val bodyStatement: ClassBodyStatement
+) : ASTList(listOf(idNameLiteral, bodyStatement)) {
     companion object Factory : FactoryMethod {
         const val KEYWORD_CLASS = "class"
-        const val KEYWORD_EXTENDS = "extends"
+        const val KEYWORD_THIS = "this"
 
         @JvmStatic
         override fun newInstance(argument: List<ASTTree>): ASTTree? {
@@ -24,13 +26,7 @@ class ClassStatement(
                 2 -> {
                     val nameLiteral = argument[0] as? IdNameLiteral ?: return null
                     val bodyStmnt = argument[1] as? ClassBodyStatement ?: return null
-                    return ClassStatement(nameLiteral, null, bodyStmnt)
-                }
-                3 -> {
-                    val nameLiteral = argument[0] as? IdNameLiteral ?: return null
-                    val extendLiteral = argument[1] as? IdNameLiteral ?: return null
-                    val bodyStmnt = argument[2] as? ClassBodyStatement ?: return null
-                    return ClassStatement(nameLiteral, extendLiteral, bodyStmnt)
+                    return ClassStatement(nameLiteral, bodyStmnt)
                 }
                 else -> {
                     return null
@@ -42,34 +38,21 @@ class ClassStatement(
     val name: String
         get() = idNameLiteral.name
 
-    val superClassName: String?
-        get() = superClassIdNameLiteral?.name
+    var environmentKey: EnvironmentKey? = null
 
-    override fun lookupIdNamesLocation(idNameLocationMap: NestedIdNameLocationMap) {
-        // スーパークラスを持つ場合環境がないとスーパークラスの定義を取得することができないためここでは何もしない
+    var typeEnvironment: TypeEnvironment? = null
+
+    override fun toString() = "$KEYWORD_CLASS $idNameLiteral $bodyStatement"
+
+    override fun accept(idNameLocationVisitor: IdNameLocationVisitor, idNameLocationMap: IdNameLocationMap) {
+        idNameLocationVisitor.visit(this, idNameLocationMap)
     }
 
-    override fun evaluate(variableEnvironment: VariableEnvironment): Any {
-        val globalEnvironment = variableEnvironment as? GlobalVariableEnvironment
-                ?: throw OmuretuException("class can define only in global environment")
-        val classMemberLocationMap = NestedIdNameLocationMap(globalEnvironment.idNameLocationMap)
-        // クラスボディのメンバー最初にthisを追加
-        val thisLocation = classMemberLocationMap.putOnlyThisMapAndReturnLocation("this")
-        val classs = Class(this, globalEnvironment, classMemberLocationMap, thisLocation)
-
-        // 継承先のクラスのメンバーをコピー
-        classs.superClass?.copyThisMembersTo(classMemberLocationMap)
-
-        // クラスボディ内の変数の位置
-        bodyStmnt.lookupIdNamesLocation(classMemberLocationMap)
-
-        // クラス名を登録
-        globalEnvironment.putValueByIdName(name, classs)
-
-        return name
+    override fun accept(checkTypeVisitor: CheckTypeVisitor, typeEnvironment: TypeEnvironment): Type {
+        return checkTypeVisitor.visit(this, typeEnvironment)
     }
 
-    override fun toString(): String {
-        return "class name: $idNameLiteral extendLiteral: $superClassIdNameLiteral bodyStmnt: $bodyStmnt"
+    override fun accept(evaluateVisitor: EvaluateVisitor, variableEnvironment: VariableEnvironment): Any {
+        return evaluateVisitor.visit(this, variableEnvironment)
     }
 }

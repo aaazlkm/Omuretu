@@ -1,19 +1,19 @@
 package omuretu.ast.statement
 
-import omuretu.OMURETU_DEFAULT_RETURN_VALUE
 import omuretu.environment.base.TypeEnvironment
 import omuretu.environment.base.VariableEnvironment
 import omuretu.typechecker.Type
-import omuretu.vertualmachine.ByteCodeStore
-import omuretu.vertualmachine.OmuretuVirtualMachine
-import omuretu.vertualmachine.opecode.BConstOpecode
+import omuretu.virtualmachine.ByteCodeStore
+import omuretu.visitor.CheckTypeVisitor
+import omuretu.visitor.CompileVisitor
+import omuretu.visitor.EvaluateVisitor
 import parser.ast.ASTList
 import parser.ast.ASTTree
 
-class BlockStatement(
-        private val astTrees: List<ASTTree>
+data class BlockStatement(
+    val astTrees: List<ASTTree>
 ) : ASTList(astTrees) {
-    companion object Factory : FactoryMethod  {
+    companion object Factory : FactoryMethod {
         val BLOCK_START = "{"
         val BLOCK_END = "}"
 
@@ -23,29 +23,17 @@ class BlockStatement(
         }
     }
 
-    override fun checkType(typeEnvironment: TypeEnvironment): Type {
-        return astTrees.map { it.checkType(typeEnvironment) }.lastOrNull() ?: Type.Defined.Int
+    override fun toString() = "$BLOCK_START $astTrees $BLOCK_END"
+
+    override fun accept(checkTypeVisitor: CheckTypeVisitor, typeEnvironment: TypeEnvironment): Type {
+        return checkTypeVisitor.visit(this, typeEnvironment)
     }
 
-    override fun compile(byteCodeStore: ByteCodeStore) {
-        if (astTrees.isEmpty()) {
-            val registerAt = OmuretuVirtualMachine.encodeRegisterIndex(byteCodeStore.nextRegister())
-            BConstOpecode.createByteCode(0, registerAt).forEach { byteCodeStore.addByteCode(it) }
-        } else {
-            val initRegisterPosition = byteCodeStore.registerPosition
-            astTrees.forEach {
-                // blockの最後の値しか返り値として必要ないので、初期化している
-                byteCodeStore.registerPosition = initRegisterPosition
-                it.compile(byteCodeStore)
-            }
-        }
+    override fun accept(compileVisitor: CompileVisitor, byteCodeStore: ByteCodeStore) {
+        compileVisitor.visit(this, byteCodeStore)
     }
 
-    override fun evaluate(variableEnvironment: VariableEnvironment): Any {
-        var result: Any? = null
-        astTrees.forEach {
-            result = it.evaluate(variableEnvironment)
-        }
-        return result ?: OMURETU_DEFAULT_RETURN_VALUE // FIXME うまくない
+    override fun accept(evaluateVisitor: EvaluateVisitor, variableEnvironment: VariableEnvironment): Any {
+        return evaluateVisitor.visit(this, variableEnvironment)
     }
 }

@@ -1,18 +1,17 @@
 package omuretu.ast.expression
 
 import omuretu.environment.base.TypeEnvironment
-import omuretu.exception.OmuretuException
 import omuretu.environment.base.VariableEnvironment
 import omuretu.typechecker.Type
-import omuretu.typechecker.TypeCheckHelper
-import omuretu.vertualmachine.ByteCodeStore
-import omuretu.vertualmachine.OmuretuVirtualMachine
-import omuretu.vertualmachine.opecode.NegOpecode
+import omuretu.virtualmachine.ByteCodeStore
+import omuretu.visitor.CheckTypeVisitor
+import omuretu.visitor.CompileVisitor
+import omuretu.visitor.EvaluateVisitor
 import parser.ast.ASTList
 import parser.ast.ASTTree
 
-class NegativeExpression(
-        val operand: ASTTree
+data class NegativeExpression(
+    val operand: ASTTree
 ) : ASTList(listOf(operand)) {
     companion object Factory : FactoryMethod {
         @JvmStatic
@@ -22,30 +21,17 @@ class NegativeExpression(
         }
     }
 
-    override fun checkType(typeEnvironment: TypeEnvironment): Type {
-        val type = operand.checkType(typeEnvironment)
-        TypeCheckHelper.checkSubTypeOrThrow(Type.Defined.Int, type, this, typeEnvironment)
-        return type
+    override fun toString() = "-$operand"
+
+    override fun accept(checkTypeVisitor: CheckTypeVisitor, typeEnvironment: TypeEnvironment): Type {
+        return checkTypeVisitor.visit(this, typeEnvironment)
     }
 
-    override fun compile(byteCodeStore: ByteCodeStore) {
-        operand.compile(byteCodeStore)
-        val registerAt = OmuretuVirtualMachine.encodeRegisterIndex(byteCodeStore.registerPosition - 1)
-        NegOpecode.createByteCode(registerAt).forEach {
-            byteCodeStore.addByteCode(it)
-        }
+    override fun accept(compileVisitor: CompileVisitor, byteCodeStore: ByteCodeStore) {
+        compileVisitor.visit(this, byteCodeStore)
     }
 
-    override fun evaluate(variableEnvironment: VariableEnvironment): Any {
-        val result = operand.evaluate(variableEnvironment)
-        return if (result is Int) {
-            -result
-        } else {
-            throw OmuretuException("bad type for  -", this)
-        }
-    }
-
-    override fun toString(): String {
-        return "-$operand"
+    override fun accept(evaluateVisitor: EvaluateVisitor, variableEnvironment: VariableEnvironment): Any {
+        return evaluateVisitor.visit(this, variableEnvironment)
     }
 }

@@ -1,8 +1,10 @@
 package parser
 
-import parser.exception.ParseException
 import lexer.token.Token
-import parser.ast.*
+import parser.ast.ASTLeaf
+import parser.ast.ASTList
+import parser.ast.ASTTree
+import parser.exception.ParseException
 
 /**
  * ASTTree関連のインスタンスを生成するFactoryクラス

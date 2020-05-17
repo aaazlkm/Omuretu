@@ -7,7 +7,7 @@ import omuretu.exception.TypeException
 import omuretu.typechecker.Type
 
 class TypeEnvironmentImpl(
-        private val outEnvironment: TypeEnvironment? = null
+    private val outEnvironment: TypeEnvironment? = null
 ) : TypeEnvironment {
     data class TypeEquation(val type1: Type.NeedInference, val type2: Type.NeedInference)
 
@@ -19,7 +19,8 @@ class TypeEnvironmentImpl(
     override fun put(key: EnvironmentKey, type: Type) {
         if (key.ancestorAt < 0) throw OmuretuException("illegal ancestorAt: ${key.ancestorAt}")
         if (key.ancestorAt == 0) {
-            putValueAndExpandIfNeeded(key.index, type)
+            expandTypesFieldsIfNeeded(key.index)
+            types[key.index] = type
         } else {
             outEnvironment?.put(EnvironmentKey(key.ancestorAt - 1, key.index), type) ?: run {
                 throw OmuretuException("illegal ancestorAt: ${key.ancestorAt}")
@@ -27,28 +28,22 @@ class TypeEnvironmentImpl(
         }
     }
 
-    /**
-     * 大域変数の数は実行時にしかわからないので、このメソッドで動的に配列の要素を確保して変数を追加する
-     *
-     * @param index
-     * @param type
-     */
-    private fun putValueAndExpandIfNeeded(index: Int, type: Type) {
-        if (index >= types.size) {
-            val newLength = index - types.size + 10 // 10個分余分に配列を確保しておく
-            types = types.copyOf(types.size + newLength).map { it }.toTypedArray()
-        }
-        types[index] = type
-    }
-
     //endregion
 
     override fun get(key: EnvironmentKey): Type? {
         if (key.ancestorAt < 0) throw OmuretuException("illegal ancestorAt: ${key.ancestorAt}")
         return if (key.ancestorAt == 0) {
+            expandTypesFieldsIfNeeded(key.index)
             types[key.index]
         } else {
             outEnvironment?.get(EnvironmentKey(key.ancestorAt - 1, key.index))
+        }
+    }
+
+    private fun expandTypesFieldsIfNeeded(index: Int) {
+        if (index >= types.size) {
+            val newLength = index - types.size + 10 // 10個分余分に配列を確保しておく
+            types = types.copyOf(types.size + newLength).map { it }.toTypedArray()
         }
     }
 
@@ -63,7 +58,7 @@ class TypeEnvironmentImpl(
         typeEquations.add(TypeEquation(typeNeedInference1, typeNeedInference2))
     }
 
-    override fun deifneEquatationType(target: Type.NeedInference, typeDefined: Type.Defined) {
+    override fun defineEquationType(target: Type.NeedInference, typeDefined: Type.Defined) {
         val targets = typeEquations.filter { it.type1 == target || it.type2 == target }
         targets.forEach {
             it.type1.typeInferred = typeDefined

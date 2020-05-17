@@ -1,15 +1,19 @@
 package omuretu.ast.statement
 
+import omuretu.OMURETU_DEFAULT_RETURN_VALUE
+import omuretu.environment.IdNameLocationMap
 import omuretu.environment.base.EnvironmentKey
-import omuretu.environment.NestedIdNameLocationMap
 import omuretu.environment.base.TypeEnvironment
-import omuretu.exception.OmuretuException
+import omuretu.environment.base.VariableEnvironment
 import omuretu.typechecker.Type
+import omuretu.visitor.CheckTypeVisitor
+import omuretu.visitor.EvaluateVisitor
+import omuretu.visitor.IdNameLocationVisitor
 import parser.ast.ASTList
 import parser.ast.ASTTree
 
-class ParametersStatement(
-        private val parameters: List<ParameterStatement>
+data class ParametersStatement(
+    val parameters: List<ParameterStatement>
 ) : ASTList(parameters) {
     companion object Factory : FactoryMethod {
         const val KEYWORD_PARAMETER_BREAK = ","
@@ -30,24 +34,17 @@ class ParametersStatement(
     val parameterNames: List<String>
         get() = parameters.map { it.name }
 
-    val types: List<Type.Defined>
-        get() = parameters.map { it.type }
-
     var parameterEnvironmentKeys: Array<EnvironmentKey>? = null
 
-    override fun lookupIdNamesLocation(idNameLocationMap: NestedIdNameLocationMap) {
-        val parameterLocation = arrayOfNulls<EnvironmentKey>(parameters.size)
-        parameters.forEachIndexed { index, idNameLiteral ->
-            val location = idNameLocationMap.putAndReturnLocation(idNameLiteral.name)
-            parameterLocation[index] = EnvironmentKey(location.ancestorAt, location.indexInIdNames)
-        }
-        this.parameterEnvironmentKeys = parameterLocation.mapNotNull { it }.toTypedArray()
+    override fun toString() = "$KEYWORD_PARENTHESIS_START $parameters $KEYWORD_PARENTHESIS_END"
+
+    override fun accept(idNameLocationVisitor: IdNameLocationVisitor, idNameLocationMap: IdNameLocationMap) {
+        idNameLocationVisitor.visit(this, idNameLocationMap)
     }
 
-    override fun checkType(typeEnvironment: TypeEnvironment): Type {
-        val parameterEnvironmentKeys = parameterEnvironmentKeys ?: throw OmuretuException("")
-        if (parameters.size != parameterEnvironmentKeys.size) throw OmuretuException("")
-        parameterEnvironmentKeys.zip(parameters).forEach { typeEnvironment.put(it.first, it.second.checkType(typeEnvironment)) }
-        return Type.Defined.Any // パラメータの型はなんでもいい
+    override fun accept(checkTypeVisitor: CheckTypeVisitor, typeEnvironment: TypeEnvironment): Type {
+        return checkTypeVisitor.visit(this, typeEnvironment)
     }
+
+    override fun accept(evaluateVisitor: EvaluateVisitor, variableEnvironment: VariableEnvironment): Any = OMURETU_DEFAULT_RETURN_VALUE
 }

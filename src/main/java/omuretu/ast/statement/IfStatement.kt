@@ -1,97 +1,57 @@
 package omuretu.ast.statement
 
-import omuretu.OMURETU_FALSE
-import omuretu.OMURETU_DEFAULT_RETURN_VALUE
+import omuretu.environment.IdNameLocationMap
 import omuretu.environment.base.TypeEnvironment
 import omuretu.environment.base.VariableEnvironment
 import omuretu.typechecker.Type
-import omuretu.typechecker.TypeCheckHelper
-import omuretu.vertualmachine.ByteCodeStore
-import omuretu.vertualmachine.OmuretuVirtualMachine
-import omuretu.vertualmachine.opecode.BConstOpecode
-import omuretu.vertualmachine.opecode.GotoOpecode
-import omuretu.vertualmachine.opecode.IfZeroOpecode
+import omuretu.virtualmachine.ByteCodeStore
+import omuretu.visitor.CheckTypeVisitor
+import omuretu.visitor.CompileVisitor
+import omuretu.visitor.EvaluateVisitor
+import omuretu.visitor.IdNameLocationVisitor
 import parser.ast.ASTList
 import parser.ast.ASTTree
-import util.ex.sliceByByte
 
-class IfStatement(
-        val condition: ASTTree,
-        val thenBlock: BlockStatement,
-        val elseBlock: BlockStatement? = null
-) : ASTList(elseBlock?.let { listOf(condition, thenBlock, it) } ?: listOf(condition, thenBlock)) {
+data class IfStatement(
+    val conditionBlockStatements: List<ConditionBlockStatement>,
+    val elseBlock: BlockStatement? = null
+) : ASTList(elseBlock?.let { conditionBlockStatements.toMutableList<ASTList>().apply { add(it) } } ?: conditionBlockStatements) {
     companion object Factory : FactoryMethod {
         const val KEYWORD_IF = "if"
         const val KEYWORD_ELSE = "else"
+        const val KEYWORD_ELSEIF = "elseif"
 
         @JvmStatic
         override fun newInstance(argument: List<ASTTree>): ASTTree? {
-            if (argument.size !in 2..3) return null
-            val thenBlock = argument[1] as? BlockStatement ?: return null
-            return when (argument.size) {
-                2 -> IfStatement(argument[0], thenBlock)
-                3 -> {
-                    val elseBlock = argument[2] as? BlockStatement ?: return null
-                    IfStatement(argument[0], thenBlock, elseBlock)
+            if (argument.isEmpty()) return null
+            return when (val last = argument.last()) {
+                is BlockStatement -> {
+                    IfStatement(argument.dropLast(1).map { it as ConditionBlockStatement }, last)
                 }
-                else -> null
+                else -> {
+                    IfStatement(argument.map { it as ConditionBlockStatement })
+                }
             }
         }
     }
 
-    override fun checkType(typeEnvironment: TypeEnvironment): Type {
-        val conditionType = condition.checkType(typeEnvironment)
-        TypeCheckHelper.checkSubTypeOrThrow(conditionType, Type.Defined.Int, this, typeEnvironment)
-        val thenBlockType = thenBlock.checkType(typeEnvironment)
-        val elseBlockType = elseBlock?.checkType(typeEnvironment)
-        return if (elseBlockType == null) {
-            thenBlockType
-        } else {
-            TypeCheckHelper.union(thenBlockType, elseBlockType, typeEnvironment)
-        }
+    var idNameSizeInElse: Int = 0
+
+    override fun toString() = "($KEYWORD_IF ${conditionBlockStatements.first()} $KEYWORD_ELSEIF ${conditionBlockStatements.drop(1)} $KEYWORD_ELSE $elseBlock)"
+
+    override fun accept(idNameLocationVisitor: IdNameLocationVisitor, idNameLocationMap: IdNameLocationMap) {
+        idNameLocationVisitor.visit(this, idNameLocationMap)
     }
 
-    override fun compile(byteCodeStore: ByteCodeStore) {
-        condition.compile(byteCodeStore)
-        // elseが始まる位置を格納しているCodePosition
-        val codePositionStartIfZero = byteCodeStore.codePosition
-        val codePositionSavingStartElseBlock = codePositionStartIfZero + IfZeroOpecode.SHORT_START
-        val registerAt = OmuretuVirtualMachine.encodeRegisterIndex(byteCodeStore.prevRegister())
-        IfZeroOpecode.createByteCode(registerAt, 0).forEach { byteCodeStore.addByteCode(it) } // 0を渡しているがあとでelse文が始まる位置を渡す
-
-        val registerPosition = byteCodeStore.registerPosition
-        thenBlock.compile(byteCodeStore)
-
-        val codePositionStartGoto = byteCodeStore.codePosition
-        val codePositionSavingEndElseBlock = byteCodeStore.codePosition + GotoOpecode.SHORT_START
-        GotoOpecode.createByteCode(0).forEach { byteCodeStore.addByteCode(it) } // 0を渡しているがあとでelse文が終わる位置を渡す
-
-        (byteCodeStore.codePosition - codePositionStartIfZero).toShort().sliceByByte().forEachIndexed { index, byte ->
-            byteCodeStore.setByteCode(codePositionSavingStartElseBlock + index, byte)
-        }
-
-        byteCodeStore.registerPosition = registerPosition
-        elseBlock?.compile(byteCodeStore) ?: run {
-            // TODO 何をしているのか調査
-            val registerAt = OmuretuVirtualMachine.encodeRegisterIndex(byteCodeStore.nextRegister())
-            BConstOpecode.createByteCode(0, registerAt).forEach { byteCodeStore.addByteCode(it) }
-        }
-
-        (byteCodeStore.codePosition - codePositionStartGoto).toShort().sliceByByte().forEachIndexed { index, byte ->
-            byteCodeStore.setByteCode(codePositionSavingEndElseBlock + index, byte)
-        }
+    override fun accept(checkTypeVisitor: CheckTypeVisitor, typeEnvironment: TypeEnvironment): Type {
+        return checkTypeVisitor.visit(this, typeEnvironment)
     }
 
-    override fun evaluate(variableEnvironment: VariableEnvironment): Any {
-        val conditionResult = condition.evaluate(variableEnvironment)
-        return if (conditionResult is Int && conditionResult != OMURETU_FALSE) {
-            thenBlock.evaluate(variableEnvironment)
-        } else {
-            elseBlock?.evaluate(variableEnvironment) ?: OMURETU_DEFAULT_RETURN_VALUE
-        }
+    override fun accept(compileVisitor: CompileVisitor, byteCodeStore: ByteCodeStore) {
+        compileVisitor.visit(this, byteCodeStore)
     }
 
-    override fun toString(): String {
-        return ("($KEYWORD_IF $condition $thenBlock $KEYWORD_ELSE $elseBlock)")
+    override fun accept(evaluateVisitor: EvaluateVisitor, variableEnvironment: VariableEnvironment): Any {
+        return evaluateVisitor.visit(this, variableEnvironment)
     }
 }

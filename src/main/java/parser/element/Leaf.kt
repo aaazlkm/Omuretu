@@ -1,11 +1,11 @@
 package parser.element
 
-import parser.exception.ParseException
 import lexer.Lexer
 import lexer.token.IdToken
 import lexer.token.Token
 import parser.ast.ASTLeaf
 import parser.ast.ASTTree
+import parser.exception.ParseException
 
 open class Leaf(private vararg val patterns: String) : Element {
     override fun parseTokens(lexer: Lexer, results: MutableList<ASTTree>) {

@@ -6,10 +6,11 @@ import omuretu.exception.OmuretuException
 import omuretu.exception.TypeException
 import omuretu.typechecker.Type
 import omuretu.util.ReflectionUtil
-import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
+import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 
 internal class TypeEnvironmentImplTest {
@@ -41,15 +42,15 @@ internal class TypeEnvironmentImplTest {
         @Test
         fun putAndGetWhenIndex0() {
             val environmentKey = EnvironmentKey(0, 0)
-            typeEnvironment.put(environmentKey, Type.Defined.Int)
-            assertEquals(typeEnvironment.get(environmentKey), Type.Defined.Int)
+            typeEnvironment.put(environmentKey, Type.Defined.Int())
+            assertTrue { typeEnvironment.get(environmentKey)?.let { it::class } == Type.Defined.Int()::class }
         }
 
         @Test
         fun putAndGetWhenIndex11() {
             val environmentKey = EnvironmentKey(0, 11)
-            typeEnvironment.put(environmentKey, Type.Defined.Int)
-            assertEquals(typeEnvironment.get(environmentKey), Type.Defined.Int)
+            typeEnvironment.put(environmentKey, Type.Defined.Int())
+            assertTrue { typeEnvironment.get(environmentKey)?.let { it::class } == Type.Defined.Int()::class }
         }
     }
 
@@ -64,7 +65,7 @@ internal class TypeEnvironmentImplTest {
         fun setup() {
             val ancestor = TypeEnvironmentImpl()
             val environmentKey = EnvironmentKey(0, 0)
-            val type = Type.Defined.Int
+            val type = Type.Defined.Int()
             ancestor.put(environmentKey, type)
             this.environmentKey = environmentKey
             this.typeSaved = type
@@ -79,7 +80,7 @@ internal class TypeEnvironmentImplTest {
 
         @Test
         fun put() {
-            val type = Type.Defined.String
+            val type = Type.Defined.String()
             val environmentKey = EnvironmentKey(1, 2)
             typeEnvironment.put(environmentKey, type)
             assertEquals(type, typeEnvironment.get(environmentKey))
@@ -97,7 +98,7 @@ internal class TypeEnvironmentImplTest {
 
         @Test
         fun addEquation() {
-            val typeInference1 = Type.NeedInference(Type.Defined.Int)
+            val typeInference1 = Type.NeedInference(Type.Defined.Int())
             val typeInference2 = Type.NeedInference()
             assertThrows<TypeException> {
                 typeEnvironment.addEquation(typeInference1, typeInference2)
@@ -105,7 +106,7 @@ internal class TypeEnvironmentImplTest {
         }
 
         @Test
-        fun deifneEquationType() {
+        fun defineEquationType() {
             val testType = Type.NeedInference()
             typeEnvironment.addEquation(Type.NeedInference(), Type.NeedInference())
             typeEnvironment.addEquation(Type.NeedInference(), Type.NeedInference())
@@ -113,9 +114,8 @@ internal class TypeEnvironmentImplTest {
             typeEnvironment.addEquation(testType, Type.NeedInference())
             val typeEquations = ReflectionUtil.pickValue<List<TypeEnvironmentImpl.TypeEquation>>(typeEnvironment, "typeEquations")
             assertEquals(4, typeEquations.size)
-            typeEnvironment.deifneEquatationType(testType, Type.Defined.Int)
+            typeEnvironment.defineEquationType(testType, Type.Defined.Int())
             assertEquals(3, typeEquations.size)
         }
     }
-
 }

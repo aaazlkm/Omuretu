@@ -2,12 +2,13 @@ package omuretu.ast.postfix
 
 import omuretu.environment.base.TypeEnvironment
 import omuretu.environment.base.VariableEnvironment
-import omuretu.exception.OmuretuException
 import omuretu.typechecker.Type
+import omuretu.visitor.CheckTypeVisitor
+import omuretu.visitor.EvaluateVisitor
 import parser.ast.ASTTree
 
 class ArrayPostfix(
-        val index: ASTTree
+    val index: ASTTree
 ) : Postfix(listOf(index)) {
     companion object Factory : FactoryMethod {
         const val KEYWORD_BRACKETS_START = "["
@@ -20,18 +21,13 @@ class ArrayPostfix(
         }
     }
 
-    override fun checkType(typeEnvironment: TypeEnvironment, leftType: Type): Type {
-        // TODO 配列型を用意する
-        return Type.Defined.Any
+    override fun toString() = "$KEYWORD_BRACKETS_START $index $KEYWORD_BRACKETS_END"
+
+    override fun accept(checkTypeVisitor: CheckTypeVisitor, typeEnvironment: TypeEnvironment, leftType: Type): Type {
+        return checkTypeVisitor.visit(this, typeEnvironment, leftType)
     }
 
-    override fun evaluate(variableEnvironment: VariableEnvironment): Any {
-        throw OmuretuException("must be called `evaluate(environment: Environment, value: Any)` instead of this method", this)
-    }
-
-    override fun evaluate(variableEnvironment: VariableEnvironment, leftValue: Any): Any {
-        val list = (leftValue as? MutableList<*>)?.mapNotNull { it } ?: throw OmuretuException("bad array access")
-        val index = index.evaluate(variableEnvironment) as? Int ?: throw OmuretuException("bad array access")
-        return list[index]
+    override fun accept(evaluateVisitor: EvaluateVisitor, variableEnvironment: VariableEnvironment, leftValue: Any): Any {
+        return evaluateVisitor.visit(this, variableEnvironment, leftValue)
     }
 }

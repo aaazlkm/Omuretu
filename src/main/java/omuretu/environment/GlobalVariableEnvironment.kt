@@ -1,20 +1,9 @@
 package omuretu.environment
 
 import omuretu.environment.base.EnvironmentKey
-import omuretu.vertualmachine.ByteCodeStore
-import omuretu.vertualmachine.HeapMemory
-import omuretu.vertualmachine.OmuretuVirtualMachine
 
-class GlobalVariableEnvironment : NestedVariableEnvironment(10), HeapMemory {
-    val idNameLocationMap = NestedIdNameLocationMap()
-
-    val omuretuVirtualMachine = OmuretuVirtualMachine(
-            OmuretuVirtualMachine.Configuration(
-                    heapMemory = this
-            )
-    )
-
-    override val byteCodeStore = ByteCodeStore()
+class GlobalVariableEnvironment : VariableEnvironmentImpl(10) {
+    val idNameLocationMap = IdNameLocationMap()
 
     //region NestedEnvironment
 
@@ -24,18 +13,6 @@ class GlobalVariableEnvironment : NestedVariableEnvironment(10), HeapMemory {
         } else {
             super.put(key, value)
         }
-    }
-
-    //endregion
-
-    //region HeapMemory override methods
-
-    override fun read(index: Int): Any? {
-        return values[index]
-    }
-
-    override fun write(index: Int, value: Any?) {
-        values[index] = value
     }
 
     //endregion

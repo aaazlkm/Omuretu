@@ -1,12 +1,12 @@
 package omuretu.model
 
 import omuretu.environment.Location
-import omuretu.environment.base.VariableEnvironment
 import omuretu.environment.base.EnvironmentKey
+import omuretu.environment.base.VariableEnvironment
 import omuretu.exception.AccessException
 
 data class Object(
-        val classs: Class
+    val classs: Class
 ) {
     lateinit var variableEnvironment: VariableEnvironment
 

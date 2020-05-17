@@ -1,11 +1,15 @@
 package parser.ast
 
-import omuretu.environment.base.VariableEnvironment
-import omuretu.environment.NestedIdNameLocationMap
+import omuretu.environment.IdNameLocationMap
 import omuretu.environment.base.TypeEnvironment
+import omuretu.environment.base.VariableEnvironment
 import omuretu.exception.OmuretuException
 import omuretu.typechecker.Type
-import omuretu.vertualmachine.ByteCodeStore
+import omuretu.virtualmachine.ByteCodeStore
+import omuretu.visitor.CheckTypeVisitor
+import omuretu.visitor.CompileVisitor
+import omuretu.visitor.EvaluateVisitor
+import omuretu.visitor.IdNameLocationVisitor
 
 open class ASTList(val children: List<ASTTree>) : ASTTree {
     interface FactoryMethod {
@@ -24,23 +28,21 @@ open class ASTList(val children: List<ASTTree>) : ASTTree {
     val numberOfChildren: Int
         get() = children.size
 
-    override fun lookupIdNamesLocation(idNameLocationMap: NestedIdNameLocationMap) {
+    override fun accept(idNameLocationVisitor: IdNameLocationVisitor, idNameLocationMap: IdNameLocationMap) {
         children.forEach {
-            it.lookupIdNamesLocation(idNameLocationMap)
+            it.accept(idNameLocationVisitor, idNameLocationMap)
         }
     }
 
-    override fun checkType(typeEnvironment: TypeEnvironment): Type = throw OmuretuException("not override checkType method")
+    override fun accept(checkTypeVisitor: CheckTypeVisitor, typeEnvironment: TypeEnvironment): Type = throw OmuretuException("not override checkType method")
 
-    override fun compile(byteCodeStore: ByteCodeStore) {
+    override fun accept(compileVisitor: CompileVisitor, byteCodeStore: ByteCodeStore) {
         children.forEach {
-            it.compile(byteCodeStore)
+            it.accept(compileVisitor, byteCodeStore)
         }
     }
 
-    override fun evaluate(variableEnvironment: VariableEnvironment): Any {
-        throw OmuretuException("not override evaluate method")
-    }
+    override fun accept(evaluateVisitor: EvaluateVisitor, variableEnvironment: VariableEnvironment): Any = throw OmuretuException("not override evaluate method")
 
     override fun toString(): String {
         return children.map { it.toString() }.fold("") { acc, s -> "$acc$s" }
