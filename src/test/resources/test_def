@@ -1,5 +1,5 @@
 55 610
-def fib (n: Int) {
+def fib (n: Int): Int {
     if (n < 2) {
       n
     } else {
